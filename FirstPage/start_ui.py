@@ -71,7 +71,7 @@ class ComboBox(QComboBox):
                            "font-size: 16px;}"
                            "QComboBox::drop-down {border: 0px;}"
                            "QComboBox::down-arrow { "
-                           "image: url(res/drop_down.png); width: 14px; height: 14px;}")
+                           "image: url(../res/drop_down.png); width: 14px; height: 14px;}")
 
 
 class RadioButton(QRadioButton):
@@ -96,7 +96,7 @@ class App(QWidget):
         # Background of the window
         bg = QLabel(self)
         bg.setGeometry(0, 0, 800, 600)
-        bg.setStyleSheet("border-image: url(res/bg.jpg);")
+        bg.setStyleSheet("border-image: url(../res/bg.jpg);")
 
         # Text field to get player name
         self.player_name = Text(100, 90, "Player name", self)
