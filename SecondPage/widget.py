@@ -21,6 +21,12 @@ class Ui_Widget(object):
         Widget.setWindowTitle("Othello")
         self.board_size = boardsize
 
+        self.bg = QtWidgets.QLabel(self.Widget)
+        self.bg.setGeometry(0, 0, 788, 427)
+        self.bg.setText("")
+        self.bg.setStyleSheet("border-image: url(../res/wooden-background.jpg);")
+        self.bg.setObjectName("background")
+
         self.label = QtWidgets.QLabel(Widget)
         self.label.setGeometry(QtCore.QRect(20, 20, 371, 381))
         self.label.setText("")
