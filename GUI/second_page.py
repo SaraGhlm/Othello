@@ -11,7 +11,6 @@ class SecondPage():
     def __init__(self, widget, boardsize=(8, 8)):
         # self.setObjectName("Widget")
         # self.setWindowTitle("Othello")
-        # self.setFixedSize(680, 427)
         self.board_size = boardsize
         self.widget = widget
 

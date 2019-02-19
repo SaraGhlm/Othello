@@ -14,6 +14,7 @@ class App(QtWidgets.QWidget):
         super().__init__()
         self.title = 'Othello'
         self.setWindowTitle(self.title)
+        self.setFixedSize(800, 600)
         self.center()
         self.setup_page = first_page.FirstPage(self)
         self.game_page = second_page.SecondPage(self)
