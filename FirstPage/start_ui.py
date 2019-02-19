@@ -2,7 +2,8 @@ import sys
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QTextEdit, QComboBox, QRadioButton, \
-    QDesktopWidget
+    QDesktopWidget, QDialog
+from SecondPage.widget import Ui_Widget
 
 
 class Button(QPushButton):
@@ -94,15 +95,15 @@ class App(QWidget):
         self.center()
 
         # Background of the window
-        bg = QLabel(self)
-        bg.setGeometry(0, 0, 800, 600)
-        bg.setStyleSheet("border-image: url(../res/bg.jpg);")
+        self.bg = QLabel(self)
+        self.bg.setGeometry(0, 0, 800, 600)
+        self.bg.setStyleSheet("border-image: url(../res/bg.jpg);")
 
         # Text field to get player name
         self.player_name = Text(100, 90, "Player name", self)
 
         # Set board size
-        Label(100, 180, "Board size", self)
+        self.board_size = Label(100, 180, "Board size", self)
         self.size = ComboBox(290, 180, self)
         self.size.addItem("8")
         self.size.addItem("10")
@@ -110,19 +111,19 @@ class App(QWidget):
         self.size.addItem("14")
 
         # Allowing player to choose their color
-        Label(100, 260, "Choose your color", self)
+        self.choose_color = Label(100, 260, "Choose your color", self)
         self.colors = ComboBox(290, 260, self)
         self.colors.addItem("black")
         self.colors.addItem("white")
 
         # Allowing player to choose who play first
-        Label(100, 350, "Who play first?", self)
-        me = RadioButton(290, 350, "Me", self)
-        RadioButton(360, 350, "Computer", self)
-        me.setChecked(True)
+        self.first_to_play = Label(100, 350, "Who play first?", self)
+        self.me = RadioButton(290, 350, "Me", self)
+        self.computer = RadioButton(360, 350, "Computer", self)
+        self.me.setChecked(True)
 
-        start_button = Button(200, 430, "start", self)
-        start_button.clicked.connect(self.start_game)
+        self.start_button = Button(200, 430, "start", self)
+        self.start_button.clicked.connect(self.start_game)
 
         self.show()
 
@@ -140,7 +141,26 @@ class App(QWidget):
             Start the game with the specified settings. Move to the second page of the game
         """
         name = self.player_name.toPlainText()
+        self.close()
+        # self.bg.hide()
+        # self.choose_color.hide()
+        # self.start_button.hide()
+        # self.first_to_play.hide()
+        # self.board_size.hide()
+        # self.me.hide()
+        # self.computer.hide()
+        # self.size.hide()
+        # self.colors.hide()
+        # self.player_name.hide()
 
+
+
+class othelloGame(Ui_Widget):
+    def __init__(self, dialog):
+        Ui_Widget.__init__(self)
+        self.size = (8, 8)
+        self.setupUi(dialog, boardsize=self.size)
+        print(self.current_player)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

@@ -8,37 +8,40 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon, QPixmap
-from newQLabel import QLabel_new
+from .newQLabel import QLabel_new
 import numpy as np
 import re
 
 
-class Ui_Widget(object):
-    def setupUi(self, Widget, boardsize=(8, 8)):
-        self.Widget = Widget
-        Widget.setObjectName("Widget")
-        Widget.resize(788, 427)
-        Widget.setWindowTitle("Othello")
+class Ui_Widget(QtWidgets.QWidget):
+    def setupUi(self, boardsize=(8, 8)):
+        # self.Widget = Widget
+        # Widget.setObjectName("Widget")
+        # Widget.resize(788, 427)
+        # Widget.setWindowTitle("Othello")
+        self.setObjectName("Widget")
+        self.resize(788, 427)
+        self.setWindowTitle("Othello")
         self.board_size = boardsize
 
-        self.label = QtWidgets.QLabel(Widget)
+        self.label = QtWidgets.QLabel(self)
         self.label.setGeometry(QtCore.QRect(20, 20, 371, 381))
         self.label.setText("")
         self.label.setPixmap(QtGui.QPixmap("../res/greengrid.jpg"))
         self.label.setScaledContents(False)
         self.label.setObjectName("label")
 
-        self.white_Score = QtWidgets.QLabel(Widget)
+        self.white_Score = QtWidgets.QLabel(self)
         self.white_Score.setGeometry(QtCore.QRect(450, 50, 181, 21))
         self.white_Score.setText("White's Score: ")
         self.white_Score.setObjectName("white_Score")
 
-        self.black_Score = QtWidgets.QLabel(Widget)
+        self.black_Score = QtWidgets.QLabel(self)
         self.black_Score.setGeometry(QtCore.QRect(450, 90, 181, 29))
         self.black_Score.setText("Black's Score: ")
         self.black_Score.setObjectName("black_Score")
 
-        self.turn_label = QtWidgets.QLabel(Widget)
+        self.turn_label = QtWidgets.QLabel(self)
         self.turn_label.setGeometry(QtCore.QRect(450, 130, 181, 29))
         self.turn_label.setText("Black's turn ")
         self.turn_label.setObjectName("turn_label")
@@ -48,16 +51,16 @@ class Ui_Widget(object):
         for i in range(boardsize[0]):
             for j in range(boardsize[1]):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
-                exec ('self.' + name + '= QLabel_new(Widget)')
+                exec ('self.' + name + '= QLabel_new(self)')
                 exec ('self.' + name + '.setGeometry(QtCore.QRect(23+45.5*j, 31+45.5*i, 41, 41))')
                 exec ('self.' + name + ".clicked.connect(lambda self=self: self.player_clicked('" + name + "'))")
-        self.reset_button = QtWidgets.QPushButton('Reset Game', Widget)
+        self.reset_button = QtWidgets.QPushButton('Reset Game', self)
         self.reset_button.move(450, 200)
         self.reset_button.clicked.connect(self.on_reset_click)
 
         self.init_board()
 
-        QtCore.QMetaObject.connectSlotsByName(Widget)
+        QtCore.QMetaObject.connectSlotsByName(self)
         # print ('done with setup')
 
     def init_board(self):
@@ -79,7 +82,7 @@ class Ui_Widget(object):
             self.place_stone(self.current_player, (self.str_to_int[result.group(1)], self.str_to_int[result.group(2)]))
 
     def on_reset_click(self):
-        buttonReply = QtWidgets.QMessageBox.question(self.Widget, "Warning",
+        buttonReply = QtWidgets.QMessageBox.question(self, "Warning",
                                                      "Are you sure you want to clear the board?",
                                                      QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
         if buttonReply == QtWidgets.QMessageBox.Yes:
@@ -135,7 +138,7 @@ class Ui_Widget(object):
                 message = 'white won!'
             else:
                 message = 'Tie!'
-            buttonReply = QtWidgets.QMessageBox.information(self.Widget, "Result", message, QtWidgets.QMessageBox.Ok)
+            buttonReply = QtWidgets.QMessageBox.information(self, "Result", message, QtWidgets.QMessageBox.Ok)
             if buttonReply == QtWidgets.QMessageBox.Ok:
                 print('Game is reset')
                 self.clear_board()
@@ -143,7 +146,7 @@ class Ui_Widget(object):
         self.move_validity_check = np.zeros((self.board_size[0], self.board_size[1]), dtype=int)
         self.show_valid_moves()
         if sum(sum(self.move_validity_check)) == 0 and sum(sum(self.current_board)) > 1:
-            buttonReply = QtWidgets.QMessageBox.information(self.Widget, "Warning", "No possible move, changing player",
+            buttonReply = QtWidgets.QMessageBox.information(self, "Warning", "No possible move, changing player",
                                                             QtWidgets.QMessageBox.Ok)
             if buttonReply == QtWidgets.QMessageBox.Ok:
                 self.show_valid_moves()
