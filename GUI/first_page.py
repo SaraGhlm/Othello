@@ -10,24 +10,24 @@ class FirstPage():
     def __init__(self, widget):
         # super().__init__()
         self.combo_box_style = """QComboBox { 
-                                       border: 0px solid black;
-                                        background-color: rgba(255, 255, 255, 0.7);
-                                        selection-background-color: rgb(168,168,168);
-                                        selection-color: rgba(0, 0, 0, 0.6);
-                                        color: rgba(0, 0, 0, 0.6);
-                                        font-size: 16px;}
-                                        QComboBox::drop-down {border: 0px;}
-                                        QComboBox::down-arrow { 
-                                        image: url(res/drop_down.png); width: 14px; height: 14px;}"""
+                            border: 0px solid black;
+                            background-color: rgba(255, 255, 255, 0.7);
+                            selection-background-color: rgb(168,168,168);
+                            selection-color: rgba(0, 0, 0, 0.6);
+                            color: rgba(0, 0, 0, 0.6);
+                            font-size: 16px;}
+                            QComboBox::drop-down {border: 0px;}
+                            QComboBox::down-arrow { 
+                            image: url(res/drop_down.png); width: 14px; height: 14px;}"""
         self.label_style = """QLabel {
-                                    color: rgba(255, 255, 255, 0.7);
-                                    font-size: 20px;}"""
+                        color: rgba(255, 255, 255, 0.7);
+                        font-size: 20px;}"""
         self.text_style = """QTextEdit {
-                                    border: 0px solid black;
-                                    border-bottom: 1px solid rgba(0, 0, 0, 0.7);
-                                    color: rgba(255, 255, 255, 0.7);
-                                    background-color: rgba(0, 0, 0, 0);
-                                    font-size: 17px;}"""
+                        border: 0px solid black;
+                        border-bottom: 1px solid rgba(0, 0, 0, 0.7);
+                        color: rgba(255, 255, 255, 0.7);
+                        background-color: rgba(0, 0, 0, 0);
+                        font-size: 17px;}"""
         self.button_style = """QPushButton { 
                         font-size: 20px;
                         color: rgba(1, 1, 1, 0.7);

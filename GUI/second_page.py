@@ -8,10 +8,27 @@ import re
 
 class SecondPage():
 
-    def __init__(self, widget, boardsize=(8, 8)):
-        # self.setObjectName("Widget")
-        # self.setWindowTitle("Othello")
-        self.board_size = boardsize
+    def __init__(self, widget, board_size=(8, 8)):
+
+        self.label_style = """QLabel {
+                            color: rgba(0, 0, 0, 0.7);
+                            font-size: 20px;}"""
+        self.button_style = """QPushButton { 
+                            font-size: 20px;
+                            color: rgba(1, 1, 1, 0.7);
+                            border: 2px solid #8f8f91; 
+                            border-radius: 6px; 
+                            background-color: rgba(255, 255, 255, 0.3); 
+                            min-width: 80px;} 
+                            QPushButton:hover { 
+                            background-color: rgba(255, 255, 255, 0.5);}
+                            QPushButton:pressed { 
+                            background-color: rgba(255, 255, 255, 0.7);} 
+                            QPushButton:flat { 
+                            border: none; /* no border for a flat push button */} 
+                            QPushButton:default { 
+                            border-color: navy; /* make the default button prominent */}"""
+        self.board_size = board_size
         self.widget = widget
 
         self.bg = QtWidgets.QLabel(widget)
@@ -23,7 +40,7 @@ class SecondPage():
         self.board = QtWidgets.QLabel(widget)
         self.board.setGeometry(QtCore.QRect(20, 20, 371, 381))
         self.board.setText("")
-        self.board.setPixmap(QtGui.QPixmap("res/greengrid.jpg"))
+        self.board.setPixmap(QtGui.QPixmap("res/green_grid.jpg"))
         self.board.setScaledContents(False)
         self.board.setObjectName("label")
 
@@ -31,36 +48,38 @@ class SecondPage():
         self.white_Score.setGeometry(QtCore.QRect(450, 50, 181, 21))
         self.white_Score.setText("White's Score: ")
         self.white_Score.setObjectName("white_Score")
+        self.white_Score.setStyleSheet(self.label_style)
 
         self.black_Score = QtWidgets.QLabel(widget)
         self.black_Score.setGeometry(QtCore.QRect(450, 90, 181, 29))
         self.black_Score.setText("Black's Score: ")
         self.black_Score.setObjectName("black_Score")
+        self.black_Score.setStyleSheet(self.label_style)
 
         self.turn_label = QtWidgets.QLabel(widget)
         self.turn_label.setGeometry(QtCore.QRect(450, 130, 181, 29))
         self.turn_label.setText("Black's turn ")
         self.turn_label.setObjectName("turn_label")
+        self.turn_label.setStyleSheet(self.label_style)
 
         self.int_to_str = {0: 'zero', 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven'}
         self.str_to_int = {'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5, 'six': 6, 'seven': 7}
-        for i in range(boardsize[0]):
-            for j in range(boardsize[1]):
+        for i in range(board_size[0]):
+            for j in range(board_size[1]):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
                 exec('self.' + name + '= QLabel_new(widget)')
                 exec('self.' + name + '.setGeometry(QtCore.QRect(23+45.5*j, 31+45.5*i, 41, 41))')
                 exec('self.' + name + ".clicked.connect(lambda self=self: self.player_clicked('" + name + "'))")
+
         self.reset_button = QtWidgets.QPushButton('Reset Game', widget)
-        self.reset_button.move(450, 200)
+        self.reset_button.setGeometry(450, 200, 170, 50)
         self.reset_button.clicked.connect(self.on_reset_click)
-        # self.reset_button.setStyleSheet("QPushButton {"
-        #                                 "}")
+        self.reset_button.setStyleSheet(self.button_style)
 
         self.init_board()
 
         QtCore.QMetaObject.connectSlotsByName(widget)
         widget.show()
-        # print ('done with setup')
 
     def init_board(self):
         center = (int(self.board_size[0] / 2), int(self.board_size[1] / 2))
