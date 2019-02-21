@@ -10,4 +10,4 @@ before_install:
   - "export PYTHONPATH=$PYTHONPATH:$(pwd)"
   
 script:
-  - python ./test/test1.py
+  - python ./GUI/test/test1.py
