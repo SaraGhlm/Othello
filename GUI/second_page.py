@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QWidget
-from newQLabel import QLabel_new
+from GUI.newQLabel import QLabel_new
 import numpy as np
 import re
 

@@ -4,8 +4,8 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QDesktopWidget
 from PyQt5.QtCore import Qt
 
-import first_page
-import second_page
+import GUI.first_page as first_page
+import GUI.second_page as second_page
 
 class App(QtWidgets.QWidget):
 
