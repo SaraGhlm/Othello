@@ -7,7 +7,6 @@ from PyQt5.QtCore import Qt
 import first_page
 import second_page
 
-
 class App(QtWidgets.QWidget):
 
     def __init__(self):

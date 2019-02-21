@@ -1,0 +1,14 @@
+language: python
+python: 
+  - "3.7-dev"
+ 
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
+  - pip install codecov
+
+before_install:
+  - "export PYTHONPATH=$PYTHONPATH:$(pwd)"
+  
+script:
+  - python ./test/test1.py
