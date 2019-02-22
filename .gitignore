@@ -2,3 +2,16 @@
 *.xml
 .idea/Othello.iml
 *.pyc
+*.pth
+venv/Lib/site-packages/numpy-1.16.1.dist-info/entry_points.txt
+venv/Lib/site-packages/numpy-1.16.1.dist-info/LICENSE.txt
+venv/Lib/site-packages/numpy-1.16.1.dist-info/RECORD
+venv/Lib/site-packages/numpy-1.16.1.dist-info/METADATA
+venv/Lib/site-packages/numpy-1.16.1.dist-info/WHEEL
+venv/Lib/site-packages/numpy-1.16.1.dist-info/INSTALLER
+venv/Lib/site-packages/numpy-1.16.1.dist-info/top_level.txt
+venv/Lib/site-packages/numpy/__config__.py
+venv/Lib/site-packages/numpy/.libs/libopenblas.JKAMQ5EVHIVCPXP2XZJB2RQPIN47S32M.gfortran-win32.dll
+venv/Lib/site-packages/numpy/__init__.py
+venv/Lib/site-packages/numpy/_distributor_init.py
+venv/Lib/site-packages/numpy/_pytesttester.py

@@ -37,42 +37,48 @@ class SecondPage():
         self.bg.setStyleSheet("border-image: url(res/wooden-background.jpg); background-size: cover;")
         self.bg.setObjectName("background")
 
+        self.board_x = 20
+        self.board_y = 20
+        self.board_length = 500
         self.board = QtWidgets.QLabel(widget)
-        self.board.setGeometry(QtCore.QRect(20, 20, 371, 381))
+        self.board.setGeometry(self.board_x, self.board_y, self.board_length, self.board_length)
         self.board.setText("")
         self.board.setPixmap(QtGui.QPixmap("res/green_grid.jpg"))
-        self.board.setScaledContents(False)
+        self.board.setScaledContents(True)
         self.board.setObjectName("label")
 
         self.white_Score = QtWidgets.QLabel(widget)
-        self.white_Score.setGeometry(QtCore.QRect(450, 50, 181, 21))
+        self.white_Score.setGeometry(QtCore.QRect(560, 50, 181, 21))
         self.white_Score.setText("White's Score: ")
         self.white_Score.setObjectName("white_Score")
         self.white_Score.setStyleSheet(self.label_style)
 
         self.black_Score = QtWidgets.QLabel(widget)
-        self.black_Score.setGeometry(QtCore.QRect(450, 90, 181, 29))
+        self.black_Score.setGeometry(QtCore.QRect(560, 90, 181, 29))
         self.black_Score.setText("Black's Score: ")
         self.black_Score.setObjectName("black_Score")
         self.black_Score.setStyleSheet(self.label_style)
 
         self.turn_label = QtWidgets.QLabel(widget)
-        self.turn_label.setGeometry(QtCore.QRect(450, 130, 181, 29))
+        self.turn_label.setGeometry(QtCore.QRect(560, 130, 181, 29))
         self.turn_label.setText("Black's turn ")
         self.turn_label.setObjectName("turn_label")
         self.turn_label.setStyleSheet(self.label_style)
 
         self.int_to_str = {0: 'zero', 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven'}
         self.str_to_int = {'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5, 'six': 6, 'seven': 7}
+        self.rect_length = self.board_length / board_size[0]
+        self.init = self.board_x + 1
         for i in range(board_size[0]):
             for j in range(board_size[1]):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
                 exec('self.' + name + '= QLabel_new(widget)')
-                exec('self.' + name + '.setGeometry(QtCore.QRect(23+45.5*j, 31+45.5*i, 41, 41))')
+                exec('self.' + name + '.setGeometry(QtCore.QRect(self.init + self.rect_length * j, '
+                                      'self.init + self.rect_length * i, self.rect_length - 1, self.rect_length - 1))')
                 exec('self.' + name + ".clicked.connect(lambda self=self: self.player_clicked('" + name + "'))")
 
         self.reset_button = QtWidgets.QPushButton('Reset Game', widget)
-        self.reset_button.setGeometry(450, 200, 170, 50)
+        self.reset_button.setGeometry(560, 200, 170, 50)
         self.reset_button.clicked.connect(self.on_reset_click)
         self.reset_button.setStyleSheet(self.button_style)
 
@@ -94,10 +100,21 @@ class SecondPage():
         self.show_valid_moves()
 
     def on_reset_click(self):
-        buttonReply = QtWidgets.QMessageBox.question(self.widget, "Warning",
-                                                     "Are you sure you want to clear the board?",
-                                                     QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
-        if buttonReply == QtWidgets.QMessageBox.Yes:
+        button_reply = QtWidgets.QMessageBox()
+        button_reply.setIcon(QtWidgets.QMessageBox.Warning)
+        button_reply.setText("Are you sure you want to clear the board?")
+        button_reply.setWindowTitle("Warning")
+        button_reply.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+        # button_reply.setStyleSheet("QMessageBox {"
+        #                            "background-color: rgba(190, 220, 190, 0.5);}"
+        #                            "QMessageBox QPushButton { "
+        #                            "background-color: rgb(250, 250, 250);"
+        #                            "width: 100px;"
+        #                            "height: 40px;"
+        #                            "border: 1px solid black;}")
+        button_reply.exec()
+
+        if button_reply == QtWidgets.QMessageBox.Yes:
             print('Game is reset')
             self.clear_board()
             self.init_board()

@@ -2,6 +2,7 @@ import sys
 
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QDesktopWidget
+from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
 
 import first_page
@@ -15,6 +16,7 @@ class App(QtWidgets.QWidget):
         self.title = 'Othello'
         self.setWindowTitle(self.title)
         self.setFixedSize(800, 600)
+        self.setWindowIcon(QtGui.QIcon("res/icon.png"))
         self.center()
         self.setup_page = first_page.FirstPage(self)
         self.game_page = second_page.SecondPage(self)
@@ -41,5 +43,4 @@ class App(QtWidgets.QWidget):
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     ex = App()
-    # ex.show()
     sys.exit(app.exec_())
