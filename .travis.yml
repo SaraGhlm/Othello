@@ -1,0 +1,13 @@
+language: python
+python: 
+  - "3.6"
+ 
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
+
+before_install:
+  - "export PYTHONPATH=$PYTHONPATH:$(pwd)"
+  
+script:
+  - python ./GUI/test/test1.py
