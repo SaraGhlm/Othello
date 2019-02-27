@@ -2,6 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QWidget
 from GUI.newQLabel import QLabel_new
+from Logic.game import *
 import numpy as np
 import re
 
@@ -83,6 +84,7 @@ class SecondPage():
 
     def init_board(self):
         center = (int(self.board_size[0] / 2), int(self.board_size[1] / 2))
+        # current_board is a matrix of zeros. 1 is for black and 2 is for white stones
         self.current_board = np.zeros((self.board_size[0], self.board_size[1]), dtype=int)
         self.current_player = 'b'
         self.turn_label.setText("Black's turn ")
@@ -121,12 +123,14 @@ class SecondPage():
         """
         if color == 'b':
             self.current_board[loc[0]][loc[1]] = 1
-            self.flip_opponent_stones(loc, player_num=1, opponent=2)
+            # self.flip_opponent_stones(loc, player_num=1, opponent=2)
+            self.current_board = flip_opponent_stones(loc, self.current_board, self.board_size[0], player_num=1, opponent=2)
             self.current_player = 'w'
             self.turn_label.setText("White's turn ")
         elif color == 'w':
             self.current_board[loc[0]][loc[1]] = 2
-            self.flip_opponent_stones(loc, player_num=2, opponent=1)
+            # self.flip_opponent_stones(loc, player_num=2, opponent=1)
+            self.current_board = flip_opponent_stones(loc, self.current_board, self.board_size[0], player_num=2, opponent=1)
             self.current_player = 'b'
             self.turn_label.setText("Black's turn ")
         else:
@@ -185,203 +189,111 @@ class SecondPage():
         white_score = sum(sum(self.current_board == 2))
         self.white_Score.setText("White's Score: " + str(white_score))
 
-    def flip_opponent_stones(self, loc, player_num, opponent):
-        # flip stones above current stone
-        opponent_stones = 0
-        for i in range(loc[0] - 1, -1, -1):
-            if self.current_board[i][loc[1]] == 0:
-                break
-            elif self.current_board[i][loc[1]] == opponent:
-                opponent_stones += 1
-            elif self.current_board[i][loc[1]] == player_num and opponent_stones != 0:
-                for j in range(i, loc[0] + 1):
-                    self.current_board[j][loc[1]] = player_num
-                break
-        # flip stones bellow current stone
-        opponent_stones = 0
-        for i in range(loc[0] + 1, self.board_size[0]):
-            if self.current_board[i][loc[1]] == 0:
-                break
-            elif self.current_board[i][loc[1]] == opponent:
-                opponent_stones += 1
-            elif self.current_board[i][loc[1]] == player_num and opponent_stones != 0:
-                for j in range(loc[0], i + 1):
-                    self.current_board[j][loc[1]] = player_num
-                break
-
-        # flip stones at the right of current stone
-        opponent_stones = 0
-        for i in range(loc[1] + 1, self.board_size[1]):
-            if self.current_board[loc[0]][i] == 0:
-                break
-            elif self.current_board[loc[0]][i] == opponent:
-                opponent_stones += 1
-            elif self.current_board[loc[0]][i] == player_num and opponent_stones != 0:
-                for j in range(loc[1], i + 1):
-                    self.current_board[loc[0]][j] = player_num
-                break
-        # flip stones at the left of current stone
-        opponent_stones = 0
-        for i in range(loc[1] - 1, -1, -1):
-            if self.current_board[loc[0]][i] == 0:
-                break
-            elif self.current_board[loc[0]][i] == opponent:
-                opponent_stones += 1
-            elif self.current_board[loc[0]][i] == player_num and opponent_stones != 0:
-                for j in range(i, loc[1] + 1):
-                    self.current_board[loc[0]][j] = player_num
-                break
-        # flip stones at the top right of current stone
-        opponent_stones = 0
-        try:
-            for i in range(1, min(loc[0], self.board_size[1] - loc[1]) + 1):
-                if self.current_board[loc[0] - i][loc[1] + i] == 0:
-                    break
-                elif self.current_board[loc[0] - i][loc[1] + i] == opponent:
-                    opponent_stones += 1
-                elif self.current_board[loc[0] - i][loc[1] + i] == player_num and opponent_stones != 0:
-                    for j in range(0, i):
-                        self.current_board[loc[0] - j][loc[1] + j] = player_num
-                    break
-        except:
-            pass
-        # flip stones at the top left of current stone
-        opponent_stones = 0
-        try:
-            for i in range(1, min(loc[0], loc[1]) + 1):
-                if self.current_board[loc[0] - i][loc[1] - i] == 0:
-                    break
-                elif self.current_board[loc[0] - i][loc[1] - i] == opponent:
-                    opponent_stones += 1
-                elif self.current_board[loc[0] - i][loc[1] - i] == player_num and opponent_stones != 0:
-                    for j in range(0, i):
-                        self.current_board[loc[0] - j][loc[1] - j] = player_num
-                    break
-        except:
-            pass
-        # flip stones at the bottom left of current stone
-        opponent_stones = 0
-        try:
-            for i in range(1, min(self.board_size[0] - loc[0], loc[1]) + 1):
-                if self.current_board[loc[0] + i][loc[1] - i] == 0:
-                    break
-                elif self.current_board[loc[0] + i][loc[1] - i] == opponent:
-                    opponent_stones += 1
-                elif self.current_board[loc[0] + i][loc[1] - i] == player_num and opponent_stones != 0:
-                    for j in range(0, i):
-                        self.current_board[loc[0] + j][loc[1] - j] = player_num
-                    break
-        except:
-            pass
-        # flip stones at the bottom right of current stone
-        opponent_stones = 0
-        try:
-            for i in range(1, min(self.board_size[0] - loc[0], self.board_size[0] - loc[1]) + 1):
-                if self.current_board[loc[0] + i][loc[1] + i] == 0:
-                    break
-                elif self.current_board[loc[0] + i][loc[1] + i] == opponent:
-                    opponent_stones += 1
-                elif self.current_board[loc[0] + i][loc[1] + i] == player_num and opponent_stones != 0:
-                    for j in range(0, i):
-                        self.current_board[loc[0] + j][loc[1] + j] = player_num
-                    break
-        except:
-            pass
+    # def flip_opponent_stones(self, loc, player_num, opponent):
+    #     # flip stones above current stone
+    #     opponent_stones = 0
+    #     for i in range(loc[0] - 1, -1, -1):
+    #         if self.current_board[i][loc[1]] == 0:
+    #             break
+    #         elif self.current_board[i][loc[1]] == opponent:
+    #             opponent_stones += 1
+    #         elif self.current_board[i][loc[1]] == player_num and opponent_stones != 0:
+    #             for j in range(i, loc[0] + 1):
+    #                 self.current_board[j][loc[1]] = player_num
+    #             break
+    #     # flip stones bellow current stone
+    #     opponent_stones = 0
+    #     for i in range(loc[0] + 1, self.board_size[0]):
+    #         if self.current_board[i][loc[1]] == 0:
+    #             break
+    #         elif self.current_board[i][loc[1]] == opponent:
+    #             opponent_stones += 1
+    #         elif self.current_board[i][loc[1]] == player_num and opponent_stones != 0:
+    #             for j in range(loc[0], i + 1):
+    #                 self.current_board[j][loc[1]] = player_num
+    #             break
+    #
+    #     # flip stones at the right of current stone
+    #     opponent_stones = 0
+    #     for i in range(loc[1] + 1, self.board_size[1]):
+    #         if self.current_board[loc[0]][i] == 0:
+    #             break
+    #         elif self.current_board[loc[0]][i] == opponent:
+    #             opponent_stones += 1
+    #         elif self.current_board[loc[0]][i] == player_num and opponent_stones != 0:
+    #             for j in range(loc[1], i + 1):
+    #                 self.current_board[loc[0]][j] = player_num
+    #             break
+    #     # flip stones at the left of current stone
+    #     opponent_stones = 0
+    #     for i in range(loc[1] - 1, -1, -1):
+    #         if self.current_board[loc[0]][i] == 0:
+    #             break
+    #         elif self.current_board[loc[0]][i] == opponent:
+    #             opponent_stones += 1
+    #         elif self.current_board[loc[0]][i] == player_num and opponent_stones != 0:
+    #             for j in range(i, loc[1] + 1):
+    #                 self.current_board[loc[0]][j] = player_num
+    #             break
+    #     # flip stones at the top right of current stone
+    #     opponent_stones = 0
+    #     try:
+    #         for i in range(1, min(loc[0], self.board_size[1] - loc[1]) + 1):
+    #             if self.current_board[loc[0] - i][loc[1] + i] == 0:
+    #                 break
+    #             elif self.current_board[loc[0] - i][loc[1] + i] == opponent:
+    #                 opponent_stones += 1
+    #             elif self.current_board[loc[0] - i][loc[1] + i] == player_num and opponent_stones != 0:
+    #                 for j in range(0, i):
+    #                     self.current_board[loc[0] - j][loc[1] + j] = player_num
+    #                 break
+    #     except:
+    #         pass
+    #     # flip stones at the top left of current stone
+    #     opponent_stones = 0
+    #     try:
+    #         for i in range(1, min(loc[0], loc[1]) + 1):
+    #             if self.current_board[loc[0] - i][loc[1] - i] == 0:
+    #                 break
+    #             elif self.current_board[loc[0] - i][loc[1] - i] == opponent:
+    #                 opponent_stones += 1
+    #             elif self.current_board[loc[0] - i][loc[1] - i] == player_num and opponent_stones != 0:
+    #                 for j in range(0, i):
+    #                     self.current_board[loc[0] - j][loc[1] - j] = player_num
+    #                 break
+    #     except:
+    #         pass
+    #     # flip stones at the bottom left of current stone
+    #     opponent_stones = 0
+    #     try:
+    #         for i in range(1, min(self.board_size[0] - loc[0], loc[1]) + 1):
+    #             if self.current_board[loc[0] + i][loc[1] - i] == 0:
+    #                 break
+    #             elif self.current_board[loc[0] + i][loc[1] - i] == opponent:
+    #                 opponent_stones += 1
+    #             elif self.current_board[loc[0] + i][loc[1] - i] == player_num and opponent_stones != 0:
+    #                 for j in range(0, i):
+    #                     self.current_board[loc[0] + j][loc[1] - j] = player_num
+    #                 break
+    #     except:
+    #         pass
+    #     # flip stones at the bottom right of current stone
+    #     opponent_stones = 0
+    #     try:
+    #         for i in range(1, min(self.board_size[0] - loc[0], self.board_size[0] - loc[1]) + 1):
+    #             if self.current_board[loc[0] + i][loc[1] + i] == 0:
+    #                 break
+    #             elif self.current_board[loc[0] + i][loc[1] + i] == opponent:
+    #                 opponent_stones += 1
+    #             elif self.current_board[loc[0] + i][loc[1] + i] == player_num and opponent_stones != 0:
+    #                 for j in range(0, i):
+    #                     self.current_board[loc[0] + j][loc[1] + j] = player_num
+    #                 break
+    #     except:
+    #         pass
 
     def show_valid_moves(self):
-        if self.current_player == 'b':
-            rows, columns = np.where(self.current_board == 1)
-            opponent = 2
-        elif self.current_player == 'w':
-            rows, columns = np.where(self.current_board == 2)
-            opponent = 1
-        else:
-            raise ValueError('invalid location')
-        for i in range(len(rows)):
-            # check for valid moves above current stone
-            opponent_stones = 0
-            for j in range(rows[i] - 1, -1, -1):
-                if self.current_board[j][columns[i]] != opponent:
-                    if opponent_stones != 0 and self.current_board[j][columns[i]] == 0:
-                        self.move_validity_check[j][columns[i]] = 1
-                    break
-                else:
-                    opponent_stones += 1
-            # check for valid moves bellow current stone
-            opponent_stones = 0
-            for j in range(rows[i] + 1, self.board_size[0]):
-                if self.current_board[j][columns[i]] != opponent:
-                    if opponent_stones != 0 and self.current_board[j][columns[i]] == 0:
-                        self.move_validity_check[j][columns[i]] = 1
-                    break
-                else:
-                    opponent_stones += 1
-            # check for valid moves at the right of current stone
-            opponent_stones = 0
-            for j in range(columns[i] + 1, self.board_size[1]):
-                if self.current_board[rows[i]][j] != opponent:
-                    if opponent_stones != 0 and self.current_board[rows[i]][j] == 0:
-                        self.move_validity_check[rows[i]][j] = 1
-                    break
-                else:
-                    opponent_stones += 1
-            # check for valid moves at the left of current stone
-            opponent_stones = 0
-            for j in range(columns[i] - 1, -1, -1):
-                if self.current_board[rows[i]][j] != opponent:
-                    if opponent_stones != 0 and self.current_board[rows[i]][j] == 0:
-                        self.move_validity_check[rows[i]][j] = 1
-                    break
-                else:
-                    opponent_stones += 1
-            # check for valid moves at the right and above the current stone
-            opponent_stones = 0
-            try:
-                for j in range(1, min(rows[i], self.board_size[1] - columns[i]) + 1):
-                    if self.current_board[rows[i] - j][columns[i] + j] != opponent:
-                        if opponent_stones != 0 and self.current_board[rows[i] - j][columns[i] + j] == 0:
-                            self.move_validity_check[rows[i] - j][columns[i] + j] = 1
-                        break
-                    else:
-                        opponent_stones += 1
-            except:
-                pass
-            # check for valid moves at the right and below the current stone
-            opponent_stones = 0
-            try:
-                for j in range(1, min(self.board_size[0] - rows[i], self.board_size[1] - columns[i]) + 1):
-                    if self.current_board[rows[i] + j][columns[i] + j] != opponent:
-                        if opponent_stones != 0 and self.current_board[rows[i] + j][columns[i] + j] == 0:
-                            self.move_validity_check[rows[i] + j][columns[i] + j] = 1
-                        break
-                    else:
-                        opponent_stones += 1
-            except:
-                pass
-            # check for valid moves at the left and above the current stone
-            opponent_stones = 0
-            try:
-                for j in range(1, min(rows[i], columns[i]) + 1):
-                    if self.current_board[rows[i] - j][columns[i] - j] != opponent:
-                        if opponent_stones != 0 and self.current_board[rows[i] - j][columns[i] - j] == 0:
-                            self.move_validity_check[rows[i] - j][columns[i] - j] = 1
-                        break
-                    else:
-                        opponent_stones += 1
-            except:
-                pass
-            # check for valid moves at the left and below the current stone
-            opponent_stones = 0
-            try:
-                for j in range(1, min(self.board_size[0] - rows[i], columns[i]) + 1):
-                    if self.current_board[rows[i] + j][columns[i] - j] != opponent:
-                        if opponent_stones != 0 and self.current_board[rows[i] + j][columns[i] - j] == 0:
-                            self.move_validity_check[rows[i] + j][columns[i] - j] = 1
-                        break
-                    else:
-                        opponent_stones += 1
-            except:
-                pass
+        self.move_validity_check = find_valid_moves(self.current_player, self.current_board, self.board_size[0])
         rows, columns = np.where(self.move_validity_check == 1)
         pixmap = QPixmap('res/red.png')
         for i in range(len(rows)):
@@ -390,6 +302,99 @@ class SecondPage():
             exec('self.' + name + '.clear()')
             exec('self.' + name + '.setAlignment(QtCore.Qt.AlignCenter)')
             exec('self.' + name + '.setPixmap(pixmap_smaller)')
+    #     if self.current_player == 'b':
+    #         rows, columns = np.where(self.current_board == 1)
+    #         opponent = 2
+    #     elif self.current_player == 'w':
+    #         rows, columns = np.where(self.current_board == 2)
+    #         opponent = 1
+    #     else:
+    #         raise ValueError('invalid location')
+    #     for i in range(len(rows)):
+    #         # check for valid moves above current stone
+    #         opponent_stones = 0
+    #         for j in range(rows[i] - 1, -1, -1):
+    #             if self.current_board[j][columns[i]] != opponent:
+    #                 if opponent_stones != 0 and self.current_board[j][columns[i]] == 0:
+    #                     self.move_validity_check[j][columns[i]] = 1
+    #                 break
+    #             else:
+    #                 opponent_stones += 1
+    #         # check for valid moves bellow current stone
+    #         opponent_stones = 0
+    #         for j in range(rows[i] + 1, self.board_size[0]):
+    #             if self.current_board[j][columns[i]] != opponent:
+    #                 if opponent_stones != 0 and self.current_board[j][columns[i]] == 0:
+    #                     self.move_validity_check[j][columns[i]] = 1
+    #                 break
+    #             else:
+    #                 opponent_stones += 1
+    #         # check for valid moves at the right of current stone
+    #         opponent_stones = 0
+    #         for j in range(columns[i] + 1, self.board_size[1]):
+    #             if self.current_board[rows[i]][j] != opponent:
+    #                 if opponent_stones != 0 and self.current_board[rows[i]][j] == 0:
+    #                     self.move_validity_check[rows[i]][j] = 1
+    #                 break
+    #             else:
+    #                 opponent_stones += 1
+    #         # check for valid moves at the left of current stone
+    #         opponent_stones = 0
+    #         for j in range(columns[i] - 1, -1, -1):
+    #             if self.current_board[rows[i]][j] != opponent:
+    #                 if opponent_stones != 0 and self.current_board[rows[i]][j] == 0:
+    #                     self.move_validity_check[rows[i]][j] = 1
+    #                 break
+    #             else:
+    #                 opponent_stones += 1
+    #         # check for valid moves at the right and above the current stone
+    #         opponent_stones = 0
+    #         try:
+    #             for j in range(1, min(rows[i], self.board_size[1] - columns[i]) + 1):
+    #                 if self.current_board[rows[i] - j][columns[i] + j] != opponent:
+    #                     if opponent_stones != 0 and self.current_board[rows[i] - j][columns[i] + j] == 0:
+    #                         self.move_validity_check[rows[i] - j][columns[i] + j] = 1
+    #                     break
+    #                 else:
+    #                     opponent_stones += 1
+    #         except:
+    #             pass
+    #         # check for valid moves at the right and below the current stone
+    #         opponent_stones = 0
+    #         try:
+    #             for j in range(1, min(self.board_size[0] - rows[i], self.board_size[1] - columns[i]) + 1):
+    #                 if self.current_board[rows[i] + j][columns[i] + j] != opponent:
+    #                     if opponent_stones != 0 and self.current_board[rows[i] + j][columns[i] + j] == 0:
+    #                         self.move_validity_check[rows[i] + j][columns[i] + j] = 1
+    #                     break
+    #                 else:
+    #                     opponent_stones += 1
+    #         except:
+    #             pass
+    #         # check for valid moves at the left and above the current stone
+    #         opponent_stones = 0
+    #         try:
+    #             for j in range(1, min(rows[i], columns[i]) + 1):
+    #                 if self.current_board[rows[i] - j][columns[i] - j] != opponent:
+    #                     if opponent_stones != 0 and self.current_board[rows[i] - j][columns[i] - j] == 0:
+    #                         self.move_validity_check[rows[i] - j][columns[i] - j] = 1
+    #                     break
+    #                 else:
+    #                     opponent_stones += 1
+    #         except:
+    #             pass
+    #         # check for valid moves at the left and below the current stone
+    #         opponent_stones = 0
+    #         try:
+    #             for j in range(1, min(self.board_size[0] - rows[i], columns[i]) + 1):
+    #                 if self.current_board[rows[i] + j][columns[i] - j] != opponent:
+    #                     if opponent_stones != 0 and self.current_board[rows[i] + j][columns[i] - j] == 0:
+    #                         self.move_validity_check[rows[i] + j][columns[i] - j] = 1
+    #                     break
+    #                 else:
+    #                     opponent_stones += 1
+    #         except:
+    #             pass
 
     def hide(self):
         self.bg.hide()
