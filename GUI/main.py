@@ -23,9 +23,10 @@ class App(QtWidgets.QWidget):
         """
             Start the game with the specified settings. Move to the second page of the game
         """
+        self.board_size = int(self.setup_page.size.currentText())
         self.setup_page.clear()
+        self.game_page.__init__(self, board_size=(self.board_size, self.board_size))
         self.game_page.show()
-        print("after 2nd")
 
     def center(self):
         """
