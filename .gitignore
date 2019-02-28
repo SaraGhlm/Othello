@@ -1,4 +1,4 @@
 
 *.xml
-.idea/Othello.iml
 *.pyc
+.idea
