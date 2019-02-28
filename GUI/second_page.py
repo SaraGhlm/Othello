@@ -12,7 +12,7 @@ import time
 
 class SecondPage:
 
-    def __init__(self, widget, board_size=(8, 8)):
+    def __init__(self, widget, board_size=8):
         self.user_color = 'b'
         self.computer_color = 'w'
         self.label_style = """QLabel {
@@ -37,7 +37,7 @@ class SecondPage:
         self.board_pixel_size = 500
         self.widget = widget
 
-        self.computer_player = HeuristicPlayer('Beginner', self.board_size[0], self.computer_color)
+        self.computer_player = HeuristicPlayer('Beginner', self.board_size, self.computer_color)
 
         self.black_pixmap = QPixmap('res/black.png')
         self.white_pixmap = QPixmap('res/white.png')
@@ -51,7 +51,7 @@ class SecondPage:
         self.board = QtWidgets.QLabel(widget)
         self.board.setGeometry(QtCore.QRect(20, 20, self.board_pixel_size, self.board_pixel_size))
         self.board.setText("")
-        board_pic = 'res/Board' + str(self.board_size[0]) + '.jpg'
+        board_pic = 'res/Board' + str(self.board_size) + '.jpg'
         self.board.setPixmap(QtGui.QPixmap(board_pic))
         self.board.setScaledContents(True)
         self.board.setObjectName("label")
@@ -84,12 +84,12 @@ class SecondPage:
         self.str_to_int = {'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5, 'six': 6, 'seven': 7,
                            'eight': 8, 'nine': 9, 'ten': 10, 'eleven': 11, 'twelve': 12, 'thirteen': 13}
 
-        width = (self.board_pixel_size / self.board_size[0]) - 0.15
-        width2 = (self.board_pixel_size / self.board_size[0]) - 4
+        width = (self.board_pixel_size / self.board_size) - 0.15
+        width2 = (self.board_pixel_size / self.board_size) - 4
         starting_point = (23, 23)
 
-        for i in range(board_size[0]):
-            for j in range(board_size[1]):
+        for i in range(board_size):
+            for j in range(board_size):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
                 exec('self.' + name + '= QLabel_new(widget)')
                 exec('self.' + name + '.setGeometry(QtCore.QRect(starting_point[0]+width*j, '
@@ -102,12 +102,12 @@ class SecondPage:
         widget.show()
 
     def init_board(self):
-        center = (int(self.board_size[0] / 2), int(self.board_size[1] / 2))
+        center = (int(self.board_size / 2), int(self.board_size / 2))
         # current_board is a matrix of zeros. 1 is for black and 2 is for white stones
-        self.current_board = np.zeros((self.board_size[0], self.board_size[1]), dtype=int)
+        self.current_board = np.zeros((self.board_size, self.board_size), dtype=int)
         self.current_player = 'b'
         self.turn_label.setText("Black's turn ")
-        self.move_validity_check = np.zeros((self.board_size[0], self.board_size[1]), dtype=int)
+        self.move_validity_check = np.zeros((self.board_size, self.board_size), dtype=int)
         self.place_stone('b', (center[0] - 1, center[1]))
         self.place_stone('w', (center[0], center[1]))
         self.place_stone('b', (center[0], center[1] - 1))
@@ -136,8 +136,8 @@ class SecondPage:
             self.place_stone(self.computer_color, loc)
 
     def clear_board(self):
-        for i in range(self.board_size[0]):
-            for j in range(self.board_size[1]):
+        for i in range(self.board_size):
+            for j in range(self.board_size):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
                 exec('self.' + name + '.clear()')
 
@@ -148,20 +148,20 @@ class SecondPage:
         """
         if color == 'b':
             self.current_board[loc[0]][loc[1]] = 1
-            self.current_board = flip_opponent_stones(loc, self.current_board, self.board_size[0], player_num=1, opponent=2)
+            self.current_board = flip_opponent_stones(loc, self.current_board, self.board_size, player_num=1, opponent=2)
             self.current_player = 'w'
             self.turn_label.setText("White's turn ")
         elif color == 'w':
             self.current_board[loc[0]][loc[1]] = 2
-            self.current_board = flip_opponent_stones(loc, self.current_board, self.board_size[0], player_num=2, opponent=1)
+            self.current_board = flip_opponent_stones(loc, self.current_board, self.board_size, player_num=2, opponent=1)
             self.current_player = 'b'
             self.turn_label.setText("Black's turn ")
         else:
             raise ValueError('invalid color')
 
         self.clear_board()
-        for i in range(self.board_size[0]):
-            for j in range(self.board_size[1]):
+        for i in range(self.board_size):
+            for j in range(self.board_size):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
                 if self.current_board[i][j] == 1:
                     exec('pixmap_smaller = QPixmap.scaled(self.black_pixmap, self.' + name +
@@ -189,7 +189,7 @@ class SecondPage:
                 print('Game is reset')
                 self.clear_board()
                 self.init_board()
-        self.move_validity_check = np.zeros((self.board_size[0], self.board_size[1]), dtype=int)
+        self.move_validity_check = np.zeros((self.board_size, self.board_size), dtype=int)
         self.show_valid_moves()
         if sum(sum(self.move_validity_check)) == 0 and sum(sum(self.current_board)) > 1:
             buttonReply = QtWidgets.QMessageBox.information(self.widget, "Warning", "No possible move, changing player",
@@ -211,7 +211,7 @@ class SecondPage:
         self.white_Score.setText("White's Score: " + str(white_score))
 
     def show_valid_moves(self):
-        self.move_validity_check = find_valid_moves(self.current_player, self.current_board, self.board_size[0])
+        self.move_validity_check = find_valid_moves(self.current_player, self.current_board, self.board_size)
         rows, columns = np.where(self.move_validity_check == 1)
         pixmap = QPixmap('res/red.png')
         for i in range(len(rows)):
@@ -228,8 +228,8 @@ class SecondPage:
         self.black_Score.hide()
         self.turn_label.hide()
         self.reset_button.hide()
-        for i in range(self.board_size[0]):
-            for j in range(self.board_size[1]):
+        for i in range(self.board_size):
+            for j in range(self.board_size):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
                 exec('self.' + name + '.hide()')
 
@@ -240,8 +240,8 @@ class SecondPage:
         self.black_Score.show()
         self.turn_label.show()
         self.reset_button.show()
-        for i in range(self.board_size[0]):
-            for j in range(self.board_size[1]):
+        for i in range(self.board_size):
+            for j in range(self.board_size):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
                 exec('self.' + name + '.show()')
 
