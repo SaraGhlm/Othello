@@ -5,6 +5,7 @@ from GUI.newQLabel import QLabel_new
 from Logic.game import *
 import numpy as np
 import re
+import sys
 
 
 class SecondPage():
@@ -30,10 +31,11 @@ class SecondPage():
                             QPushButton:default { 
                             border-color: navy; /* make the default button prominent */}"""
         self.board_size = board_size
+        self.board_pixel_size = 500
         self.widget = widget
 
-        self.pixmap_black = QPixmap('res/black.png')
-        self.pixmap_white = QPixmap('res/white.png')
+        self.black_pixmap = QPixmap('res/black.png')
+        self.white_pixmap = QPixmap('res/white.png')
 
         self.bg = QtWidgets.QLabel(widget)
         self.bg.setGeometry(0, 0, 800, 600)
@@ -42,43 +44,54 @@ class SecondPage():
         self.bg.setObjectName("background")
 
         self.board = QtWidgets.QLabel(widget)
-        self.board.setGeometry(QtCore.QRect(20, 20, 371, 381))
+        self.board.setGeometry(QtCore.QRect(20, 20, self.board_pixel_size, self.board_pixel_size))
         self.board.setText("")
-        self.board.setPixmap(QtGui.QPixmap("res/green_grid.jpg"))
-        self.board.setScaledContents(False)
+        board_pic = 'res/Board' + str(self.board_size[0]) + '.jpg'
+        self.board.setPixmap(QtGui.QPixmap(board_pic))
+        self.board.setScaledContents(True)
         self.board.setObjectName("label")
 
         self.white_Score = QtWidgets.QLabel(widget)
-        self.white_Score.setGeometry(QtCore.QRect(450, 50, 181, 21))
+        self.white_Score.setGeometry(QtCore.QRect(570, 50, 181, 21))
         self.white_Score.setText("White's Score: ")
         self.white_Score.setObjectName("white_Score")
         self.white_Score.setStyleSheet(self.label_style)
 
         self.black_Score = QtWidgets.QLabel(widget)
-        self.black_Score.setGeometry(QtCore.QRect(450, 90, 181, 29))
+        self.black_Score.setGeometry(QtCore.QRect(570, 90, 181, 29))
         self.black_Score.setText("Black's Score: ")
         self.black_Score.setObjectName("black_Score")
         self.black_Score.setStyleSheet(self.label_style)
 
         self.turn_label = QtWidgets.QLabel(widget)
-        self.turn_label.setGeometry(QtCore.QRect(450, 130, 181, 29))
+        self.turn_label.setGeometry(QtCore.QRect(570, 130, 181, 29))
         self.turn_label.setText("Black's turn ")
         self.turn_label.setObjectName("turn_label")
         self.turn_label.setStyleSheet(self.label_style)
 
-        self.int_to_str = {0: 'zero', 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven'}
-        self.str_to_int = {'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5, 'six': 6, 'seven': 7}
+        self.reset_button = QtWidgets.QPushButton('Reset Game', widget)
+        self.reset_button.setGeometry(570, 200, 170, 50)
+        self.reset_button.clicked.connect(self.on_reset_click)
+        self.reset_button.setStyleSheet(self.button_style)
+
+        self.int_to_str = {0: 'zero', 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven',
+                           8: 'eight', 9: 'nine', 10: 'ten', 11: 'eleven', 12: 'twelve', 13: 'thirteen'}
+        self.str_to_int = {'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5, 'six': 6, 'seven': 7,
+                           'eight': 8, 'nine': 9, 'ten': 10, 'eleven': 11, 'twelve': 12, 'thirteen': 13}
+
+        width = (self.board_pixel_size / self.board_size[0]) - 0.15
+        width2 = (self.board_pixel_size / self.board_size[0]) - 4
+        starting_point = (23, 23)
+
         for i in range(board_size[0]):
             for j in range(board_size[1]):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
                 exec('self.' + name + '= QLabel_new(widget)')
-                exec('self.' + name + '.setGeometry(QtCore.QRect(23+45.5*j, 31+45.5*i, 41, 41))')
+                exec('self.' + name + '.setGeometry(QtCore.QRect(starting_point[0]+width*j, '
+                                      'starting_point[1]+width*i, width2, width2))')
                 exec('self.' + name + ".clicked.connect(lambda self=self: self.player_clicked('" + name + "'))")
 
-        self.reset_button = QtWidgets.QPushButton('Reset Game', widget)
-        self.reset_button.setGeometry(450, 200, 170, 50)
-        self.reset_button.clicked.connect(self.on_reset_click)
-        self.reset_button.setStyleSheet(self.button_style)
+
 
         self.init_board()
 
@@ -142,14 +155,13 @@ class SecondPage():
             for j in range(self.board_size[1]):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
                 if self.current_board[i][j] == 1:
-                    exec('pixmap_smaller = QPixmap.scaled(self.pixmap_black, self.' + name +
+                    exec('pixmap_smaller = QPixmap.scaled(self.black_pixmap, self.' + name +
                          '.width(), self.' + name + '.height())')
                     exec('self.' + name + '.setAlignment(QtCore.Qt.AlignCenter)')
                     exec('self.' + name + '.setPixmap(pixmap_smaller)')
                     # exec()
                 elif self.current_board[i][j] == 2:
-
-                    exec('pixmap_smaller = QPixmap.scaled(self.pixmap_white, self.' + name +
+                    exec('pixmap_smaller = QPixmap.scaled(self.white_pixmap, self.' + name +
                          '.width()-4, self.' + name + '.height()-4)')
                     exec('self.' + name + '.setAlignment(QtCore.Qt.AlignCenter)')
                     exec('self.' + name + '.setPixmap(pixmap_smaller)')
@@ -223,3 +235,11 @@ class SecondPage():
             for j in range(self.board_size[1]):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
                 exec('self.' + name + '.show()')
+
+
+if __name__ == '__main__':
+    app = QtWidgets.QApplication(sys.argv)
+    dialog = QtWidgets.QDialog()
+    prog = SecondPage(dialog)
+    dialog.show()
+    sys.exit(app.exec_())

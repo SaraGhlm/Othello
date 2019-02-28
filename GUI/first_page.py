@@ -69,6 +69,7 @@ class FirstPage():
         self.size.setGeometry(290, 180, 150, 30)
         self.size.setAttribute(Qt.WA_MacShowFocusRect, 0)
         self.size.setStyleSheet(self.combo_box_style)
+        self.size.setCurrentIndex(0)
         self.size.addItem("8")
         self.size.addItem("10")
         self.size.addItem("12")
