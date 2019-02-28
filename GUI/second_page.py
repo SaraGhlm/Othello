@@ -75,9 +75,14 @@ class SecondPage:
         self.turn_label.setStyleSheet(self.label_style)
 
         self.reset_button = QtWidgets.QPushButton('Reset Game', widget)
-        self.reset_button.setGeometry(570, 200, 170, 50)
+        self.reset_button.setGeometry(570, 200, 210, 50)
         self.reset_button.clicked.connect(self.on_reset_click)
         self.reset_button.setStyleSheet(self.button_style)
+
+        self.go_to_setup_page = QtWidgets.QPushButton('Back to Setup Page', widget)
+        self.go_to_setup_page.setGeometry(570, 270, 210, 50)
+        self.go_to_setup_page.clicked.connect(self.on_go_to_setup_page_button_click)
+        self.go_to_setup_page.setStyleSheet(self.button_style)
 
         self.int_to_str = {0: 'zero', 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven',
                            8: 'eight', 9: 'nine', 10: 'ten', 11: 'eleven', 12: 'twelve', 13: 'thirteen'}
@@ -125,6 +130,14 @@ class SecondPage:
             print('Game is reset')
             self.clear_board()
             self.init_board()
+
+    def on_go_to_setup_page_button_click(self):
+        buttonReply = QtWidgets.QMessageBox.question(self.widget, "Warning",
+                                                     "The game will end. Are you sure?",
+                                                     QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
+        if buttonReply == QtWidgets.QMessageBox.Yes:
+            self.widget.back_to_setup_page()
+        pass
 
     def player_clicked(self, label_name):
         pattern = re.compile(r'(.*)_(.*)')
@@ -228,6 +241,7 @@ class SecondPage:
         self.black_Score.hide()
         self.turn_label.hide()
         self.reset_button.hide()
+        self.go_to_setup_page.hide()
         for i in range(self.board_size[0]):
             for j in range(self.board_size[1]):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
@@ -240,6 +254,7 @@ class SecondPage:
         self.black_Score.show()
         self.turn_label.show()
         self.reset_button.show()
+        self.go_to_setup_page.show()
         for i in range(self.board_size[0]):
             for j in range(self.board_size[1]):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
