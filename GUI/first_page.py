@@ -77,7 +77,7 @@ class FirstPage():
 
         self.color_label = QtWidgets.QLabel(widget)
         self.color_label.setText("Choose your color")
-        self.color_label.setGeometry(100, 260, 200, 30)
+        self.color_label.setGeometry(100, 260, 200, 50)
         self.color_label.setStyleSheet(self.label_style)
 
         self.colors = QtWidgets.QComboBox(widget)

@@ -12,9 +12,9 @@ import time
 
 class SecondPage:
 
-    def __init__(self, widget, board_size=(8, 8)):
-        self.user_color = 'b'
-        self.computer_color = 'w'
+    def __init__(self, widget, board_size=(8, 8), user_color='b'):
+        self.user_color = user_color
+        self.computer_color = 'w' if user_color == 'b' else 'b'
         self.label_style = """QLabel {
                             color: rgba(0, 0, 0, 0.7);
                             font-size: 20px;}"""
