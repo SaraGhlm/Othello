@@ -4,14 +4,17 @@ from PyQt5.QtWidgets import QWidget
 from GUI.newQLabel import QLabel_new
 from Logic.game import *
 import numpy as np
+from Logic.player import HeuristicPlayer
 import re
 import sys
+import time
 
 
-class SecondPage():
+class SecondPage:
 
     def __init__(self, widget, board_size=(8, 8)):
-
+        self.user_color = 'b'
+        self.computer_color = 'w'
         self.label_style = """QLabel {
                             color: rgba(0, 0, 0, 0.7);
                             font-size: 20px;}"""
@@ -33,6 +36,8 @@ class SecondPage():
         self.board_size = board_size
         self.board_pixel_size = 500
         self.widget = widget
+
+        self.computer_player = HeuristicPlayer('Beginner', self.board_size[0], self.computer_color)
 
         self.black_pixmap = QPixmap('res/black.png')
         self.white_pixmap = QPixmap('res/white.png')
@@ -91,8 +96,6 @@ class SecondPage():
                                       'starting_point[1]+width*i, width2, width2))')
                 exec('self.' + name + ".clicked.connect(lambda self=self: self.player_clicked('" + name + "'))")
 
-
-
         self.init_board()
 
         QtCore.QMetaObject.connectSlotsByName(widget)
@@ -109,6 +112,9 @@ class SecondPage():
         self.place_stone('w', (center[0], center[1]))
         self.place_stone('b', (center[0], center[1] - 1))
         self.place_stone('w', (center[0] - 1, center[1] - 1))
+        if self.computer_color == self.current_player:
+            loc = self.computer_player.move(self.current_board)
+            self.place_stone(self.computer_color, loc)
         self.show_valid_moves()
 
     def on_reset_click(self):
@@ -123,8 +129,11 @@ class SecondPage():
     def player_clicked(self, label_name):
         pattern = re.compile(r'(.*)_(.*)')
         result = pattern.match(label_name)
-        if self.move_validity_check[self.str_to_int[result.group(1)], self.str_to_int[result.group(2)]] == 1:
+        if self.current_player == self.user_color:
             self.place_stone(self.current_player, (self.str_to_int[result.group(1)], self.str_to_int[result.group(2)]))
+        if self.current_player == self.computer_color:
+            loc = self.computer_player.move(self.current_board)
+            self.place_stone(self.computer_color, loc)
 
     def clear_board(self):
         for i in range(self.board_size[0]):

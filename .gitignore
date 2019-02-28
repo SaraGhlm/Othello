@@ -1,8 +1,4 @@
-
-.idea/Othello.iml
+.idea
 venv/
 *.pyc
 *.xml
-.idea/workspace.xml
-*.xml
-.idea/workspace.xml
