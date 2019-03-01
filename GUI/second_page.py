@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QWidget
 from GUI.newQLabel import QLabel_new
-from Logic.game import *
+from Logic.game import Game
 import numpy as np
 from Logic.player import HeuristicPlayer
 import re
@@ -38,6 +38,7 @@ class SecondPage:
         self.widget = widget
 
         self.computer_player = HeuristicPlayer('Beginner', self.board_size, self.computer_color)
+        self.game = Game(self.board_size)
 
         self.black_pixmap = QPixmap('res/black.png')
         self.white_pixmap = QPixmap('res/white.png')
@@ -148,12 +149,12 @@ class SecondPage:
         """
         if color == 'b':
             self.current_board[loc[0]][loc[1]] = 1
-            self.current_board = flip_opponent_stones(loc, self.current_board, self.board_size, player_num=1, opponent=2)
+            self.current_board = self.game.flip_opponent_stones(loc, self.current_board, self.board_size, player_num=1, opponent=2)
             self.current_player = 'w'
             self.turn_label.setText("White's turn ")
         elif color == 'w':
             self.current_board[loc[0]][loc[1]] = 2
-            self.current_board = flip_opponent_stones(loc, self.current_board, self.board_size, player_num=2, opponent=1)
+            self.current_board = self.game.flip_opponent_stones(loc, self.current_board, self.board_size, player_num=2, opponent=1)
             self.current_player = 'b'
             self.turn_label.setText("Black's turn ")
         else:
@@ -175,34 +176,27 @@ class SecondPage:
                     exec('self.' + name + '.setAlignment(QtCore.Qt.AlignCenter)')
                     exec('self.' + name + '.setPixmap(pixmap_smaller)')
         self.update_scores()
-        if sum(sum(self.current_board == 0)) == 0:
-            black_score = sum(sum(self.current_board == 1))
-            white_score = sum(sum(self.current_board == 2))
-            if black_score > white_score:
-                message = 'Black won!'
-            elif black_score < white_score:
-                message = 'white won!'
-            else:
-                message = 'Tie!'
-            buttonReply = QtWidgets.QMessageBox.information(self.widget, "Result", message, QtWidgets.QMessageBox.Ok)
-            if buttonReply == QtWidgets.QMessageBox.Ok:
+        is_finished, message = self.game.game_over(self.current_board)
+        if is_finished:
+            button_reply = QtWidgets.QMessageBox.information(self.widget, "Result", message, QtWidgets.QMessageBox.Ok)
+            if button_reply == QtWidgets.QMessageBox.Ok:
                 print('Game is reset')
                 self.clear_board()
                 self.init_board()
         self.move_validity_check = np.zeros((self.board_size, self.board_size), dtype=int)
         self.show_valid_moves()
-        if sum(sum(self.move_validity_check)) == 0 and sum(sum(self.current_board)) > 1:
-            buttonReply = QtWidgets.QMessageBox.information(self.widget, "Warning", "No possible move, changing player",
-                                                            QtWidgets.QMessageBox.Ok)
-            if buttonReply == QtWidgets.QMessageBox.Ok:
-                self.show_valid_moves()
-                if self.current_player == 'b':
-                    self.current_player = 'w'
-                    self.turn_label.setText("White's turn ")
-                elif self.current_player == 'w':
-                    self.current_player = 'b'
-                    self.turn_label.setText("Black's turn ")
-                self.show_valid_moves()
+        # if sum(sum(self.move_validity_check)) == 0 and sum(sum(self.current_board)) > 1:
+        #     button_reply = QtWidgets.QMessageBox.information(self.widget, "Warning", "No possible move, changing player",
+        #                                                     QtWidgets.QMessageBox.Ok)
+        #     if button_reply == QtWidgets.QMessageBox.Ok:
+        #         self.show_valid_moves()
+        #         if self.current_player == 'b':
+        #             self.current_player = 'w'
+        #             self.turn_label.setText("White's turn ")
+        #         elif self.current_player == 'w':
+        #             self.current_player = 'b'
+        #             self.turn_label.setText("Black's turn ")
+        #         self.show_valid_moves()
 
     def update_scores(self):
         black_score = sum(sum(self.current_board == 1))
@@ -211,7 +205,7 @@ class SecondPage:
         self.white_Score.setText("White's Score: " + str(white_score))
 
     def show_valid_moves(self):
-        self.move_validity_check = find_valid_moves(self.current_player, self.current_board, self.board_size)
+        self.move_validity_check = self.game.find_valid_moves(self.current_player, self.current_board, self.board_size)
         rows, columns = np.where(self.move_validity_check == 1)
         pixmap = QPixmap('res/red.png')
         for i in range(len(rows)):

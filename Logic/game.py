@@ -1,52 +1,41 @@
 import numpy as np
-from Logic.player import HeuristicPlayer
 
-class game:
 
-    def __init__(self, board_size, user_color, game_type):
+class Game:
+
+    def __init__(self, board_size):
         """
 
+        :param board_size:
         :param board_size:
         :param user_color: whether black or white
         :param game_type: 1 -> human vs human, 2 -> human -> computer ??
         """
         self.board_size = board_size
-        self.game_type = game_type
-        self.user_color = user_color
-        self.board = np.zeros((self.board_size, self.board_size))
-        self.current_player = 'b'
-        self.computer_color = 'b' if user_color != 'b' else 'w'
-        self.computer_player = HeuristicPlayer("Beginner", self.board_size, self.computer_color)
+        # self.game_type = game_type
+        # self.user_color = user_color
+        # self.board = np.zeros((self.board_size, self.board_size))
+        # self.current_player = 'b'
+        # self.computer_color = 'b' if user_color != 'b' else 'w'
+        pass
 
-    def init_board(self):
-        center = (int(self.board_size / 2), int(self.board_size / 2))
-        # current_board is a matrix of zeros. 1 is for black and 2 is for white stones
-        self.current_board = np.zeros((self.board_size, self.board_size), dtype=int)
-        self.move_validity_check = np.zeros((self.board_size, self.board_size), dtype=int)
-        self.board[center[0] - 1][center[1]] = 1
-        self.board[center[0]][center[1]] = 2
-        self.board[center[0]][center[1] - 1] = 1
-        self.board[center[0] - 1][center[1] - 1] = 2
-        # if self.computer_color == self.current_player:
-        #     loc = self.computer_player.move(self.current_board)
-        #     self.place_stone(self.computer_color, loc)
-        # self.show_valid_moves()
-
-    def run(self):
-        while not self.game_over():
-            if self.current_player == self.user_color:
-                # let user move
-
+    def game_over(self, board):
+        black_valid = self.find_valid_moves('b', board, self.board_size)
+        white_valid = self.find_valid_moves('w', board, self.board_size)
+        if sum(sum(black_valid == 0)) == 0 and sum(sum(white_valid == 0)) == 0:
+            black_score = sum(sum(board == 1))
+            white_score = sum(sum(board == 2))
+            if black_score > white_score:
+                message = 'Black won!'
+            elif black_score < white_score:
+                message = 'white won!'
             else:
+                message = 'Tie!'
+            return True, message
+        else:
+            return False, ''
 
-
-
-
-    def game_over(self):
-        # true if game is over, false otherwise
-        return False
-
-    def flip_opponent_stones(loc, current_board, board_size, player_num, opponent):
+    def flip_opponent_stones(self, loc, current_board, board_size, player_num, opponent):
         """
 
         :param loc: location of player move
@@ -159,8 +148,7 @@ class game:
             pass
         return current_board
 
-
-    def find_valid_moves(current_player, board, board_size):
+    def find_valid_moves(self, current_player, board, board_size):
         move_validity_check = np.zeros((board_size, board_size), dtype=int)
 
         if current_player == 'b':
