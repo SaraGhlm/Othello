@@ -77,7 +77,7 @@ class FirstPage():
 
         self.color_label = QtWidgets.QLabel(widget)
         self.color_label.setText("Choose your color")
-        self.color_label.setGeometry(100, 260, 200, 30)
+        self.color_label.setGeometry(100, 260, 200, 50)
         self.color_label.setStyleSheet(self.label_style)
 
         self.colors = QtWidgets.QComboBox(widget)
@@ -110,8 +110,7 @@ class FirstPage():
         self.start_button.clicked.connect(widget.start_game)
         widget.show()
 
-
-    def clear(self):
+    def hide(self):
         self.bg.hide()
         self.player_name.hide()
         self.board_size_label.hide()
@@ -122,3 +121,15 @@ class FirstPage():
         self.me.hide()
         self.computer.hide()
         self.start_button.hide()
+
+    def show(self):
+        self.bg.show()
+        self.player_name.show()
+        self.board_size_label.show()
+        self.size.show()
+        self.color_label.show()
+        self.colors.show()
+        self.first_to_play_label.show()
+        self.me.show()
+        self.computer.show()
+        self.start_button.show()

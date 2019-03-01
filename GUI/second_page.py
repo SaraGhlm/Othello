@@ -12,26 +12,26 @@ import time
 
 class SecondPage:
 
-    def __init__(self, widget, board_size=8):
-        self.user_color = 'b'
-        self.computer_color = 'w'
+    def __init__(self, widget, board_size=(8, 8), user_color='b'):
+        self.user_color = user_color
+        self.computer_color = 'w' if user_color == 'b' else 'b'
         self.label_style = """QLabel {
                             color: rgba(0, 0, 0, 0.7);
                             font-size: 20px;}"""
-        self.button_style = """QPushButton { 
+        self.button_style = """QPushButton {
                             font-size: 20px;
                             color: rgba(1, 1, 1, 0.7);
-                            border: 2px solid #8f8f91; 
-                            border-radius: 6px; 
-                            background-color: rgba(255, 255, 255, 0.3); 
-                            min-width: 80px;} 
-                            QPushButton:hover { 
+                            border: 2px solid #8f8f91;
+                            border-radius: 6px;
+                            background-color: rgba(255, 255, 255, 0.3);
+                            min-width: 80px;}
+                            QPushButton:hover {
                             background-color: rgba(255, 255, 255, 0.5);}
-                            QPushButton:pressed { 
-                            background-color: rgba(255, 255, 255, 0.7);} 
-                            QPushButton:flat { 
-                            border: none; /* no border for a flat push button */} 
-                            QPushButton:default { 
+                            QPushButton:pressed {
+                            background-color: rgba(255, 255, 255, 0.7);}
+                            QPushButton:flat {
+                            border: none; /* no border for a flat push button */}
+                            QPushButton:default {
                             border-color: navy; /* make the default button prominent */}"""
         self.board_size = board_size
         self.board_pixel_size = 500
@@ -76,9 +76,14 @@ class SecondPage:
         self.turn_label.setStyleSheet(self.label_style)
 
         self.reset_button = QtWidgets.QPushButton('Reset Game', widget)
-        self.reset_button.setGeometry(570, 200, 170, 50)
+        self.reset_button.setGeometry(570, 200, 210, 50)
         self.reset_button.clicked.connect(self.on_reset_click)
         self.reset_button.setStyleSheet(self.button_style)
+
+        self.go_to_setup_page = QtWidgets.QPushButton('Back to Setup Page', widget)
+        self.go_to_setup_page.setGeometry(570, 270, 210, 50)
+        self.go_to_setup_page.clicked.connect(self.on_go_to_setup_page_button_click)
+        self.go_to_setup_page.setStyleSheet(self.button_style)
 
         self.int_to_str = {0: 'zero', 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven',
                            8: 'eight', 9: 'nine', 10: 'ten', 11: 'eleven', 12: 'twelve', 13: 'thirteen'}
@@ -127,14 +132,25 @@ class SecondPage:
             self.clear_board()
             self.init_board()
 
+    def on_go_to_setup_page_button_click(self):
+        buttonReply = QtWidgets.QMessageBox.question(self.widget, "Warning",
+                                                     "The game will end. Are you sure?",
+                                                     QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
+        if buttonReply == QtWidgets.QMessageBox.Yes:
+            self.widget.back_to_setup_page()
+        pass
+
     def player_clicked(self, label_name):
         pattern = re.compile(r'(.*)_(.*)')
         result = pattern.match(label_name)
         if self.current_player == self.user_color:
             self.place_stone(self.current_player, (self.str_to_int[result.group(1)], self.str_to_int[result.group(2)]))
+            self.widget.repaint()
         if self.current_player == self.computer_color:
+            time.sleep(1)
             loc = self.computer_player.move(self.current_board)
             self.place_stone(self.computer_color, loc)
+            self.widget.repaint()
 
     def clear_board(self):
         for i in range(self.board_size):
@@ -169,12 +185,12 @@ class SecondPage:
                          '.width(), self.' + name + '.height())')
                     exec('self.' + name + '.setAlignment(QtCore.Qt.AlignCenter)')
                     exec('self.' + name + '.setPixmap(pixmap_smaller)')
-                    # exec()
                 elif self.current_board[i][j] == 2:
                     exec('pixmap_smaller = QPixmap.scaled(self.white_pixmap, self.' + name +
                          '.width()-4, self.' + name + '.height()-4)')
                     exec('self.' + name + '.setAlignment(QtCore.Qt.AlignCenter)')
                     exec('self.' + name + '.setPixmap(pixmap_smaller)')
+        # self.widget.repaint()
         self.update_scores()
         is_finished, message = self.game.game_over(self.current_board)
         if is_finished:
@@ -222,6 +238,7 @@ class SecondPage:
         self.black_Score.hide()
         self.turn_label.hide()
         self.reset_button.hide()
+        self.go_to_setup_page.hide()
         for i in range(self.board_size):
             for j in range(self.board_size):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
@@ -234,6 +251,7 @@ class SecondPage:
         self.black_Score.show()
         self.turn_label.show()
         self.reset_button.show()
+        self.go_to_setup_page.show()
         for i in range(self.board_size):
             for j in range(self.board_size):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]

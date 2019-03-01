@@ -25,10 +25,17 @@ class App(QtWidgets.QWidget):
             Start the game with the specified settings. Move to the second page of the game
         """
         self.board_size = int(self.setup_page.size.currentText())
-        # game = Logic.game(self.board_size, "b", 2)
-        self.setup_page.clear()
-        self.game_page.__init__(self, self.board_size)
+        self.user_color = 'b' if self.setup_page.colors.currentText() == 'Black' else 'w'
+        self.setup_page.hide()
+        self.game_page.__init__(self, board_size=(self.board_size, self.board_size),
+                                user_color=self.user_color)
         self.game_page.show()
+
+    def back_to_setup_page(self):
+        self.board_size = int(self.setup_page.size.currentText())
+        self.game_page.hide()
+        self.setup_page.__init__(self)
+        self.setup_page.show()
 
     def center(self):
         """
