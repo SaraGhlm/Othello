@@ -6,7 +6,6 @@ from PyQt5.QtCore import Qt
 
 import GUI.first_page as first_page
 import GUI.second_page as second_page
-import Logic.game
 
 class App(QtWidgets.QWidget):
 
@@ -27,7 +26,7 @@ class App(QtWidgets.QWidget):
         self.board_size = int(self.setup_page.size.currentText())
         self.user_color = 'b' if self.setup_page.colors.currentText() == 'Black' else 'w'
         self.setup_page.hide()
-        self.game_page.__init__(self, board_size=(self.board_size, self.board_size),
+        self.game_page.__init__(self, board_size=self.board_size,
                                 user_color=self.user_color)
         self.game_page.show()
 

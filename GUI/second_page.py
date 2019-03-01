@@ -12,7 +12,7 @@ import time
 
 class SecondPage:
 
-    def __init__(self, widget, board_size=(8, 8), user_color='b'):
+    def __init__(self, widget, board_size=8, user_color='b'):
         self.user_color = user_color
         self.computer_color = 'w' if user_color == 'b' else 'b'
         self.label_style = """QLabel {
@@ -97,7 +97,7 @@ class SecondPage:
         for i in range(board_size):
             for j in range(board_size):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
-                exec('self.' + name + '= QLabel_new(widget)')
+                exec('self.' + name + '= QLabel_new(True, widget)')
                 exec('self.' + name + '.setGeometry(QtCore.QRect(starting_point[0]+width*j, '
                                       'starting_point[1]+width*i, width2, width2))')
                 exec('self.' + name + ".clicked.connect(lambda self=self: self.player_clicked('" + name + "'))")
@@ -146,11 +146,13 @@ class SecondPage:
         if self.current_player == self.user_color:
             self.place_stone(self.current_player, (self.str_to_int[result.group(1)], self.str_to_int[result.group(2)]))
             self.widget.repaint()
-        if self.current_player == self.computer_color:
+        # if self.current_player == self.computer_color:
+            self.stop_board()
             time.sleep(1)
             loc = self.computer_player.move(self.current_board)
             self.place_stone(self.computer_color, loc)
             self.widget.repaint()
+            self.start_board()
 
     def clear_board(self):
         for i in range(self.board_size):
@@ -158,11 +160,26 @@ class SecondPage:
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
                 exec('self.' + name + '.clear()')
 
+    def stop_board(self):
+        if self.current_player == self.user_color:
+            for i in range(self.board_size):
+                for j in range(self.board_size):
+                    name = self.int_to_str[i] + '_' + self.int_to_str[j]
+                    exec('self.' + name + '.is_clickable=False')
+
+    def start_board(self):
+        if self.current_player == self.user_color:
+            for i in range(self.board_size):
+                for j in range(self.board_size):
+                    name = self.int_to_str[i] + '_' + self.int_to_str[j]
+                    exec('self.' + name + '.is_clickable=True')
+
     def place_stone(self, color, loc):
         """
         :param color: b -> black, w -> white
         :param loc: Tuple of location the stone should be places
         """
+
         if color == 'b':
             self.current_board[loc[0]][loc[1]] = 1
             self.current_board = self.game.flip_opponent_stones(loc, self.current_board, self.board_size, player_num=1, opponent=2)
