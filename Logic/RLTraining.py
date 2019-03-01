@@ -1,7 +1,6 @@
 import numpy as np
 
 
-
 def convert_board_to_index(board):
     index = 0
     for i in range(board.shape[0]):
@@ -11,13 +10,13 @@ def convert_board_to_index(board):
     return int(index)
 
 
-
 board_size = 3
 value = {}
 test = np.zeros((board_size, board_size))
 test[0][0] = 2
-print(test)
-print(convert_board_to_index(test))
-
-print(value[convert_board_to_index(test)])
+result = convert_board_to_index(test)
+print(result)
+if result not in value:
+    value[result] = 10
+    print(value)
 
