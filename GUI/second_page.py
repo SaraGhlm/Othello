@@ -39,8 +39,6 @@ class SecondPage:
                                 background-color: rgba(255, 255, 255, 0);}
                                 """
 
-        # QPushButton: disabled
-        # {
         self.board_size = board_size
         self.board_pixel_size = 500
         self.widget = widget
@@ -157,11 +155,9 @@ class SecondPage:
         if self.current_player == self.user_color:
             self.place_stone(self.current_player, (self.str_to_int[result.group(1)], self.str_to_int[result.group(2)]))
         # if self.current_player == self.computer_color:
-            self.stop_board()
-            # time.sleep(1)
+            time.sleep(1)
             loc = self.computer_player.move(self.current_board)
             self.place_stone(self.computer_color, loc)
-            self.start_board()
 
     def clear_board(self):
         for i in range(self.board_size):
@@ -209,7 +205,7 @@ class SecondPage:
         :param color: b -> black, w -> white
         :param loc: Tuple of location the stone should be places
         """
-        self.start_board()
+        self.stop_board()
         if color == 'b':
             self.current_board[loc[0]][loc[1]] = 1
             self.current_board = self.game.flip_opponent_stones(loc, self.current_board, self.board_size, player_num=1, opponent=2)
@@ -250,6 +246,7 @@ class SecondPage:
                     self.turn_label.setText("Black's turn ")
                 self.show_valid_moves()
         self.widget.repaint()
+        self.start_board()
 
     def update_scores(self):
         black_score = sum(sum(self.current_board == 1))
