@@ -145,13 +145,11 @@ class SecondPage:
         result = pattern.match(label_name)
         if self.current_player == self.user_color:
             self.place_stone(self.current_player, (self.str_to_int[result.group(1)], self.str_to_int[result.group(2)]))
-            self.widget.repaint()
         # if self.current_player == self.computer_color:
             self.stop_board()
             time.sleep(1)
             loc = self.computer_player.move(self.current_board)
             self.place_stone(self.computer_color, loc)
-            self.widget.repaint()
             self.start_board()
 
     def clear_board(self):
@@ -174,6 +172,21 @@ class SecondPage:
                     name = self.int_to_str[i] + '_' + self.int_to_str[j]
                     exec('self.' + name + '.is_clickable=True')
 
+    def show_board(self):
+        for i in range(self.board_size):
+            for j in range(self.board_size):
+                name = self.int_to_str[i] + '_' + self.int_to_str[j]
+                if self.current_board[i][j] == 1:
+                    exec('pixmap_smaller = QPixmap.scaled(self.black_pixmap, self.' + name +
+                         '.width(), self.' + name + '.height())')
+                    exec('self.' + name + '.setAlignment(QtCore.Qt.AlignCenter)')
+                    exec('self.' + name + '.setPixmap(pixmap_smaller)')
+                elif self.current_board[i][j] == 2:
+                    exec('pixmap_smaller = QPixmap.scaled(self.white_pixmap, self.' + name +
+                         '.width()-4, self.' + name + '.height()-4)')
+                    exec('self.' + name + '.setAlignment(QtCore.Qt.AlignCenter)')
+                    exec('self.' + name + '.setPixmap(pixmap_smaller)')
+
     def place_stone(self, color, loc):
         """
         :param color: b -> black, w -> white
@@ -194,19 +207,7 @@ class SecondPage:
             raise ValueError('invalid color')
 
         self.clear_board()
-        for i in range(self.board_size):
-            for j in range(self.board_size):
-                name = self.int_to_str[i] + '_' + self.int_to_str[j]
-                if self.current_board[i][j] == 1:
-                    exec('pixmap_smaller = QPixmap.scaled(self.black_pixmap, self.' + name +
-                         '.width(), self.' + name + '.height())')
-                    exec('self.' + name + '.setAlignment(QtCore.Qt.AlignCenter)')
-                    exec('self.' + name + '.setPixmap(pixmap_smaller)')
-                elif self.current_board[i][j] == 2:
-                    exec('pixmap_smaller = QPixmap.scaled(self.white_pixmap, self.' + name +
-                         '.width()-4, self.' + name + '.height()-4)')
-                    exec('self.' + name + '.setAlignment(QtCore.Qt.AlignCenter)')
-                    exec('self.' + name + '.setPixmap(pixmap_smaller)')
+        self.show_board()
         # self.widget.repaint()
         self.update_scores()
         is_finished, message = self.game.game_over(self.current_board)
@@ -216,20 +217,22 @@ class SecondPage:
                 print('Game is reset')
                 self.clear_board()
                 self.init_board()
+
         self.move_validity_check = np.zeros((self.board_size, self.board_size), dtype=int)
         self.show_valid_moves()
-        # if sum(sum(self.move_validity_check)) == 0 and sum(sum(self.current_board)) > 1:
-        #     button_reply = QtWidgets.QMessageBox.information(self.widget, "Warning", "No possible move, changing player",
-        #                                                     QtWidgets.QMessageBox.Ok)
-        #     if button_reply == QtWidgets.QMessageBox.Ok:
-        #         self.show_valid_moves()
-        #         if self.current_player == 'b':
-        #             self.current_player = 'w'
-        #             self.turn_label.setText("White's turn ")
-        #         elif self.current_player == 'w':
-        #             self.current_player = 'b'
-        #             self.turn_label.setText("Black's turn ")
-        #         self.show_valid_moves()
+        if sum(sum(self.move_validity_check)) == 0 and sum(sum(self.current_board)) > 1:
+            button_reply = QtWidgets.QMessageBox.information(self.widget, "Warning", "No possible move, changing player",
+                                                            QtWidgets.QMessageBox.Ok)
+            if button_reply == QtWidgets.QMessageBox.Ok:
+                self.show_valid_moves()
+                if self.current_player == 'b':
+                    self.current_player = 'w'
+                    self.turn_label.setText("White's turn ")
+                elif self.current_player == 'w':
+                    self.current_player = 'b'
+                    self.turn_label.setText("Black's turn ")
+                self.show_valid_moves()
+        self.widget.repaint()
 
     def update_scores(self):
         black_score = sum(sum(self.current_board == 1))
