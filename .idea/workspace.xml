@@ -114,6 +114,32 @@
               <caret line="58" column="59" lean-forward="true" selection-start-line="58" selection-start-column="59" selection-end-line="58" selection-end-column="59" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
+                <marker date="1551397260605" expanded="true" signature="1074:1246" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GUI/first_page.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="273">
+              <caret line="85" column="19" selection-start-line="85" selection-start-column="13" selection-end-line="85" selection-end-column="19" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GUI/second_page.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="280">
+              <caret line="14" column="50" lean-forward="true" selection-start-line="14" selection-start-column="50" selection-end-line="14" selection-end-column="61" />
+              <folding>
+                <element signature="e#0#42#0" expanded="true" />
+                <marker date="1551397129026" expanded="true" signature="6867:6873" ph="..." />
               </folding>
             </state>
           </provider>
@@ -530,6 +556,7 @@
           <caret line="58" column="59" lean-forward="true" selection-start-line="58" selection-start-column="59" selection-end-line="58" selection-end-column="59" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
+            <marker date="1551397260605" expanded="true" signature="1074:1246" ph="..." />
           </folding>
         </state>
       </provider>
