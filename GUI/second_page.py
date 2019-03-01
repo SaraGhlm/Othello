@@ -131,9 +131,12 @@ class SecondPage:
         result = pattern.match(label_name)
         if self.current_player == self.user_color:
             self.place_stone(self.current_player, (self.str_to_int[result.group(1)], self.str_to_int[result.group(2)]))
+            self.widget.repaint()
         if self.current_player == self.computer_color:
+            time.sleep(1)
             loc = self.computer_player.move(self.current_board)
             self.place_stone(self.computer_color, loc)
+            self.widget.repaint()
 
     def clear_board(self):
         for i in range(self.board_size[0]):
@@ -168,12 +171,12 @@ class SecondPage:
                          '.width(), self.' + name + '.height())')
                     exec('self.' + name + '.setAlignment(QtCore.Qt.AlignCenter)')
                     exec('self.' + name + '.setPixmap(pixmap_smaller)')
-                    # exec()
                 elif self.current_board[i][j] == 2:
                     exec('pixmap_smaller = QPixmap.scaled(self.white_pixmap, self.' + name +
                          '.width()-4, self.' + name + '.height()-4)')
                     exec('self.' + name + '.setAlignment(QtCore.Qt.AlignCenter)')
                     exec('self.' + name + '.setPixmap(pixmap_smaller)')
+        # self.widget.repaint()
         self.update_scores()
         if sum(sum(self.current_board == 0)) == 0:
             black_score = sum(sum(self.current_board == 1))
