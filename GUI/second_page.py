@@ -1,7 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QWidget
-from GUI.newQLabel import QLabel_new
 from Logic.game import Game
 import numpy as np
 from Logic.player import HeuristicPlayer
@@ -33,6 +32,15 @@ class SecondPage:
                             border: none; /* no border for a flat push button */}
                             QPushButton:default {
                             border-color: navy; /* make the default button prominent */}"""
+
+        self.board_style = """QPushButton { 
+                                background-color: rgba(255, 255, 255, 0);} 
+                                QPushButton:disabled {
+                                background-color: rgba(255, 255, 255, 0);}
+                                """
+
+        # QPushButton: disabled
+        # {
         self.board_size = board_size
         self.board_pixel_size = 500
         self.widget = widget
@@ -42,6 +50,7 @@ class SecondPage:
 
         self.black_pixmap = QPixmap('res/black.png')
         self.white_pixmap = QPixmap('res/white.png')
+        self.red_pixmap = QPixmap('res/red.png')
 
         self.bg = QtWidgets.QLabel(widget)
         self.bg.setGeometry(0, 0, 800, 600)
@@ -97,10 +106,12 @@ class SecondPage:
         for i in range(board_size):
             for j in range(board_size):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
-                exec('self.' + name + '= QLabel_new(True, widget)')
+                exec('self.' + name + "= QtWidgets.QPushButton('', widget)")
                 exec('self.' + name + '.setGeometry(QtCore.QRect(starting_point[0]+width*j, '
                                       'starting_point[1]+width*i, width2, width2))')
-                exec('self.' + name + ".clicked.connect(lambda self=self: self.player_clicked('" + name + "'))")
+                exec('self.' + name + ".clicked.connect(lambda x, self=self: self.player_clicked('" + name + "'))")
+                exec('self.' + name + ".setStyleSheet(self.board_style)")
+                exec('self.' + name + ".setEnabled(False)")
 
         self.init_board()
 
@@ -147,7 +158,7 @@ class SecondPage:
             self.place_stone(self.current_player, (self.str_to_int[result.group(1)], self.str_to_int[result.group(2)]))
         # if self.current_player == self.computer_color:
             self.stop_board()
-            time.sleep(1)
+            # time.sleep(1)
             loc = self.computer_player.move(self.current_board)
             self.place_stone(self.computer_color, loc)
             self.start_board()
@@ -156,43 +167,49 @@ class SecondPage:
         for i in range(self.board_size):
             for j in range(self.board_size):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
-                exec('self.' + name + '.clear()')
+                exec('self.' + name + '.setIcon(QtGui.QIcon())')
 
     def stop_board(self):
-        if self.current_player == self.user_color:
-            for i in range(self.board_size):
-                for j in range(self.board_size):
-                    name = self.int_to_str[i] + '_' + self.int_to_str[j]
-                    exec('self.' + name + '.is_clickable=False')
+        for i in range(self.board_size):
+            for j in range(self.board_size):
+                name = self.int_to_str[i] + '_' + self.int_to_str[j]
+                exec('self.' + name + ".setEnabled(False)")
 
     def start_board(self):
         if self.current_player == self.user_color:
             for i in range(self.board_size):
                 for j in range(self.board_size):
-                    name = self.int_to_str[i] + '_' + self.int_to_str[j]
-                    exec('self.' + name + '.is_clickable=True')
+                    if self.move_validity_check[i][j] == 1:
+                        name = self.int_to_str[i] + '_' + self.int_to_str[j]
+                        exec('self.' + name + ".setEnabled(True)")
+        else:
+            self.stop_board()
 
     def show_board(self):
         for i in range(self.board_size):
             for j in range(self.board_size):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
                 if self.current_board[i][j] == 1:
-                    exec('pixmap_smaller = QPixmap.scaled(self.black_pixmap, self.' + name +
-                         '.width(), self.' + name + '.height())')
-                    exec('self.' + name + '.setAlignment(QtCore.Qt.AlignCenter)')
-                    exec('self.' + name + '.setPixmap(pixmap_smaller)')
+                    icon = QtGui.QIcon()
+                    icon.addPixmap(self.black_pixmap, QIcon.Normal)
+                    icon.addPixmap(self.black_pixmap, QIcon.Disabled)
+                    exec('self.' + name + '.setIcon(icon)')
+                    exec('self.' + name + '.setIconSize(QtCore.QSize(self.' + name +
+                         '.width(), self.' + name + '.height()))')
                 elif self.current_board[i][j] == 2:
-                    exec('pixmap_smaller = QPixmap.scaled(self.white_pixmap, self.' + name +
-                         '.width()-4, self.' + name + '.height()-4)')
-                    exec('self.' + name + '.setAlignment(QtCore.Qt.AlignCenter)')
-                    exec('self.' + name + '.setPixmap(pixmap_smaller)')
+                    icon = QtGui.QIcon()
+                    icon.addPixmap(self.white_pixmap, QIcon.Normal)
+                    icon.addPixmap(self.white_pixmap, QIcon.Disabled)
+                    exec('self.' + name + '.setIcon(icon)')
+                    exec('self.' + name + '.setIconSize(QtCore.QSize(self.' + name +
+                         '.width() - 4, self.' + name + '.height() - 4))')
 
     def place_stone(self, color, loc):
         """
         :param color: b -> black, w -> white
         :param loc: Tuple of location the stone should be places
         """
-
+        self.start_board()
         if color == 'b':
             self.current_board[loc[0]][loc[1]] = 1
             self.current_board = self.game.flip_opponent_stones(loc, self.current_board, self.board_size, player_num=1, opponent=2)
@@ -243,13 +260,13 @@ class SecondPage:
     def show_valid_moves(self):
         self.move_validity_check = self.game.find_valid_moves(self.current_player, self.current_board, self.board_size)
         rows, columns = np.where(self.move_validity_check == 1)
-        pixmap = QPixmap('res/red.png')
+        icon = QtGui.QIcon()
+        icon.addPixmap(self.red_pixmap, QIcon.Normal)
+        icon.addPixmap(self.red_pixmap, QIcon.Disabled)
         for i in range(len(rows)):
             name = self.int_to_str[rows[i]] + '_' + self.int_to_str[columns[i]]
-            exec('pixmap_smaller = QPixmap.scaled(pixmap, self.' + name + '.width()/4, self.' + name + '.height()/4)')
-            exec('self.' + name + '.clear()')
-            exec('self.' + name + '.setAlignment(QtCore.Qt.AlignCenter)')
-            exec('self.' + name + '.setPixmap(pixmap_smaller)')
+            exec('self.' + name + '.setIcon(icon)')
+            exec('self.' + name + '.setIconSize(QtCore.QSize(self.' + name + '.width()/4, self.' + name + '.height()/4))')
 
     def hide(self):
         self.bg.hide()
