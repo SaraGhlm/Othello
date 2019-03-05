@@ -22,7 +22,7 @@ class Player:
         if self.type == "static":
             return self.static_player(board)
         elif self.type == "stability":
-            return self.static_player(board)
+            return self.stability(board)
 
     def static_player(self, board):
         static_weight = np.array([[4, -3, 2, 2, 2, 2, -3, 4],
@@ -53,16 +53,19 @@ class Player:
     def stability_player(self, board):
         valid_moves = self.game.find_valid_moves(self.computer_color, board, self.board_size)
         rows, columns = np.where(valid_moves == 1)
-        max = -200
+        max_stability = -200
         location = (-2, -2)
         for i in range(len(rows)):
             temp_board = np.copy(board)
             temp_board = self.game.flip_opponent_stones((rows[i], columns[i]), temp_board, self.board_size,
                                                         self.computer_num, self.opponent_num)
-            stability = self.stability(temp_board)
-            if stability > max:
-                max = stability
+            stability_value = self.stability(temp_board)
+            print(stability_value)
+            print(rows[i], columns[i])
+            if stability_value > max_stability:
+                max_stability = stability_value
                 location = (rows[i], columns[i])
+                print(location)
 
         return location
 
@@ -186,10 +189,10 @@ class Player:
         computer_stable = sum(sum(computer_board == 100))
         opponent_board = self.get_stable_stones(board, self.opponent_num)
         opponent_stable = sum(sum(opponent_board == 100))
-        print("computer stable ", computer_stable)
-        print(computer_board)
-        print("opponent stable ", opponent_stable)
-        print(opponent_board)
+        # print("computer stable ", computer_stable)
+        # print(computer_board)
+        # print("opponent stable ", opponent_stable)
+        # print(opponent_board)
 
         # Unstable stones are the ones which can be flanked in the next move
         computer_board = self.get_unstable_stones(board, self.opponent_color, self.computer_num,
@@ -198,15 +201,15 @@ class Player:
         opponent_board = self.get_unstable_stones(board, self.computer_color, self.opponent_num,
                                                   self.computer_num, opponent_board)
         opponent_unstable = sum(sum(opponent_board == 200))
-        print("computer unstable ", computer_unstable)
-        print(computer_board)
-        print("opponent unstable ", opponent_unstable)
-        print(opponent_board)
+        # print("computer unstable ", computer_unstable)
+        # print(computer_board)
+        # print("opponent unstable ", opponent_unstable)
+        # print(opponent_board)
         # # the reset is semi stable with weight 0, so it is not important
         #
         computer_stability = computer_stable - computer_unstable
         opponent_stability = opponent_stable - opponent_unstable
-        print(computer_stability, opponent_stability)
+        # print(computer_stability, opponent_stability)
 
         if computer_stability + opponent_stability != 0:
             return 100 * (computer_stability - opponent_stability) / (

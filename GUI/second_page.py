@@ -161,6 +161,7 @@ class SecondPage:
             if self.player_num == 1:
                 time.sleep(1)
                 loc = self.computer_player.move(self.current_board)
+                print(loc)
                 self.place_stone(self.computer_color, loc)
 
     def clear_board(self):
