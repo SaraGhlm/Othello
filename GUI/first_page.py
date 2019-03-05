@@ -3,9 +3,9 @@ import sys
 from PyQt5.QtCore import Qt
 
 from PyQt5 import QtWidgets
-import GUI.main
+# import GUI.main
 
-class FirstPage():
+class FirstPage:
 
     def __init__(self, widget):
         # super().__init__()
