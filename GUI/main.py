@@ -3,20 +3,19 @@ import sys
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QDesktopWidget
 
-import GUI.first_page as first_page
-import GUI.second_page as second_page
+import GUI.first_page as FirstPage
+import GUI.second_page as SecondPage
 
 
 class App(QtWidgets.QWidget):
-
     def __init__(self):
         super().__init__()
         self.title = 'Othello'
         self.setWindowTitle(self.title)
         self.setFixedSize(800, 600)
         self.center()
-        self.setup_page = first_page.FirstPage(self)
-        self.game_page = second_page.SecondPage(self)
+        self.setup_page = FirstPage.FirstPage(self)
+        self.game_page = SecondPage.SecondPage(self, 1)
         self.game_page.hide()
 
     def start_game(self):
@@ -25,8 +24,9 @@ class App(QtWidgets.QWidget):
         """
         self.board_size = int(self.setup_page.size.currentText())
         self.user_color = 'b' if self.setup_page.colors.currentText() == 'Black' else 'w'
+        player_num = 1 if self.setup_page.one_player.isChecked() else 2
         self.setup_page.hide()
-        self.game_page.__init__(self, board_size=self.board_size,
+        self.game_page.__init__(self, player_num,  board_size=self.board_size,
                                 user_color=self.user_color)
         self.game_page.show()
 

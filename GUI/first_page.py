@@ -1,11 +1,9 @@
-import sys
-
 from PyQt5.QtCore import Qt
 
 from PyQt5 import QtWidgets
-import GUI.main
 
-class FirstPage():
+
+class FirstPage:
 
     def __init__(self, widget):
         # super().__init__()
@@ -47,18 +45,25 @@ class FirstPage():
                         color: rgba(255, 255, 255, 0.7);
                         font-size: 17px}"""
 
+        self.group_box_style = """QGroupBox {
+                                border: 0px;}"""
+
         # Background of the window
         self.bg = QtWidgets.QLabel(widget)
         self.bg.setGeometry(0, 0, 800, 600)
         self.bg.setStyleSheet("border-image: url(res/bg.jpg);")
 
-        self.player_name = QtWidgets.QTextEdit(widget)
-        self.player_name.setPlaceholderText("Player name")
-        self.player_name.setGeometry(100, 90, 180, 30)
-        self.player_name.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.player_name.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.player_name.setAttribute(Qt.WA_MacShowFocusRect, 0)
-        self.player_name.setStyleSheet(self.text_style)
+        self.two_player = QtWidgets.QRadioButton(widget)
+        self.two_player.setGeometry(100, 90, 150, 30)
+        self.two_player.setText("Two Player")
+        self.two_player.setStyleSheet(self.radio_button_style)
+        self.two_player.clicked.connect(self.show_two_player_setup)
+
+        self.one_player = QtWidgets.QRadioButton(widget)
+        self.one_player.setGeometry(260, 90, 150, 30)
+        self.one_player.setText("One Player")
+        self.one_player.setStyleSheet(self.radio_button_style)
+        self.one_player.clicked.connect(self.show_one_player_setup)
 
         self.board_size_label = QtWidgets.QLabel(widget)
         self.board_size_label.setText("Board size")
@@ -87,49 +92,48 @@ class FirstPage():
         self.colors.addItem("Black")
         self.colors.addItem("White")
 
-        self.first_to_play_label = QtWidgets.QLabel(widget)
-        self.first_to_play_label.setText("Who should play first?")
-        self.first_to_play_label.setGeometry(100, 350, 200, 30)
-        self.first_to_play_label.setStyleSheet(self.label_style)
-
-        self.me = QtWidgets.QRadioButton(widget)
-        self.me.setGeometry(310, 350, 150, 30)
-        self.me.setText("Me")
-        self.me.setStyleSheet(self.radio_button_style)
-        self.me.setChecked(True)
-
-        self.computer = QtWidgets.QRadioButton(widget)
-        self.computer.setGeometry(380, 350, 150, 30)
-        self.computer.setText("Computer")
-        self.computer.setStyleSheet(self.radio_button_style)
-
         self.start_button = QtWidgets.QPushButton(widget)
         self.start_button.setText("Start")
-        self.start_button.setGeometry(200, 430, 170, 50)
+        self.start_button.setGeometry(200, 380, 170, 50)
         self.start_button.setStyleSheet(self.button_style)
         self.start_button.clicked.connect(widget.start_game)
+
+        self.hide_setup()
         widget.show()
 
     def hide(self):
         self.bg.hide()
-        self.player_name.hide()
         self.board_size_label.hide()
         self.size.hide()
         self.color_label.hide()
         self.colors.hide()
-        self.first_to_play_label.hide()
-        self.me.hide()
-        self.computer.hide()
+        self.start_button.hide()
+        self.two_player.hide()
+        self.one_player.hide()
+
+    def hide_setup(self):
+        self.board_size_label.hide()
+        self.size.hide()
+        self.color_label.hide()
+        self.colors.hide()
         self.start_button.hide()
 
     def show(self):
         self.bg.show()
-        self.player_name.show()
+        self.one_player.show()
+        self.two_player.show()
+
+    def show_two_player_setup(self):
+        self.hide_setup()
+        self.board_size_label.show()
+        self.size.show()
+        self.start_button.show()
+
+    def show_one_player_setup(self):
+        self.hide_setup()
         self.board_size_label.show()
         self.size.show()
         self.color_label.show()
         self.colors.show()
-        self.first_to_play_label.show()
-        self.me.show()
-        self.computer.show()
         self.start_button.show()
+
