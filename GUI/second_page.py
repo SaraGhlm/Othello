@@ -11,7 +11,8 @@ import time
 
 class SecondPage:
 
-    def __init__(self, widget, board_size=8, user_color='b'):
+    def __init__(self, widget, player_num, board_size=8, user_color='b'):
+        self.player_num = player_num
         self.user_color = user_color
         self.computer_color = 'w' if user_color == 'b' else 'b'
         self.label_style = """QLabel {
@@ -109,7 +110,8 @@ class SecondPage:
                                       'starting_point[1]+width*i, width2, width2))')
                 exec('self.' + name + ".clicked.connect(lambda x, self=self: self.player_clicked('" + name + "'))")
                 exec('self.' + name + ".setStyleSheet(self.board_style)")
-                exec('self.' + name + ".setEnabled(False)")
+                if self.player_num == 1:
+                    exec('self.' + name + ".setEnabled(False)")
 
         self.init_board()
 
@@ -127,10 +129,11 @@ class SecondPage:
         self.place_stone('w', (center[0], center[1]))
         self.place_stone('b', (center[0], center[1] - 1))
         self.place_stone('w', (center[0] - 1, center[1] - 1))
-        if self.computer_color == self.current_player:
-            loc = self.computer_player.move(self.current_board)
-            self.place_stone(self.computer_color, loc)
-        self.show_valid_moves()
+        if self.player_num == 1:
+            if self.computer_color == self.current_player:
+                loc = self.computer_player.move(self.current_board)
+                self.place_stone(self.computer_color, loc)
+            self.show_valid_moves()
 
     def on_reset_click(self):
         buttonReply = QtWidgets.QMessageBox.question(self.widget, "Warning",
@@ -152,12 +155,13 @@ class SecondPage:
     def player_clicked(self, label_name):
         pattern = re.compile(r'(.*)_(.*)')
         result = pattern.match(label_name)
-        if self.current_player == self.user_color:
+        if self.current_player == self.user_color or self.player_num == 2:
             self.place_stone(self.current_player, (self.str_to_int[result.group(1)], self.str_to_int[result.group(2)]))
         # if self.current_player == self.computer_color:
-            time.sleep(1)
-            loc = self.computer_player.move(self.current_board)
-            self.place_stone(self.computer_color, loc)
+            if self.player_num == 1:
+                time.sleep(1)
+                loc = self.computer_player.move(self.current_board)
+                self.place_stone(self.computer_color, loc)
 
     def clear_board(self):
         for i in range(self.board_size):
@@ -172,7 +176,12 @@ class SecondPage:
                 exec('self.' + name + ".setEnabled(False)")
 
     def start_board(self):
-        if self.current_player == self.user_color:
+        if self.player_num == 2:
+            rows, columns = np.where(self.move_validity_check == 1)
+            for i in range(len(rows)):
+                name = self.int_to_str[rows[i]] + '_' + self.int_to_str[columns[i]]
+                exec('self.' + name + '.setEnabled(True)')
+        elif self.current_player == self.user_color:
             for i in range(self.board_size):
                 for j in range(self.board_size):
                     if self.move_validity_check[i][j] == 1:
