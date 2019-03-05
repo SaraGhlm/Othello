@@ -3,7 +3,7 @@ from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import QWidget
 from Logic.game import Game
 import numpy as np
-from Logic.player import HeuristicPlayer
+from Logic.player import Player
 import re
 import sys
 import time
@@ -43,7 +43,7 @@ class SecondPage:
         self.board_pixel_size = 500
         self.widget = widget
 
-        self.computer_player = HeuristicPlayer('Beginner', self.board_size, self.computer_color)
+        self.computer_player = Player('Beginner', self.board_size, self.computer_color, "stability")
         self.game = Game(self.board_size)
 
         self.black_pixmap = QPixmap('res/black.png')

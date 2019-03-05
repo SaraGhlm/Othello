@@ -2,10 +2,10 @@ import sys
 
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QDesktopWidget
-from PyQt5.QtCore import Qt
 
 import GUI.first_page as first_page
 import GUI.second_page as second_page
+
 
 class App(QtWidgets.QWidget):
 
@@ -49,5 +49,4 @@ class App(QtWidgets.QWidget):
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     ex = App()
-    # ex.show()
     sys.exit(app.exec_())
