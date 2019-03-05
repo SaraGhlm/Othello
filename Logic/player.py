@@ -22,7 +22,7 @@ class Player:
         if self.type == "static":
             return self.static_player(board)
         elif self.type == "stability":
-            return self.stability(board)
+            return self.stability_player(board)
 
     def static_player(self, board):
         static_weight = np.array([[4, -3, 2, 2, 2, 2, -3, 4],
