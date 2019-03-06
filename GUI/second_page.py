@@ -44,7 +44,7 @@ class SecondPage:
         self.board_pixel_size = 500
         self.widget = widget
 
-        self.computer_player = Player('Beginner', self.board_size, self.computer_color, "stability")
+        self.computer_player = Player('Beginner', self.board_size, self.computer_color, "parity")
         self.game = Game(self.board_size)
 
         self.black_pixmap = QPixmap('res/black.png')

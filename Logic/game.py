@@ -4,22 +4,17 @@ import numpy as np
 class Game:
 
     def __init__(self, board_size):
-        """
-
-        :param board_size:
-        :param board_size:
-        :param user_color: whether black or white
-        :param game_type: 1 -> human vs human, 2 -> human -> computer ??
-        """
         self.board_size = board_size
-        # self.game_type = game_type
-        # self.user_color = user_color
-        # self.board = np.zeros((self.board_size, self.board_size))
-        # self.current_player = 'b'
-        # self.computer_color = 'b' if user_color != 'b' else 'w'
-        pass
 
     def game_over(self, board):
+        """
+            Based on the current state of the board, determines whether the game is over or not.
+            If it is over, returns true and winner message, otherwise false.
+
+        :param board: the current state of the board game
+
+        :return: True, winner message if the game is over, otherwise False.
+        """
         black_valid = self.find_valid_moves('b', board, self.board_size)
         white_valid = self.find_valid_moves('w', board, self.board_size)
         if sum(sum(black_valid)) == 0 and sum(sum(white_valid)) == 0:
@@ -37,13 +32,15 @@ class Game:
 
     def flip_opponent_stones(self, loc, current_board, board_size, player_num, opponent):
         """
+            Flips all of the opponent's stones that are influenced by the current move.
 
-        :param loc: location of player move
-        :param player_num: player number (aka color)
-        :param opponent: opponent number (aka color)
-        :param current_board: the board player moved on
-        :param board_size: board size
-        :return: the board after flips are applied
+        :param loc: The location of the current move in the game board
+        :param current_board: State of the game board before the current move
+        :param board_size: Size of the board
+        :param player_num: The number representing the player ( 1 for black player, 2 for white player)
+        :param opponent: The number representing the opponent ( 1 for black opponent, 2 for white opponent)
+
+        :return: The state of the board after the current move
         """
         # flip stones above current stone
         opponent_stones = 0
@@ -164,6 +161,18 @@ class Game:
         return current_board
 
     def find_valid_moves(self, current_player, board, board_size):
+        """
+            Finds all valid moves for the current player in the current state of the board.
+
+            To find all of the valid moves, we first find all the player's stones in the current board.
+            For each stone, we find all the possible locations which can be connected to this stone.
+
+        :param current_player: The current player
+        :param board: The current state of the board
+        :param board_size: Size of the board
+
+        :return: A 0-1 matrix of size board_size where 1s represent the possible valid moves for the player
+        """
         move_validity_check = np.zeros((board_size, board_size), dtype=int)
 
         if current_player == 'b':
@@ -262,20 +271,20 @@ class Game:
         return move_validity_check
 
 
-# if __name__ == '__main__':
-#     game = Game(8)
-#     board = np.ones((8, 8))
-#     # board[0][0] = 1
-#     # board[0][1] = 1
-#     # board[0][2] = 1
-#     # board[1][1] = 1
-#     board[2][1] = 2
-#     board[1][2] = 2
-#     # board[2][2] = 1
-#     # board[0][7] = 1
-#     # board[3][3] = 1
-#     board[3][4] = 2
-#     board[4][3] = 2
-#     # board[4][4] = 1
-#     print(board)
-#     print(game.game_over(board))
+if __name__ == '__main__':
+    game = Game(8)
+    board = np.ones((8, 8))
+    # board[0][0] = 1
+    # board[0][1] = 1
+    # board[0][2] = 1
+    # board[1][1] = 1
+    board[2][1] = 2
+    board[1][2] = 2
+    # board[2][2] = 1
+    # board[0][7] = 1
+    # board[3][3] = 1
+    board[3][4] = 2
+    board[4][3] = 2
+    # board[4][4] = 1
+    print(board)
+    print(game.game_over(board))

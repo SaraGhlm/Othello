@@ -19,12 +19,35 @@ class Player:
         self.type = type
 
     def move(self, board):
+        """
+            Based on the current board and player type, we return the computer player's best move.
+
+            Each player calculates a specific value for all of the possible moves, and returns the
+            location with the maximum value.
+        :param board: the current state of the board
+        :return: A tuple representing the location of computer player's move
+        """
         if self.type == "static":
             return self.static_player(board)
+        elif self.type == "parity":
+            return self.parity_player(board)
+        elif self.type == "mobility":
+            return self.mobility_player(board)
+        elif self.type == "pmobility":
+            return self.potential_mobility_player(board)
+        elif self.type == "corners":
+            return self.corners_player(board)
         elif self.type == "stability":
             return self.stability_player(board)
 
     def static_player(self, board):
+        """
+            Static player uses a static matrix which gives specific weight to each location of the board.
+            The value of each move is the sum of the weights of all of the locations containing the
+            computer player's stones
+        :param board: the current state of the board
+        :return: A tuple representing the location of static player's move
+        """
         static_weight = np.array([[4, -3, 2, 2, 2, 2, -3, 4],
                                   [-3, -4, -1, -1, -1, -1, -4, -3],
                                   [2, -1, 1, 0, 0, 1, -1, 2],
@@ -51,6 +74,11 @@ class Player:
         return location
 
     def stability_player(self, board):
+        """
+            Stability player uses the stability characteristic of the stones
+        :param board: the current state of the board
+        :return: A tuple representing the location of stability player's move
+        """
         valid_moves = self.game.find_valid_moves(self.computer_color, board, self.board_size)
         rows, columns = np.where(valid_moves == 1)
         max_stability = -200
@@ -66,12 +94,103 @@ class Player:
 
         return location
 
-    def coin_parity(self, board):
+    def parity_player(self, board):
+        """
+            Parity player uses the parity characteristic of the stones
+        :param board: the current state of the board
+        :return: A tuple representing the location of parity player's move
+        """
+        valid_moves = self.game.find_valid_moves(self.computer_color, board, self.board_size)
+        rows, columns = np.where(valid_moves == 1)
+        max_parity = -200
+        location = (-2, -2)
+        for i in range(len(rows)):
+            temp_board = np.copy(board)
+            temp_board = self.game.flip_opponent_stones((rows[i], columns[i]), temp_board, self.board_size,
+                                                        self.computer_num, self.opponent_num)
+            parity_value = self.stone_parity(temp_board)
+            if parity_value > max_parity:
+                max_parity = parity_value
+                location = (rows[i], columns[i])
+
+        return location
+
+    def mobility_player(self, board):
+        """
+            Mobility player uses the mobility characteristic of the stones
+        :param board: the current state of the board
+        :return: A tuple representing the location of mobility player's move
+        """
+        valid_moves = self.game.find_valid_moves(self.computer_color, board, self.board_size)
+        rows, columns = np.where(valid_moves == 1)
+        max_mobility = -200
+        location = (-2, -2)
+        for i in range(len(rows)):
+            temp_board = np.copy(board)
+            temp_board = self.game.flip_opponent_stones((rows[i], columns[i]), temp_board, self.board_size,
+                                                        self.computer_num, self.opponent_num)
+            mobility_value = self.stone_parity(temp_board)
+            if mobility_value > max_mobility:
+                max_mobility = mobility_value
+                location = (rows[i], columns[i])
+        return location
+
+    def potential_mobility_player(self, board):
+        """
+            Potential mobility player uses the potential mobility characteristic of the stones
+        :param board: the current state of the board
+        :return: A tuple representing the location of potential mobility player's move
+        """
+        valid_moves = self.game.find_valid_moves(self.computer_color, board, self.board_size)
+        rows, columns = np.where(valid_moves == 1)
+        max_potential_mobility = -200
+        location = (-2, -2)
+        for i in range(len(rows)):
+            temp_board = np.copy(board)
+            temp_board = self.game.flip_opponent_stones((rows[i], columns[i]), temp_board, self.board_size,
+                                                        self.computer_num, self.opponent_num)
+            potential_mobility_value = self.stone_parity(temp_board)
+            if potential_mobility_value > max_potential_mobility:
+                max_potential_mobility = potential_mobility_value
+                location = (rows[i], columns[i])
+        return location
+
+    def corners_player(self, board):
+        """
+            Corners player uses the corners characteristic of the stones
+        :param board: the current state of the board
+        :return: A tuple representing the location of corners player's move
+        """
+        valid_moves = self.game.find_valid_moves(self.computer_color, board, self.board_size)
+        rows, columns = np.where(valid_moves == 1)
+        max_corners = -200
+        location = (-2, -2)
+        for i in range(len(rows)):
+            temp_board = np.copy(board)
+            temp_board = self.game.flip_opponent_stones((rows[i], columns[i]), temp_board, self.board_size,
+                                                        self.computer_num, self.opponent_num)
+            corners_value = self.stone_parity(temp_board)
+            if corners_value > max_corners:
+                max_corners = corners_value
+                location = (rows[i], columns[i])
+        return location
+
+    def stone_parity(self, board):
+        """
+            The stone parity value is based on the players' immediate score after a specific move.
+        :param board: the current state of the board
+        :return: parity value
+        """
         computer_score = sum(sum(board == self.computer_num))
         opponent_score = sum(sum(board == self.opponent_num))
         return 100 * (computer_score - opponent_score) / (computer_score + opponent_score)
 
     def mobility(self, board):
+        """
+            The mobility value is based on the players' immediate possible moves after a specific move.
+        :param board: the current state of the board
+        :return: mobility value
+        """
         valid_moves_computer = sum(sum(self.game.find_valid_moves(self.computer_color, board, self.board_size)))
         valid_moves_opponent = sum(sum(self.game.find_valid_moves(self.opponent_color, board, self.board_size)))
 
@@ -81,6 +200,12 @@ class Player:
             return 100 * (valid_moves_computer - valid_moves_opponent) / (valid_moves_computer + valid_moves_opponent)
 
     def potential_mobility(self, board):
+        """
+            The potential mobility value is based on the players' potential possible moves after a specific
+             move in the near future.
+        :param board: the current state of the board
+        :return: potential mobility value
+        """
         valid_moves_computer = self.game.find_valid_moves(self.computer_color, board, self.board_size)
         computer_counter = 0
 
@@ -119,6 +244,11 @@ class Player:
         return 100 * (computer_counter - opponent_counter) / (computer_counter + opponent_counter)
 
     def corners(self, board):
+        """
+            The corners value is based on the players' current and potential captured corners after a specific move.
+        :param board: the current state of the board
+        :return: corners value
+        """
         # Calculating already captured corners
         computer_corners = 0
         computer_corners = computer_corners + 1 if board[0][0] == self.computer_num else computer_corners
@@ -178,6 +308,13 @@ class Player:
         return 100 * numerator / denominator
 
     def stability(self, board):
+        """
+            The stability value is based on the players' stable and unstable stones after a specific move.
+            A stable stone is a stone that cannot be replaced by the opponent's stone.
+            An unstable stone is a stone that can be replaced by the opponent's stone in its next move.
+        :param board: the current state of the board
+        :return: stability value
+        """
         # Stable stones
         computer_board = self.get_stable_stones(board, self.computer_num)
         computer_stable = sum(sum(computer_board == 100))
@@ -207,11 +344,17 @@ class Player:
 
         if computer_stability + opponent_stability != 0:
             return 100 * (computer_stability - opponent_stability) / (
-                        computer_stable + computer_unstable + opponent_stable + opponent_unstable)
+                    computer_stable + computer_unstable + opponent_stable + opponent_unstable)
         else:
             return 0
 
-    def get_stable_stones(self, board, number):
+    def get_stable_stones(self, board, player_number):
+        """
+            Finds all the stable stones of the given player in the current board
+        :param board: the current state of the board
+        :param player_number: the player's number
+        :return: A board which shows the stable stones of the given player
+        """
         horizontal = True
         vertical = True
         left_to_right = True
@@ -219,20 +362,20 @@ class Player:
         temp_board = np.copy(board)
         for i in range(len(board[0])):
             for j in range(len(board[0])):
-                if board[i][j] == number:
+                if board[i][j] == player_number:
                     # check horizontal direction
                     if 0 < i < 7:
-                        if board[i - 1][j] != number and board[i + 1][j] != number:
+                        if board[i - 1][j] != player_number and board[i + 1][j] != player_number:
                             horizontal = False
                     # check vertical direction
                     if 0 < j < 7:
-                        if board[i][j - 1] != number and board[i][j + 1] != number:
+                        if board[i][j - 1] != player_number and board[i][j + 1] != player_number:
                             vertical = False
                     # check left to right and right to left directions
                     if 0 < i < 7 and 0 < j < 7:
-                        if board[i - 1][j - 1] != number and board[i + 1][j + 1] != number:
+                        if board[i - 1][j - 1] != player_number and board[i + 1][j + 1] != player_number:
                             left_to_right = False
-                        if board[i - 1][j + 1] != number and board[i + 1][j - 1] != number:
+                        if board[i - 1][j + 1] != player_number and board[i + 1][j - 1] != player_number:
                             right_to_left = False
 
                     # if all are true, then stone is stable
@@ -246,6 +389,15 @@ class Player:
         return temp_board
 
     def get_unstable_stones(self, board, opponent_color, player_number, opponent_number, temp_board):
+        """
+            Finds all the unstable stones of the given player in the current board
+        :param board: The current state of the board
+        :param opponent_color:
+        :param player_number:
+        :param opponent_number:
+        :param temp_board:
+        :return:
+        """
         opponent_valid_moves = self.game.find_valid_moves(opponent_color, board, len(board[0]))
         rows, columns = np.where(opponent_valid_moves == 1)
         for i in range(len(rows)):

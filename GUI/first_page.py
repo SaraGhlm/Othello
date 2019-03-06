@@ -1,12 +1,10 @@
 from PyQt5.QtCore import Qt
-
 from PyQt5 import QtWidgets
 
 
 class FirstPage:
 
     def __init__(self, widget):
-        # super().__init__()
         self.combo_box_style = """QComboBox { 
                             border: 0px solid black;
                             background-color: rgba(255, 255, 255, 0.7);
@@ -48,49 +46,48 @@ class FirstPage:
         self.group_box_style = """QGroupBox {
                                 border: 0px;}"""
 
-        # Background of the window
-        self.bg = QtWidgets.QLabel(widget)
-        self.bg.setGeometry(0, 0, 800, 600)
-        self.bg.setStyleSheet("border-image: url(res/bg.jpg);")
+        self.background_label = QtWidgets.QLabel(widget)
+        self.background_label.setGeometry(0, 0, 800, 600)
+        self.background_label.setStyleSheet("border-image: url(res/bg.jpg);")
 
-        self.two_player = QtWidgets.QRadioButton(widget)
-        self.two_player.setGeometry(100, 90, 150, 30)
-        self.two_player.setText("Two Player")
-        self.two_player.setStyleSheet(self.radio_button_style)
-        self.two_player.clicked.connect(self.show_two_player_setup)
+        self.two_player_radio_button = QtWidgets.QRadioButton(widget)
+        self.two_player_radio_button.setGeometry(100, 90, 150, 30)
+        self.two_player_radio_button.setText("Two Player")
+        self.two_player_radio_button.setStyleSheet(self.radio_button_style)
+        self.two_player_radio_button.clicked.connect(self.show_two_player_setup)
 
-        self.one_player = QtWidgets.QRadioButton(widget)
-        self.one_player.setGeometry(260, 90, 150, 30)
-        self.one_player.setText("One Player")
-        self.one_player.setStyleSheet(self.radio_button_style)
-        self.one_player.clicked.connect(self.show_one_player_setup)
+        self.one_player_radio_button = QtWidgets.QRadioButton(widget)
+        self.one_player_radio_button.setGeometry(260, 90, 150, 30)
+        self.one_player_radio_button.setText("One Player")
+        self.one_player_radio_button.setStyleSheet(self.radio_button_style)
+        self.one_player_radio_button.clicked.connect(self.show_one_player_setup)
 
         self.board_size_label = QtWidgets.QLabel(widget)
         self.board_size_label.setText("Board size")
         self.board_size_label.setGeometry(100, 180, 200, 30)
         self.board_size_label.setStyleSheet(self.label_style)
 
-        self.size = QtWidgets.QComboBox(widget)
-        self.size.setGeometry(290, 180, 150, 30)
-        self.size.setAttribute(Qt.WA_MacShowFocusRect, 0)
-        self.size.setStyleSheet(self.combo_box_style)
-        self.size.setCurrentIndex(0)
-        self.size.addItem("8")
-        self.size.addItem("10")
-        self.size.addItem("12")
-        self.size.addItem("14")
+        self.board_size_combo_box = QtWidgets.QComboBox(widget)
+        self.board_size_combo_box.setGeometry(290, 180, 150, 30)
+        self.board_size_combo_box.setAttribute(Qt.WA_MacShowFocusRect, 0)
+        self.board_size_combo_box.setStyleSheet(self.combo_box_style)
+        self.board_size_combo_box.setCurrentIndex(0)
+        self.board_size_combo_box.addItem("8")
+        self.board_size_combo_box.addItem("10")
+        self.board_size_combo_box.addItem("12")
+        self.board_size_combo_box.addItem("14")
 
         self.color_label = QtWidgets.QLabel(widget)
         self.color_label.setText("Choose your color")
         self.color_label.setGeometry(100, 260, 200, 50)
         self.color_label.setStyleSheet(self.label_style)
 
-        self.colors = QtWidgets.QComboBox(widget)
-        self.colors.setGeometry(290, 260, 150, 30)
-        self.colors.setAttribute(Qt.WA_MacShowFocusRect, 0)
-        self.colors.setStyleSheet(self.combo_box_style)
-        self.colors.addItem("Black")
-        self.colors.addItem("White")
+        self.colors_combo_box = QtWidgets.QComboBox(widget)
+        self.colors_combo_box.setGeometry(290, 260, 150, 30)
+        self.colors_combo_box.setAttribute(Qt.WA_MacShowFocusRect, 0)
+        self.colors_combo_box.setStyleSheet(self.combo_box_style)
+        self.colors_combo_box.addItem("Black")
+        self.colors_combo_box.addItem("White")
 
         self.start_button = QtWidgets.QPushButton(widget)
         self.start_button.setText("Start")
@@ -102,38 +99,47 @@ class FirstPage:
         widget.show()
 
     def hide(self):
-        self.bg.hide()
+        """
+            Hiding the whole setup page
+        """
+        self.background_label.hide()
         self.board_size_label.hide()
-        self.size.hide()
+        self.board_size_combo_box.hide()
         self.color_label.hide()
-        self.colors.hide()
+        self.colors_combo_box.hide()
         self.start_button.hide()
-        self.two_player.hide()
-        self.one_player.hide()
+        self.two_player_radio_button.hide()
+        self.one_player_radio_button.hide()
 
     def hide_setup(self):
+        """
+            Hiding setup options which are based on game mode. Used at the beginning of the game
+        """
         self.board_size_label.hide()
-        self.size.hide()
+        self.board_size_combo_box.hide()
         self.color_label.hide()
-        self.colors.hide()
+        self.colors_combo_box.hide()
         self.start_button.hide()
 
     def show(self):
-        self.bg.show()
-        self.one_player.show()
-        self.two_player.show()
+        """
+            Showing the initial state of setup page
+        """
+        self.background_label.show()
+        self.one_player_radio_button.show()
+        self.two_player_radio_button.show()
 
     def show_two_player_setup(self):
         self.hide_setup()
         self.board_size_label.show()
-        self.size.show()
+        self.board_size_combo_box.show()
         self.start_button.show()
 
     def show_one_player_setup(self):
         self.hide_setup()
         self.board_size_label.show()
-        self.size.show()
+        self.board_size_combo_box.show()
         self.color_label.show()
-        self.colors.show()
+        self.colors_combo_box.show()
         self.start_button.show()
 
