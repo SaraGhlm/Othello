@@ -22,7 +22,7 @@ class Game:
     def game_over(self, board):
         black_valid = self.find_valid_moves('b', board, self.board_size)
         white_valid = self.find_valid_moves('w', board, self.board_size)
-        if sum(sum(black_valid == 0)) == 0 and sum(sum(white_valid == 0)) == 0:
+        if sum(sum(black_valid)) == 0 and sum(sum(white_valid)) == 0:
             black_score = sum(sum(board == 1))
             white_score = sum(sum(board == 2))
             if black_score > white_score:
@@ -56,6 +56,8 @@ class Game:
                 for j in range(i, loc[0] + 1):
                     current_board[j][loc[1]] = player_num
                 break
+            else:
+                break
         # flip stones bellow current stone
         opponent_stones = 0
         for i in range(loc[0] + 1, board_size):
@@ -67,7 +69,8 @@ class Game:
                 for j in range(loc[0], i + 1):
                     current_board[j][loc[1]] = player_num
                 break
-
+            else:
+                break
         # flip stones at the right of current stone
         opponent_stones = 0
         for i in range(loc[1] + 1, board_size):
@@ -78,6 +81,8 @@ class Game:
             elif current_board[loc[0]][i] == player_num and opponent_stones != 0:
                 for j in range(loc[1], i + 1):
                     current_board[loc[0]][j] = player_num
+                break
+            else:
                 break
         # flip stones at the left of current stone
         opponent_stones = 0
@@ -90,6 +95,8 @@ class Game:
                 for j in range(i, loc[1] + 1):
                     current_board[loc[0]][j] = player_num
                 break
+            else:
+                break
         # flip stones at the top right of current stone
         opponent_stones = 0
         try:
@@ -101,6 +108,8 @@ class Game:
                 elif current_board[loc[0] - i][loc[1] + i] == player_num and opponent_stones != 0:
                     for j in range(0, i):
                         current_board[loc[0] - j][loc[1] + j] = player_num
+                    break
+                else:
                     break
         except:
             pass
@@ -116,6 +125,8 @@ class Game:
                     for j in range(0, i):
                         current_board[loc[0] - j][loc[1] - j] = player_num
                     break
+                else:
+                    break
         except:
             pass
         # flip stones at the bottom left of current stone
@@ -130,6 +141,8 @@ class Game:
                     for j in range(0, i):
                         current_board[loc[0] + j][loc[1] - j] = player_num
                     break
+                else:
+                    break
         except:
             pass
         # flip stones at the bottom right of current stone
@@ -143,6 +156,8 @@ class Game:
                 elif current_board[loc[0] + i][loc[1] + i] == player_num and opponent_stones != 0:
                     for j in range(0, i):
                         current_board[loc[0] + j][loc[1] + j] = player_num
+                    break
+                else:
                     break
         except:
             pass
@@ -245,3 +260,22 @@ class Game:
             except:
                 pass
         return move_validity_check
+
+
+# if __name__ == '__main__':
+#     game = Game(8)
+#     board = np.ones((8, 8))
+#     # board[0][0] = 1
+#     # board[0][1] = 1
+#     # board[0][2] = 1
+#     # board[1][1] = 1
+#     board[2][1] = 2
+#     board[1][2] = 2
+#     # board[2][2] = 1
+#     # board[0][7] = 1
+#     # board[3][3] = 1
+#     board[3][4] = 2
+#     board[4][3] = 2
+#     # board[4][4] = 1
+#     print(board)
+#     print(game.game_over(board))

@@ -60,12 +60,9 @@ class Player:
             temp_board = self.game.flip_opponent_stones((rows[i], columns[i]), temp_board, self.board_size,
                                                         self.computer_num, self.opponent_num)
             stability_value = self.stability(temp_board)
-            print(stability_value)
-            print(rows[i], columns[i])
             if stability_value > max_stability:
                 max_stability = stability_value
                 location = (rows[i], columns[i])
-                print(location)
 
         return location
 
@@ -119,7 +116,6 @@ class Player:
                                         opponent_counter += 1
                                         temp[i][j] = 1
                                         break
-        print(computer_counter, opponent_counter)
         return 100 * (computer_counter - opponent_counter) / (computer_counter + opponent_counter)
 
     def corners(self, board):
@@ -179,8 +175,6 @@ class Player:
 
         numerator = computer_corners + computer_potential_corner - 2 * common_potential_corner - opponent_corners - computer_potential_corner
         denominator = computer_corners + computer_potential_corner + 2 * common_potential_corner + opponent_corners + computer_potential_corner
-        print(computer_corners, opponent_corners, computer_potential_corner, opponent_potential_corner,
-              common_potential_corner)
         return 100 * numerator / denominator
 
     def stability(self, board):
@@ -284,5 +278,5 @@ if __name__ == '__main__':
     board[4][4] = 1
     # board[7][7] = 2
     # board[7][0] = 2
-    print(board)
-    print(player.stability(board))
+    # print(board)
+    # print(player.stability(board))

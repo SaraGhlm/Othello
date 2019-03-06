@@ -130,6 +130,7 @@ class SecondPage:
         self.place_stone('b', (center[0], center[1] - 1))
         self.place_stone('w', (center[0] - 1, center[1] - 1))
         if self.player_num == 1:
+            print(self.computer_color, self.current_player)
             if self.computer_color == self.current_player:
                 loc = self.computer_player.move(self.current_board)
                 self.place_stone(self.computer_color, loc)
@@ -140,7 +141,6 @@ class SecondPage:
                                                      "Are you sure you want to clear the board?",
                                                      QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
         if buttonReply == QtWidgets.QMessageBox.Yes:
-            print('Game is reset')
             self.clear_board()
             self.init_board()
 
@@ -156,12 +156,11 @@ class SecondPage:
         pattern = re.compile(r'(.*)_(.*)')
         result = pattern.match(label_name)
         if self.current_player == self.user_color or self.player_num == 2:
-            self.place_stone(self.current_player, (self.str_to_int[result.group(1)], self.str_to_int[result.group(2)]))
+            finished = self.place_stone(self.current_player, (self.str_to_int[result.group(1)], self.str_to_int[result.group(2)]))
         # if self.current_player == self.computer_color:
-            if self.player_num == 1:
+            if self.player_num == 1 and finished is False:
                 time.sleep(1)
                 loc = self.computer_player.move(self.current_board)
-                print(loc)
                 self.place_stone(self.computer_color, loc)
 
     def clear_board(self):
@@ -234,12 +233,12 @@ class SecondPage:
         # self.widget.repaint()
         self.update_scores()
         is_finished, message = self.game.game_over(self.current_board)
-        if is_finished:
+        if is_finished and sum(sum(self.current_board)) > 1:
             button_reply = QtWidgets.QMessageBox.information(self.widget, "Result", message, QtWidgets.QMessageBox.Ok)
             if button_reply == QtWidgets.QMessageBox.Ok:
-                print('Game is reset')
                 self.clear_board()
                 self.init_board()
+                return True
 
         self.move_validity_check = np.zeros((self.board_size, self.board_size), dtype=int)
         self.show_valid_moves()
@@ -255,8 +254,13 @@ class SecondPage:
                     self.current_player = 'b'
                     self.turn_label.setText("Black's turn ")
                 self.show_valid_moves()
+                if self.current_player == self.computer_color and self.player_num == 1:
+                    time.sleep(1)
+                    loc = self.computer_player.move(self.current_board)
+                    self.place_stone(self.computer_color, loc)
         self.widget.repaint()
         self.start_board()
+        return False
 
     def update_scores(self):
         black_score = sum(sum(self.current_board == 1))
