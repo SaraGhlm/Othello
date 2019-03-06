@@ -320,10 +320,6 @@ class Player:
         computer_stable = sum(sum(computer_board == 100))
         opponent_board = self.get_stable_stones(board, self.opponent_num)
         opponent_stable = sum(sum(opponent_board == 100))
-        # print("computer stable ", computer_stable)
-        # print(computer_board)
-        # print("opponent stable ", opponent_stable)
-        # print(opponent_board)
 
         # Unstable stones are the ones which can be flanked in the next move
         computer_board = self.get_unstable_stones(board, self.opponent_color, self.computer_num,
@@ -332,15 +328,9 @@ class Player:
         opponent_board = self.get_unstable_stones(board, self.computer_color, self.opponent_num,
                                                   self.computer_num, opponent_board)
         opponent_unstable = sum(sum(opponent_board == 200))
-        # print("computer unstable ", computer_unstable)
-        # print(computer_board)
-        # print("opponent unstable ", opponent_unstable)
-        # print(opponent_board)
-        # # the reset is semi stable with weight 0, so it is not important
-        #
+        # the reset is semi stable with weight 0, so it is not important
         computer_stability = computer_stable - computer_unstable
         opponent_stability = opponent_stable - opponent_unstable
-        # print(computer_stability, opponent_stability)
 
         if computer_stability + opponent_stability != 0:
             return 100 * (computer_stability - opponent_stability) / (
