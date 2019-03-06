@@ -158,7 +158,7 @@ class SecondPage:
         if self.current_player == self.user_color or self.player_num == 2:
             finished = self.place_stone(self.current_player, (self.str_to_int[result.group(1)], self.str_to_int[result.group(2)]))
         # if self.current_player == self.computer_color:
-            if self.player_num == 1 and finished is False:
+            if self.player_num == 1 and finished is False and self.current_player == self.computer_color:
                 time.sleep(1)
                 loc = self.computer_player.move(self.current_board)
                 self.place_stone(self.computer_color, loc)
