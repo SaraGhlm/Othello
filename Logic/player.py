@@ -88,6 +88,7 @@ class Player:
             temp_board = self.game.flip_opponent_stones((rows[i], columns[i]), temp_board, self.board_size,
                                                         self.computer_num, self.opponent_num)
             stability_value = self.stability(temp_board)
+            print(stability_value)
             if stability_value > max_stability:
                 max_stability = stability_value
                 location = (rows[i], columns[i])
@@ -333,8 +334,7 @@ class Player:
         opponent_stability = opponent_stable - opponent_unstable
 
         if computer_stability + opponent_stability != 0:
-            return 100 * (computer_stability - opponent_stability) / (
-                    computer_stable + computer_unstable + opponent_stable + opponent_unstable)
+            return 100 * (computer_stability - opponent_stability) / (computer_stability + opponent_stability)
         else:
             return 0
 
@@ -350,32 +350,59 @@ class Player:
         left_to_right = True
         right_to_left = True
         temp_board = np.copy(board)
-        for i in range(len(board[0])):
-            for j in range(len(board[0])):
-                if board[i][j] == player_number:
-                    # check horizontal direction
-                    if 0 < i < 7:
-                        if board[i - 1][j] != player_number and board[i + 1][j] != player_number:
-                            horizontal = False
-                    # check vertical direction
-                    if 0 < j < 7:
-                        if board[i][j - 1] != player_number and board[i][j + 1] != player_number:
-                            vertical = False
-                    # check left to right and right to left directions
-                    if 0 < i < 7 and 0 < j < 7:
-                        if board[i - 1][j - 1] != player_number and board[i + 1][j + 1] != player_number:
-                            left_to_right = False
-                        if board[i - 1][j + 1] != player_number and board[i + 1][j - 1] != player_number:
-                            right_to_left = False
+        board_border = len(board[0]) - 1
+        change = False
 
-                    # if all are true, then stone is stable
-                    if horizontal and vertical and left_to_right and right_to_left:
-                        temp_board[i][j] = 100
-                    else:
-                        horizontal = True
-                        vertical = True
-                        left_to_right = True
-                        right_to_left = True
+        #  Check corners for stones as they are always stable
+        if temp_board[0][0] == player_number:
+            temp_board[0][0] = 100
+            change = True
+        if temp_board[0][len(board[0]) - 1] == player_number:
+            temp_board[0][0] = 100
+            change = True
+        if temp_board[len(board[0]) - 1][0] == player_number:
+            temp_board[0][0] = 100
+            change = True
+        if temp_board[len(board[0]) - 1][len(board[0]) - 1] == player_number:
+            temp_board[0][0] = 100
+            change = True
+
+        while change:
+            change = False
+            for i in range(len(board[0])):
+                for j in range(len(board[0])):
+                    if temp_board[i][j] == 100:
+                        continue
+                    if board[i][j] == player_number:
+                        # check horizontal direction
+                        if 0 < i < board_border:
+                            if board[i - 1][j] != player_number and board[i + 1][j] != player_number:
+                                horizontal = False
+                        # check vertical direction
+                        if 0 < j < board_border:
+                            if board[i][j - 1] != player_number and board[i][j + 1] != player_number:
+                                vertical = False
+                        # check left to right and right to left directions
+                        if 0 < i < board_border and 0 < j < board_border:
+                            if board[i - 1][j - 1] != player_number and board[i + 1][j + 1] != player_number:
+                                left_to_right = False
+                            if board[i - 1][j + 1] != player_number and board[i + 1][j - 1] != player_number:
+                                right_to_left = False
+
+                        # if all are true, it still need to be beside an edge or another stable stone
+                        if horizontal and vertical and left_to_right and right_to_left:
+                            if i == 0 or i == board_border or j == 0 or j == board_border:
+                                temp_board[i][j] = 100
+                                change = True
+                            elif temp_board[i - 1][j] == 100 or temp_board[i + 1][j] == 100 or \
+                                    temp_board[i][j - 1] == 100 or temp_board[i][j + 1] == 100:
+                                temp_board[i][j] = 100
+                                change = True
+                        else:
+                            horizontal = True
+                            vertical = True
+                            left_to_right = True
+                            right_to_left = True
         return temp_board
 
     def get_unstable_stones(self, board, opponent_color, player_number, opponent_number, temp_board):
@@ -411,7 +438,7 @@ if __name__ == '__main__':
     board[0][2] = 1
     board[1][1] = 1
     board[2][1] = 2
-    board[1][2] = 2
+    board[1][0] = 1
     # board[2][2] = 1
     # board[0][7] = 1
     board[3][3] = 1
@@ -420,5 +447,6 @@ if __name__ == '__main__':
     board[4][4] = 1
     # board[7][7] = 2
     # board[7][0] = 2
-    # print(board)
+    print(board)
     # print(player.stability(board))
+    print(player.get_stable_stones(board, 1))
