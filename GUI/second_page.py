@@ -43,7 +43,7 @@ class SecondPage:
         self.board_pixel_size = 500
         self.widget = widget
 
-        self.computer_player = Player('Beginner', self.board_size, self.computer_color, "stability")
+        self.computer_player = Player('Beginner', self.board_size, self.computer_color, "combination")
         self.game = Game(self.board_size)
 
         self.black_pixmap = QPixmap('res/black.png')
@@ -176,6 +176,7 @@ class SecondPage:
             if self.player_num == 1 and finished is False and self.current_player == self.computer_color:
                 time.sleep(1)
                 loc = self.computer_player.move(self.current_board)
+                print(loc)
                 self.place_stone(self.computer_color, loc)
 
     def clear_board(self):
@@ -246,6 +247,7 @@ class SecondPage:
         :param player_color: A letter representing the player ( 'b' for black player, 'w' for white player)
         :param loc: Tuple of location the stone should be places
         """
+
         self.stop_board()
         if player_color == 'b':
             self.current_board[loc[0]][loc[1]] = 1
@@ -278,6 +280,7 @@ class SecondPage:
         # Does the next player has possible valid moves? If not, the other player should make a move
         self.move_validity_check = np.zeros((self.board_size, self.board_size), dtype=int)
         self.show_valid_moves()
+
         if sum(sum(self.move_validity_check)) == 0 and sum(sum(self.current_board)) > 1:
             button_reply = QtWidgets.QMessageBox.information(self.widget, "Warning", "No possible move, changing player",
                                                             QtWidgets.QMessageBox.Ok)
