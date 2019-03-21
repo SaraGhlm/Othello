@@ -43,7 +43,7 @@ class SecondPage:
         self.board_pixel_size = 500
         self.widget = widget
 
-        self.computer_player = Player('Beginner', self.board_size, self.computer_color, "combination")
+        self.computer_player = Player('Beginner', self.board_size, self.computer_color, "alpha-beta")
         self.game = Game(self.board_size)
 
         self.black_pixmap = QPixmap('res/black.png')
@@ -294,7 +294,7 @@ class SecondPage:
                     self.turn_label.setText("Black's turn ")
                 self.show_valid_moves()
                 if self.current_player == self.computer_color and self.player_num == 1:
-                    time.sleep(1)
+                    # time.sleep(1)
                     loc = self.computer_player.move(self.current_board)
                     self.place_stone(self.computer_color, loc)
         self.widget.repaint()

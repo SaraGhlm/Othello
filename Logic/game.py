@@ -270,6 +270,12 @@ class Game:
                 pass
         return move_validity_check
 
+    def get_score(self, board, player_num):
+        black_score = sum(sum(board == 1))
+        white_score = sum(sum(board == 2))
+        if player_num == 1:
+            return black_score - white_score
+        return white_score - black_score
 
 if __name__ == '__main__':
     game = Game(8)
