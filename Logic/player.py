@@ -380,13 +380,13 @@ class Player:
 
     def get_unstable_stones(self, board, opponent_color, player_number, opponent_number, temp_board):
         """
-            Finds all the unstable stones of the given player in the current board
+            Finds all the unstable stones of the given player in the current board.
         :param board: The current state of the board
-        :param opponent_color:
-        :param player_number:
-        :param opponent_number:
-        :param temp_board:
-        :return:
+        :param opponent_color: the opponent's number
+        :param player_number: the player's number
+        :param opponent_number: the opponent's number
+        :param temp_board: A board which shows the stable stones of the given player
+        :return: temp_board which shows the stable and unstable stones of the given player
         """
         opponent_valid_moves = self.game.find_valid_moves(opponent_color, board, len(board[0]))
         rows, columns = np.where(opponent_valid_moves == 1)
