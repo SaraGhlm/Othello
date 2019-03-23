@@ -19,25 +19,17 @@ class Player:
         self.type = type
 
     # TODO: fix alpha-beta
-    def alpha_beta_search(self, node, depth):
-        infinity = float('inf')
+    def alpha_beta_search(self, board, depth):
+        infinity = float('inf')  # TODO change initial values in the rest of the code
         best_val = -infinity
         beta = infinity
-        best_move = None
-        # successors = self.getSuccessors(node)  # Successors are next valid moves' result
-        # best_state = None
-        # for state in successors:
-        #     value = self.min_value(state, best_val, beta)
-        #     if value > best_val:
-        #         best_val = value
-        #         best_state = state
-        # print("AlphaBeta:  Utility Value of Root Node: = " + str(best_val))
-        #
-        # print("AlphaBeta:  Best State is: " + best_state.Name)
-        valid_moves = self.game.find_valid_moves(self.computer_color, node, self.board_size)
+
+        valid_moves = self.game.find_valid_moves(self.computer_color, board, self.board_size)
         rows, columns = np.where(valid_moves == 1)
+        best_move = (rows[0], columns[0])
+
         for i in range(len(rows)):
-            temp_board = np.copy(node)
+            temp_board = np.copy(board)
             temp_board = self.game.flip_opponent_stones((rows[i], columns[i]), temp_board, self.board_size,
                                                         self.computer_num, self.opponent_num)
             value = self.min_value(temp_board, best_val, beta, depth - 1)
@@ -46,54 +38,38 @@ class Player:
                 best_move = (rows[i], columns[i])
         return best_move
 
-    def max_value(self, node, alpha, beta, depth):
-        # print("max player")
-        # print("AlphaBeta-->MAX: Visited Node :: " + node.Name)
-
-        game_is_over, _ = self.game.game_over(node)
+    def max_value(self, board, alpha, beta, depth):
+        game_is_over, _ = self.game.game_over(board)
         if game_is_over or depth == 0:  # Terminal is game over
-            # return self.game.get_score(node, self.computer_num)  # utility is the result of heuristics
-            return self.combination(node)
+            return self.combination(board)
         infinity = float('inf')
         value = -infinity
 
-        valid_moves = self.game.find_valid_moves(self.computer_color, node, self.board_size)
+        valid_moves = self.game.find_valid_moves(self.computer_color, board, self.board_size)
         rows, columns = np.where(valid_moves == 1)
         for i in range(len(rows)):
-            temp_board = np.copy(node)
+            temp_board = np.copy(board)
             temp_board = self.game.flip_opponent_stones((rows[i], columns[i]), temp_board, self.board_size,
                                                         self.computer_num, self.opponent_num)
-
-            # successors = self.getSuccessors(node)
-            # for state in successors:
-            # print("calling min value")
             value = max(value, self.min_value(temp_board, alpha, beta, depth - 1))
             if value >= beta:
                 return value
             alpha = max(alpha, value)
         return value
 
-    def min_value(self, node, alpha, beta, depth):
-        # print("min player")
-        # print("AlphaBeta-->MIN: Visited Node :: " + node.Name)
-
-        game_is_over, _ = self.game.game_over(node)
+    def min_value(self, board, alpha, beta, depth):
+        game_is_over, _ = self.game.game_over(board)
         if game_is_over or depth == 0:
-            # return self.game.get_score(node, self.opponent_num)
-            return self.combination(node)
+            return self.combination(board)
         infinity = float('inf')
         value = infinity
 
-        valid_moves = self.game.find_valid_moves(self.opponent_color, node, self.board_size)
+        valid_moves = self.game.find_valid_moves(self.opponent_color, board, self.board_size)
         rows, columns = np.where(valid_moves == 1)
         for i in range(len(rows)):
-            temp_board = np.copy(node)
+            temp_board = np.copy(board)
             temp_board = self.game.flip_opponent_stones((rows[i], columns[i]), temp_board, self.board_size,
                                                         self.opponent_num, self.computer_num)
-
-            # successors = self.getSuccessors(node)
-            # for state in successors:
-            # print("calling max value")
             value = min(value, self.max_value(temp_board, alpha, beta, depth - 1))
             if value <= alpha:
                 return value
