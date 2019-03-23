@@ -88,6 +88,7 @@ class Player:
             temp_board = self.game.flip_opponent_stones((rows[i], columns[i]), temp_board, self.board_size,
                                                         self.computer_num, self.opponent_num)
             stability_value = self.stability(temp_board)
+            print(stability_value)
             if stability_value > max_stability:
                 max_stability = stability_value
                 location = (rows[i], columns[i])
@@ -333,8 +334,7 @@ class Player:
         opponent_stability = opponent_stable - opponent_unstable
 
         if computer_stability + opponent_stability != 0:
-            return 100 * (computer_stability - opponent_stability) / (
-                    computer_stable + computer_unstable + opponent_stable + opponent_unstable)
+            return 100 * (computer_stability - opponent_stability) / (computer_stability + opponent_stability)
         else:
             return 0
 
