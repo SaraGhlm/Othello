@@ -8,7 +8,7 @@ import operator
 # player will choose the one with highest score
 
 class Player:
-    def __init__(self, level, board_size, computer_color, type="static"):
+    def __init__(self, level, board_size, computer_color):
         self.level = level
         self.board_size = board_size
         self.computer_color = computer_color
@@ -16,7 +16,6 @@ class Player:
         self.computer_num = 1 if self.computer_color == 'b' else 2
         self.opponent_num = 1 if self.computer_color == 'w' else 2
         self.game = Game(self.board_size)
-        self.type = type
         self.static_weight = np.array([[4, -3, 2, 2, 2, 2, -3, 4],
                                        [-3, -4, -1, -1, -1, -1, -4, -3],
                                        [2, -1, 1, 0, 0, 1, -1, 2],
@@ -26,7 +25,6 @@ class Player:
                                        [-3, -4, -1, -1, -1, -1, -4, -3],
                                        [4, -3, 2, 2, 2, 2, -3, 4]])
 
-    # TODO: fix alpha-beta
     def alpha_beta_search(self, board, depth):
         infinity = float('inf')  # TODO change initial values in the rest of the code
         best_val = -infinity
@@ -109,30 +107,38 @@ class Player:
         return value
 
     def move(self, board):
-        """
-            Based on the current board and player type, we return the computer player's best move.
-
-            Each player calculates a specific value for all of the possible moves, and returns the
-            location with the maximum value.
-        :param board: the current state of the board
-        :return: A tuple representing the location of computer player's move
-        """
-        if self.type == "static":
-            return self.static_player(board)
-        elif self.type == "parity":
-            return self.parity_player(board)
-        elif self.type == "mobility":
-            return self.mobility_player(board)
-        elif self.type == "pmobility":
-            return self.potential_mobility_player(board)
-        elif self.type == "corners":
-            return self.corners_player(board)
-        elif self.type == "stability":
-            return self.stability_player(board)
-        elif self.type == "combination":
-            return self.combination_player(board)
-        elif self.type == "alpha-beta":
+        if self.level == "Beginner":
+            return self.alpha_beta_search(board, 1)
+        elif self.level == "Intermediate":
+            return self.alpha_beta_search(board, 2)
+        elif self.level == "Hard":
             return self.alpha_beta_search(board, 3)
+
+    # def move(self, board):
+    #     """
+    #         Based on the current board and player type, we return the computer player's best move.
+    #
+    #         Each player calculates a specific value for all of the possible moves, and returns the
+    #         location with the maximum value.
+    #     :param board: the current state of the board
+    #     :return: A tuple representing the location of computer player's move
+    #     """
+    #     if self.type == "static":
+    #         return self.static_player(board)
+    #     elif self.type == "parity":
+    #         return self.parity_player(board)
+    #     elif self.type == "mobility":
+    #         return self.mobility_player(board)
+    #     elif self.type == "pmobility":
+    #         return self.potential_mobility_player(board)
+    #     elif self.type == "corners":
+    #         return self.corners_player(board)
+    #     elif self.type == "stability":
+    #         return self.stability_player(board)
+    #     elif self.type == "combination":
+    #         return self.combination_player(board)
+    #     elif self.type == "alpha-beta":
+    #         return self.alpha_beta_search(board, 3)
 
     def static_player(self, board):
         """

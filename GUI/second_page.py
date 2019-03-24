@@ -10,9 +10,10 @@ import time
 
 class SecondPage:
 
-    def __init__(self, widget, player_num, board_size=8, user_color='b'):
+    def __init__(self, widget, player_num, board_size=8, user_color='b', level="Beginner"):
         self.player_num = player_num
         self.user_color = user_color
+        self.level = level
         self.computer_color = 'w' if user_color == 'b' else 'b'
         self.label_style = """QLabel {
                             color: rgba(0, 0, 0, 0.7);
@@ -43,7 +44,7 @@ class SecondPage:
         self.board_pixel_size = 500
         self.widget = widget
 
-        self.computer_player = Player('Beginner', self.board_size, self.computer_color, "alpha-beta")
+        self.computer_player = Player(self.level, self.board_size, self.computer_color)
         self.game = Game(self.board_size)
 
         self.black_pixmap = QPixmap('res/black.png')

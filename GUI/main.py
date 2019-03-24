@@ -25,9 +25,10 @@ class App(QtWidgets.QWidget):
         self.board_size = int(self.setup_page.board_size_combo_box.currentText())
         self.user_color = 'b' if self.setup_page.colors_combo_box.currentText() == 'Black' else 'w'
         player_num = 1 if self.setup_page.one_player_radio_button.isChecked() else 2
+        self.computer_level = self.setup_page.level_combo_box.currentText()
         self.setup_page.hide()
         self.game_page.__init__(self, player_num,  board_size=self.board_size,
-                                user_color=self.user_color)
+                                user_color=self.user_color, level=self.computer_level)
         self.game_page.show()
 
     def back_to_setup_page(self):

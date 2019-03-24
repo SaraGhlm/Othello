@@ -89,9 +89,22 @@ class FirstPage:
         self.colors_combo_box.addItem("Black")
         self.colors_combo_box.addItem("White")
 
+        self.level_label = QtWidgets.QLabel(widget)
+        self.level_label.setText("Choose level")
+        self.level_label.setGeometry(100, 340, 200, 50)
+        self.level_label.setStyleSheet(self.label_style)
+
+        self.level_combo_box = QtWidgets.QComboBox(widget)
+        self.level_combo_box.setGeometry(290, 340, 150, 30)
+        self.level_combo_box.setAttribute(Qt.WA_MacShowFocusRect, 0)
+        self.level_combo_box.setStyleSheet(self.combo_box_style)
+        self.level_combo_box.addItem("Beginner")
+        self.level_combo_box.addItem("Intermediate")
+        self.level_combo_box.addItem("Hard")
+
         self.start_button = QtWidgets.QPushButton(widget)
         self.start_button.setText("Start")
-        self.start_button.setGeometry(200, 380, 170, 50)
+        self.start_button.setGeometry(200, 420, 170, 50)
         self.start_button.setStyleSheet(self.button_style)
         self.start_button.clicked.connect(widget.start_game)
 
@@ -107,6 +120,8 @@ class FirstPage:
         self.board_size_combo_box.hide()
         self.color_label.hide()
         self.colors_combo_box.hide()
+        self.level_label.hide()
+        self.level_combo_box.hide()
         self.start_button.hide()
         self.two_player_radio_button.hide()
         self.one_player_radio_button.hide()
@@ -119,6 +134,8 @@ class FirstPage:
         self.board_size_combo_box.hide()
         self.color_label.hide()
         self.colors_combo_box.hide()
+        self.level_label.hide()
+        self.level_combo_box.hide()
         self.start_button.hide()
 
     def show(self):
@@ -141,5 +158,7 @@ class FirstPage:
         self.board_size_combo_box.show()
         self.color_label.show()
         self.colors_combo_box.show()
+        self.level_label.show()
+        self.level_combo_box.show()
         self.start_button.show()
 
