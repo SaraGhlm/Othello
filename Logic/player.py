@@ -1,6 +1,6 @@
 import numpy as np
 from Logic.game import Game
-import time
+import operator
 
 
 # need to get move_validity_check rows and columns from second-page so only checks places where it has a valid move
@@ -17,6 +17,14 @@ class Player:
         self.opponent_num = 1 if self.computer_color == 'w' else 2
         self.game = Game(self.board_size)
         self.type = type
+        self.static_weight = np.array([[4, -3, 2, 2, 2, 2, -3, 4],
+                                       [-3, -4, -1, -1, -1, -1, -4, -3],
+                                       [2, -1, 1, 0, 0, 1, -1, 2],
+                                       [2, -1, 0, 1, 1, 0, -1, 2],
+                                       [2, -1, 0, 1, 1, 0, -1, 2],
+                                       [2, -1, 1, 0, 0, 1, -1, 2],
+                                       [-3, -4, -1, -1, -1, -1, -4, -3],
+                                       [4, -3, 2, 2, 2, 2, -3, 4]])
 
     # TODO: fix alpha-beta
     def alpha_beta_search(self, board, depth):
@@ -26,16 +34,23 @@ class Player:
 
         valid_moves = self.game.find_valid_moves(self.computer_color, board, self.board_size)
         rows, columns = np.where(valid_moves == 1)
-        best_move = (rows[0], columns[0])
-
+        square_value = []
         for i in range(len(rows)):
+            square_value.append(self.static_weight[rows[i]][columns[i]])
+
+        sorted_rows = [x for _, x in sorted(zip(square_value, rows), key=lambda pair: pair[0])]
+        sorted_columns = [x for _, x in sorted(zip(square_value, columns), key=lambda pair: pair[0])]
+
+        best_move = (sorted_rows[0], sorted_columns[0])
+
+        for i in range(len(sorted_rows)):
             temp_board = np.copy(board)
-            temp_board = self.game.flip_opponent_stones((rows[i], columns[i]), temp_board, self.board_size,
+            temp_board = self.game.flip_opponent_stones((sorted_rows[i], sorted_columns[i]), temp_board, self.board_size,
                                                         self.computer_num, self.opponent_num)
             value = self.min_value(temp_board, best_val, beta, depth - 1)
             if value > best_val:
                 best_val = value
-                best_move = (rows[i], columns[i])
+                best_move = (sorted_rows[i], sorted_columns[i])
         return best_move
 
     def max_value(self, board, alpha, beta, depth):
@@ -47,9 +62,17 @@ class Player:
 
         valid_moves = self.game.find_valid_moves(self.computer_color, board, self.board_size)
         rows, columns = np.where(valid_moves == 1)
+
+        square_value = []
         for i in range(len(rows)):
+            square_value.append(self.static_weight[rows[i]][columns[i]])
+
+        sorted_rows = [x for _, x in sorted(zip(square_value, rows), key=lambda pair: pair[0])]
+        sorted_columns = [x for _, x in sorted(zip(square_value, columns), key=lambda pair: pair[0])]
+
+        for i in range(len(sorted_rows)):
             temp_board = np.copy(board)
-            temp_board = self.game.flip_opponent_stones((rows[i], columns[i]), temp_board, self.board_size,
+            temp_board = self.game.flip_opponent_stones((sorted_rows[i], sorted_columns[i]), temp_board, self.board_size,
                                                         self.computer_num, self.opponent_num)
             value = max(value, self.min_value(temp_board, alpha, beta, depth - 1))
             if value >= beta:
@@ -66,9 +89,17 @@ class Player:
 
         valid_moves = self.game.find_valid_moves(self.opponent_color, board, self.board_size)
         rows, columns = np.where(valid_moves == 1)
+
+        square_value = []
         for i in range(len(rows)):
+            square_value.append(self.static_weight[rows[i]][columns[i]])
+
+        sorted_rows = [x for _, x in sorted(zip(square_value, rows), key=lambda pair: pair[0])]
+        sorted_columns = [x for _, x in sorted(zip(square_value, columns), key=lambda pair: pair[0])]
+
+        for i in range(len(sorted_rows)):
             temp_board = np.copy(board)
-            temp_board = self.game.flip_opponent_stones((rows[i], columns[i]), temp_board, self.board_size,
+            temp_board = self.game.flip_opponent_stones((sorted_rows[i], sorted_columns[i]), temp_board, self.board_size,
                                                         self.opponent_num, self.computer_num)
             value = min(value, self.max_value(temp_board, alpha, beta, depth - 1))
             if value <= alpha:
@@ -101,7 +132,7 @@ class Player:
         elif self.type == "combination":
             return self.combination_player(board)
         elif self.type == "alpha-beta":
-            return self.alpha_beta_search(board, 5)
+            return self.alpha_beta_search(board, 3)
 
     def static_player(self, board):
         """
@@ -264,8 +295,23 @@ class Player:
 
     def combination(self, board):
         value = 600 * self.stability(board) + 801.724 * self.corners(board) + 78.922 * self.mobility(
-            board) + 77 * self.potential_mobility(board) + 74.396 * self.stone_parity(board)
+            board) + 77 * self.potential_mobility(board) + 74.396 * self.stone_parity(board) + 200 * self.stone_score_static(board)
         return value
+
+    def stone_score_static(self, board):
+        static_weight = np.array([[4, -3, 2, 2, 2, 2, -3, 4],
+                                  [-3, -4, -1, -1, -1, -1, -4, -3],
+                                  [2, -1, 1, 0, 0, 1, -1, 2],
+                                  [2, -1, 0, 1, 1, 0, -1, 2],
+                                  [2, -1, 0, 1, 1, 0, -1, 2],
+                                  [2, -1, 1, 0, 0, 1, -1, 2],
+                                  [-3, -4, -1, -1, -1, -1, -4, -3],
+                                  [4, -3, 2, 2, 2, 2, -3, 4]])
+        move_value = 0
+        rows, columns = np.where(board == self.computer_num)
+        for j in range(len(rows)):
+            move_value += static_weight[rows[j]][columns[j]]
+        return move_value
 
     def stone_parity(self, board):
         """
