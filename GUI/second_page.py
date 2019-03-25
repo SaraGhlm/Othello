@@ -48,8 +48,9 @@ class SecondPage:
         self.notification_style = """QLabel {
                                     background: rgba(200, 0, 0, 0.7);
                                     font-size: 20px;
-                                    color: rgba(255, 255, 255, 0);
-                                    border-radius: 5px;}"""
+                                    color: rgba(255, 255, 255, 1);
+                                    border-radius: 5px;
+                                    padding: 3px;}"""
         self.board_size = board_size
         self.board_pixel_size = 500
         self.widget = widget
@@ -111,6 +112,7 @@ class SecondPage:
 
         self.notification_label = QtWidgets.QLabel(widget)
         self.notification_label.setGeometry(QtCore.QRect(570, 350, 181, 100))
+        self.notification_label.setText("Hi!")
         self.notification_label.setStyleSheet(self.notification_style)
 
         self.int_to_str = {0: 'zero', 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven',
@@ -150,9 +152,11 @@ class SecondPage:
         if self._turn:
             self.place_stone(self.computer_color, loc)
             self._turn = False
+            self.playground_thread.turn = True if self.current_player == self.computer_color else False
         else:
             self.place_stone(self.opponent_player.computer_color, loc)
             self._turn = True
+            self.playground_thread.turn = True if self.current_player == self.computer_color else False
 
     def init_board(self):
         """
@@ -173,6 +177,7 @@ class SecondPage:
                 loc = self.computer_player.move(self.current_board)
                 self.place_stone(self.computer_color, loc)
             self.show_valid_moves()
+
 
     def on_reset_click(self):
         """
@@ -283,7 +288,7 @@ class SecondPage:
         :param player_color: A letter representing the player ( 'b' for black player, 'w' for white player)
         :param loc: Tuple of location the stone should be places
         """
-
+        self.notification_label.hide()
         self.stop_board()
         if player_color == 'b':
             self.current_board[loc[0]][loc[1]] = 1
@@ -308,6 +313,7 @@ class SecondPage:
         is_finished, message = self.game.game_over(self.current_board)
         if is_finished and sum(sum(self.current_board)) > 1:
             button_reply = QtWidgets.QMessageBox.information(self.widget, "Result", message, QtWidgets.QMessageBox.Ok)
+            self.playground_thread.is_finished = True
             if button_reply == QtWidgets.QMessageBox.Ok:
                 self.clear_board()
                 self.init_board()
@@ -318,12 +324,9 @@ class SecondPage:
         self.show_valid_moves()
 
         if sum(sum(self.move_validity_check)) == 0 and sum(sum(self.current_board)) > 1:
-            print("no more move")
             if self.mode is True:
-                self.playground_thread.turn = not self.playground_thread.turn
                 self.notification_label.setText("No possible move, changing player")
                 self.notification_label.show()
-                print("playground runnign is true")
                 self.show_valid_moves()
                 if self.current_player == 'b':
                     self.current_player = 'w'
@@ -332,12 +335,6 @@ class SecondPage:
                     self.current_player = 'b'
                     self.turn_label.setText("Black's turn ")
                 self.show_valid_moves()
-                if self.current_player == self.computer_color and self.player_num == 1:
-                    loc = self.computer_player.move(self.current_board)
-                    self.place_stone(self.computer_color, loc)
-                else:
-                    loc = self.opponent_player.move(self.current_board)
-                    self.place_stone(self.opponent_player.get_color(), loc)
             else:
                 button_reply = QtWidgets.QMessageBox.information(self.widget, "Warning",
                                                                  "No possible move, changing player",

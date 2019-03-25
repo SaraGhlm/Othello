@@ -12,24 +12,23 @@ class Playground(QThread):
         self.opponent = opponent
         self.board = board
         self.turn = turn
+        self.is_finished = False
 
     def __del__(self):
         self.wait()
 
     def run(self):
-        turn = True
+        self.turn = True
         while True:
-            is_finished, _ = self.game.game_over(self.board)
-            if is_finished:
+            if self.is_finished:
                 break
-            if turn:
+            if self.turn:
                 loc = self.player.move(self.board)
-                turn = False
+                self.signal.emit(loc)
             else:
-                turn = True
                 loc = self.opponent.move(self.board)
-            self.signal.emit(loc)
-            self.sleep(2)
+                self.signal.emit(loc)
+            self.sleep(1)
 
     def set_board(self, board):
         self.board = board
