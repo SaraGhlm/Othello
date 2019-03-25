@@ -42,7 +42,7 @@ class SecondPage:
                                 """
 
         self.board_size = board_size
-        self.board_pixel_size = 500
+        self.board_pixel_size = int(widget_size[0]/2)
         self.widget = widget
 
         self.computer_player = Player(self.level, self.board_size, self.computer_color)
@@ -58,17 +58,18 @@ class SecondPage:
         self.background_label.setStyleSheet("border-image: url(res/wooden-background.jpg); background-size: cover;")
         self.background_label.setObjectName("background")
 
-        board_start_position = widget_size[0]/20
+        board_start_position = widget_size[0] / 20
         self.board_label = QtWidgets.QLabel(widget)
-        self.board_label.setGeometry(QtCore.QRect(board_start_position, board_start_position, self.board_pixel_size, self.board_pixel_size))
+        self.board_label.setGeometry(
+            QtCore.QRect(board_start_position, board_start_position, self.board_pixel_size, self.board_pixel_size))
         self.board_label.setText("")
         board_pic = 'res/Board' + str(self.board_size) + '.jpg'
         self.board_label.setPixmap(QtGui.QPixmap(board_pic))
         self.board_label.setScaledContents(True)
         self.board_label.setObjectName("label")
 
-        x = widget_size[0]/1.5
-        y = widget_size[1]/7
+        x = widget_size[0] / 1.5
+        y = widget_size[1] / 7
         offset = 40
         self.white_score_label = QtWidgets.QLabel(widget)
         self.white_score_label.setGeometry(QtCore.QRect(x, y, 181, 21))
@@ -77,24 +78,24 @@ class SecondPage:
         self.white_score_label.setStyleSheet(self.label_style)
 
         self.black_score_label = QtWidgets.QLabel(widget)
-        self.black_score_label.setGeometry(QtCore.QRect(x, y+offset, 181, 29))
+        self.black_score_label.setGeometry(QtCore.QRect(x, y + offset, 181, 29))
         self.black_score_label.setText("Black's Score: ")
         self.black_score_label.setObjectName("black_Score")
         self.black_score_label.setStyleSheet(self.label_style)
 
         self.turn_label = QtWidgets.QLabel(widget)
-        self.turn_label.setGeometry(QtCore.QRect(x, y+offset*2, 181, 29))
+        self.turn_label.setGeometry(QtCore.QRect(x, y + offset * 2, 181, 29))
         self.turn_label.setText("Black's turn ")
         self.turn_label.setObjectName("turn_label")
         self.turn_label.setStyleSheet(self.label_style)
 
         self.reset_button = QtWidgets.QPushButton('Reset Game', widget)
-        self.reset_button.setGeometry(x, y+offset*3.5, 210, 50)
+        self.reset_button.setGeometry(x, y + offset * 3.5, 210, 50)
         self.reset_button.clicked.connect(self.on_reset_click)
         self.reset_button.setStyleSheet(self.button_style)
 
         self.go_to_setup_page_button = QtWidgets.QPushButton('Back to Setup Page', widget)
-        self.go_to_setup_page_button.setGeometry(x, y+offset*5, 210, 50)
+        self.go_to_setup_page_button.setGeometry(x, y + offset * 5, 210, 50)
         self.go_to_setup_page_button.clicked.connect(self.on_go_to_setup_page_button_click)
         self.go_to_setup_page_button.setStyleSheet(self.button_style)
 
@@ -107,10 +108,26 @@ class SecondPage:
         width2 = (self.board_pixel_size / self.board_size) - 4
         starting_point = (board_start_position + 3, board_start_position + 3)
 
+        alphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n']
+
         # Initializing the push buttons for all locations in the board
         for i in range(board_size):
             for j in range(board_size):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
+                if i == 0:
+                    exec('self.alphabet_' + name + "= QtWidgets.QLabel(widget)")
+                    exec('self.alphabet_' + name + ".setGeometry(QtCore.QRect(board_start_position+width*(j)+width/2-3, "
+                                                   "board_start_position-width/2, 30, 30))")
+                    exec('self.alphabet_' + name + ".setText('" + alphabets[j] + "')")
+                    exec('self.alphabet_' + name + ".setStyleSheet(self.label_style)")
+
+                if j == 0:
+                    exec('self.number_' + name + "= QtWidgets.QLabel(widget)")
+                    exec('self.number_' + name + ".setGeometry(QtCore.QRect(board_start_position-width/2, "
+                                                   "board_start_position+width*(i)+width/2-9, 30, 30))")
+                    exec('self.number_' + name + ".setText('" + str(i+1) + "')")
+                    exec('self.number_' + name + ".setStyleSheet(self.label_style)")
+
                 exec('self.' + name + "= QtWidgets.QPushButton('', widget)")
                 exec('self.' + name + '.setGeometry(QtCore.QRect(starting_point[0]+width*j, '
                                       'starting_point[1]+width*i, width2, width2))')
@@ -348,6 +365,10 @@ class SecondPage:
         for i in range(self.board_size):
             for j in range(self.board_size):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
+                if i == 0:
+                    exec('self.alphabet_' + name + '.hide()')
+                if j == 0:
+                    exec('self.number_' + name + '.hide()')
                 exec('self.' + name + '.hide()')
 
     def show(self):
@@ -365,6 +386,10 @@ class SecondPage:
         for i in range(self.board_size):
             for j in range(self.board_size):
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
+                if i == 0:
+                    exec('self.alphabet_' + name + '.show()')
+                if j == 0:
+                    exec('self.number_' + name + '.show()')
                 exec('self.' + name + '.show()')
 
 
