@@ -62,6 +62,12 @@ class FirstPage:
         self.one_player_radio_button.setStyleSheet(self.radio_button_style)
         self.one_player_radio_button.clicked.connect(self.show_one_player_setup)
 
+        self.zero_player_radio_button = QtWidgets.QRadioButton(widget)
+        self.zero_player_radio_button.setGeometry(420, 90, 150, 30)
+        self.zero_player_radio_button.setText("Zero Player")
+        self.zero_player_radio_button.setStyleSheet(self.radio_button_style)
+        self.zero_player_radio_button.clicked.connect(self.show_zero_player_setup)
+
         self.board_size_label = QtWidgets.QLabel(widget)
         self.board_size_label.setText("Board size")
         self.board_size_label.setGeometry(100, 180, 200, 30)
@@ -79,11 +85,11 @@ class FirstPage:
 
         self.color_label = QtWidgets.QLabel(widget)
         self.color_label.setText("Choose your color")
-        self.color_label.setGeometry(100, 260, 200, 50)
+        self.color_label.setGeometry(100, 270, 200, 50)
         self.color_label.setStyleSheet(self.label_style)
 
         self.colors_combo_box = QtWidgets.QComboBox(widget)
-        self.colors_combo_box.setGeometry(290, 260, 150, 30)
+        self.colors_combo_box.setGeometry(290, 270, 150, 30)
         self.colors_combo_box.setAttribute(Qt.WA_MacShowFocusRect, 0)
         self.colors_combo_box.setStyleSheet(self.combo_box_style)
         self.colors_combo_box.addItem("Black")
@@ -91,16 +97,28 @@ class FirstPage:
 
         self.level_label = QtWidgets.QLabel(widget)
         self.level_label.setText("Choose level")
-        self.level_label.setGeometry(100, 340, 200, 50)
+        self.level_label.setGeometry(100, 360, 200, 50)
         self.level_label.setStyleSheet(self.label_style)
 
         self.level_combo_box = QtWidgets.QComboBox(widget)
-        self.level_combo_box.setGeometry(290, 340, 150, 30)
+        self.level_combo_box.setGeometry(290, 360, 150, 30)
         self.level_combo_box.setAttribute(Qt.WA_MacShowFocusRect, 0)
         self.level_combo_box.setStyleSheet(self.combo_box_style)
         self.level_combo_box.addItem("Beginner")
         self.level_combo_box.addItem("Intermediate")
         self.level_combo_box.addItem("Hard")
+
+        # Zero player options
+        self.opponent_player_label = QtWidgets.QLabel(widget)
+        self.opponent_player_label.setText("Opponent Player Type")
+        self.opponent_player_label.setGeometry(100, 270, 200, 50)
+        self.opponent_player_label.setStyleSheet(self.label_style)
+
+        self.opponent_player_combo_box = QtWidgets.QComboBox(widget)
+        self.opponent_player_combo_box.setGeometry(320, 270, 150, 30)
+        self.opponent_player_combo_box.setAttribute(Qt.WA_MacShowFocusRect, 0)
+        self.opponent_player_combo_box.setStyleSheet(self.combo_box_style)
+        self.opponent_player_combo_box.addItem("Some Type")
 
         self.start_button = QtWidgets.QPushButton(widget)
         self.start_button.setText("Start")
@@ -122,9 +140,12 @@ class FirstPage:
         self.colors_combo_box.hide()
         self.level_label.hide()
         self.level_combo_box.hide()
+        self.opponent_player_label.hide()
+        self.opponent_player_combo_box.hide()
         self.start_button.hide()
         self.two_player_radio_button.hide()
         self.one_player_radio_button.hide()
+        self.zero_player_radio_button.hide()
 
     def hide_setup(self):
         """
@@ -136,6 +157,8 @@ class FirstPage:
         self.colors_combo_box.hide()
         self.level_label.hide()
         self.level_combo_box.hide()
+        self.opponent_player_label.hide()
+        self.opponent_player_combo_box.hide()
         self.start_button.hide()
 
     def show(self):
@@ -145,6 +168,7 @@ class FirstPage:
         self.background_label.show()
         self.one_player_radio_button.show()
         self.two_player_radio_button.show()
+        self.zero_player_radio_button.show()
 
     def show_two_player_setup(self):
         self.hide_setup()
@@ -160,5 +184,13 @@ class FirstPage:
         self.colors_combo_box.show()
         self.level_label.show()
         self.level_combo_box.show()
+        self.start_button.show()
+
+    def show_zero_player_setup(self):
+        self.hide_setup()
+        self.board_size_label.show()
+        self.board_size_combo_box.show()
+        self.opponent_player_label.show()
+        self.opponent_player_combo_box.show()
         self.start_button.show()
 
