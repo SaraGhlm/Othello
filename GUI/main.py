@@ -10,12 +10,16 @@ import GUI.second_page as SecondPage
 class App(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
+        resolution = QtWidgets.QDesktopWidget().screenGeometry()
+        scale = 4
+        self.widget_size = (int(resolution.width()/scale), int((resolution.width()/scale)*0.7))
         self.title = 'Othello'
         self.setWindowTitle(self.title)
-        self.setFixedSize(800, 600)
+        # self.setFixedSize(800, 600)
+        self.setFixedSize(self.widget_size[0], self.widget_size[1])
         self.center()
-        self.setup_page = FirstPage.FirstPage(self)
-        self.game_page = SecondPage.SecondPage(self, 1)
+        self.setup_page = FirstPage.FirstPage(self, self.widget_size)
+        self.game_page = SecondPage.SecondPage(self, self.widget_size, 1)
         self.game_page.hide()
 
     def start_game(self):
@@ -27,7 +31,7 @@ class App(QtWidgets.QWidget):
         player_num = 1 if self.setup_page.one_player_radio_button.isChecked() else 2
         self.computer_level = self.setup_page.level_combo_box.currentText()
         self.setup_page.hide()
-        self.game_page.__init__(self, player_num,  board_size=self.board_size,
+        self.game_page.__init__(self, self.widget_size, player_num,  board_size=self.board_size,
                                 user_color=self.user_color, level=self.computer_level)
         self.game_page.show()
 
@@ -37,7 +41,7 @@ class App(QtWidgets.QWidget):
         """
         self.board_size = int(self.setup_page.board_size_combo_box.currentText())
         self.game_page.hide()
-        self.setup_page.__init__(self)
+        self.setup_page.__init__(self, self.widget_size)
         self.setup_page.show()
 
     def center(self):

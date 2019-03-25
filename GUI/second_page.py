@@ -10,29 +10,30 @@ import time
 
 class SecondPage:
 
-    def __init__(self, widget, player_num, board_size=8, user_color='b', level="Beginner"):
+    def __init__(self, widget, widget_size, player_num, board_size=8, user_color='b', level="Beginner"):
         self.player_num = player_num
         self.user_color = user_color
         self.level = level
+        font_size = 20
         self.computer_color = 'w' if user_color == 'b' else 'b'
-        self.label_style = """QLabel {
-                            color: rgba(0, 0, 0, 0.7);
-                            font-size: 20px;}"""
-        self.button_style = """QPushButton {
-                            font-size: 20px;
-                            color: rgba(1, 1, 1, 0.7);
-                            border: 2px solid #8f8f91;
-                            border-radius: 6px;
-                            background-color: rgba(255, 255, 255, 0.3);
-                            min-width: 80px;}
-                            QPushButton:hover {
-                            background-color: rgba(255, 255, 255, 0.5);}
-                            QPushButton:pressed {
-                            background-color: rgba(255, 255, 255, 0.7);}
-                            QPushButton:flat {
-                            border: none; /* no border for a flat push button */}
-                            QPushButton:default {
-                            border-color: navy; /* make the default button prominent */}"""
+        self.label_style = """QLabel {{
+                                color: rgba(0, 0, 0, 0.7);
+                                font-size: {}px;}}""".format(font_size)
+        self.button_style = """QPushButton {{ 
+                                font-size: {}px;
+                                color: rgba(1, 1, 1, 0.7);
+                                border: 2px solid #8f8f91; 
+                                border-radius: 6px; 
+                                background-color: rgba(255, 255, 255, 0.3); 
+                                min-width: 80px;}} 
+                                QPushButton:hover {{ 
+                                background-color: rgba(255, 255, 255, 0.5);}}
+                                QPushButton:pressed {{ 
+                                background-color: rgba(255, 255, 255, 0.7);}}
+                                QPushButton:flat {{ 
+                                border: none; /* no border for a flat push button */}} 
+                                QPushButton:default {{ 
+                                border-color: navy; /* make the default button prominent */}}""".format(font_size)
 
         self.board_style = """QPushButton { 
                                 background-color: rgba(255, 255, 255, 0);} 
@@ -52,44 +53,48 @@ class SecondPage:
         self.red_pixmap = QPixmap('res/red.png')
 
         self.background_label = QtWidgets.QLabel(widget)
-        self.background_label.setGeometry(0, 0, 800, 600)
+        self.background_label.setGeometry(0, 0, widget_size[0], widget_size[1])
         self.background_label.setText("")
         self.background_label.setStyleSheet("border-image: url(res/wooden-background.jpg); background-size: cover;")
         self.background_label.setObjectName("background")
 
+        board_start_position = widget_size[0]/20
         self.board_label = QtWidgets.QLabel(widget)
-        self.board_label.setGeometry(QtCore.QRect(20, 20, self.board_pixel_size, self.board_pixel_size))
+        self.board_label.setGeometry(QtCore.QRect(board_start_position, board_start_position, self.board_pixel_size, self.board_pixel_size))
         self.board_label.setText("")
         board_pic = 'res/Board' + str(self.board_size) + '.jpg'
         self.board_label.setPixmap(QtGui.QPixmap(board_pic))
         self.board_label.setScaledContents(True)
         self.board_label.setObjectName("label")
 
+        x = widget_size[0]/1.5
+        y = widget_size[1]/7
+        offset = 40
         self.white_score_label = QtWidgets.QLabel(widget)
-        self.white_score_label.setGeometry(QtCore.QRect(570, 50, 181, 21))
+        self.white_score_label.setGeometry(QtCore.QRect(x, y, 181, 21))
         self.white_score_label.setText("White's Score: ")
         self.white_score_label.setObjectName("white_Score")
         self.white_score_label.setStyleSheet(self.label_style)
 
         self.black_score_label = QtWidgets.QLabel(widget)
-        self.black_score_label.setGeometry(QtCore.QRect(570, 90, 181, 29))
+        self.black_score_label.setGeometry(QtCore.QRect(x, y+offset, 181, 29))
         self.black_score_label.setText("Black's Score: ")
         self.black_score_label.setObjectName("black_Score")
         self.black_score_label.setStyleSheet(self.label_style)
 
         self.turn_label = QtWidgets.QLabel(widget)
-        self.turn_label.setGeometry(QtCore.QRect(570, 130, 181, 29))
+        self.turn_label.setGeometry(QtCore.QRect(x, y+offset*2, 181, 29))
         self.turn_label.setText("Black's turn ")
         self.turn_label.setObjectName("turn_label")
         self.turn_label.setStyleSheet(self.label_style)
 
         self.reset_button = QtWidgets.QPushButton('Reset Game', widget)
-        self.reset_button.setGeometry(570, 200, 210, 50)
+        self.reset_button.setGeometry(x, y+offset*3.5, 210, 50)
         self.reset_button.clicked.connect(self.on_reset_click)
         self.reset_button.setStyleSheet(self.button_style)
 
         self.go_to_setup_page_button = QtWidgets.QPushButton('Back to Setup Page', widget)
-        self.go_to_setup_page_button.setGeometry(570, 270, 210, 50)
+        self.go_to_setup_page_button.setGeometry(x, y+offset*5, 210, 50)
         self.go_to_setup_page_button.clicked.connect(self.on_go_to_setup_page_button_click)
         self.go_to_setup_page_button.setStyleSheet(self.button_style)
 
@@ -100,7 +105,7 @@ class SecondPage:
 
         width = (self.board_pixel_size / self.board_size) - 0.15
         width2 = (self.board_pixel_size / self.board_size) - 4
-        starting_point = (23, 23)
+        starting_point = (board_start_position + 3, board_start_position + 3)
 
         # Initializing the push buttons for all locations in the board
         for i in range(board_size):

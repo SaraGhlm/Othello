@@ -4,60 +4,61 @@ from PyQt5 import QtWidgets
 
 class FirstPage:
 
-    def __init__(self, widget):
-        self.combo_box_style = """QComboBox { 
+    def __init__(self, widget, widget_size):
+        font_size = 20
+        self.combo_box_style = """QComboBox {{ 
                             border: 0px solid black;
                             background-color: rgba(255, 255, 255, 0.7);
                             selection-background-color: rgb(168,168,168);
                             selection-color: rgba(0, 0, 0, 0.6);
                             color: rgba(0, 0, 0, 0.6);
-                            font-size: 16px;}
-                            QComboBox::drop-down {border: 0px;}
-                            QComboBox::down-arrow { 
-                            image: url(res/drop_down.png); width: 14px; height: 14px;}"""
-        self.label_style = """QLabel {
+                            font-size: {}px;}}
+                            QComboBox::drop-down {{border: 0px;}}
+                            QComboBox::down-arrow {{ 
+                            image: url(res/drop_down.png); width: 14px; height: 14px;}}""".format(font_size)
+        self.label_style = """QLabel {{
                         color: rgba(255, 255, 255, 0.7);
-                        font-size: 20px;}"""
-        self.text_style = """QTextEdit {
+                        font-size: {}px;}}""".format(font_size)
+        self.text_style = """QTextEdit {{
                         border: 0px solid black;
                         border-bottom: 1px solid rgba(0, 0, 0, 0.7);
                         color: rgba(255, 255, 255, 0.7);
                         background-color: rgba(0, 0, 0, 0);
-                        font-size: 17px;}"""
-        self.button_style = """QPushButton { 
-                        font-size: 20px;
+                        font-size: {}px;}}""".format(font_size)
+        self.button_style = """QPushButton {{ 
+                        font-size: {}px;
                         color: rgba(1, 1, 1, 0.7);
                         border: 2px solid #8f8f91; 
                         border-radius: 6px; 
                         background-color: rgba(255, 255, 255, 0.3); 
-                        min-width: 80px;} 
-                        QPushButton:hover { 
-                        background-color: rgba(255, 255, 255, 0.5);}
-                        QPushButton:pressed { 
-                        background-color: rgba(255, 255, 255, 0.7);} 
-                        QPushButton:flat { 
-                        border: none; /* no border for a flat push button */} 
-                        QPushButton:default { 
-                        border-color: navy; /* make the default button prominent */}"""
-        self.radio_button_style = """QRadioButton {
+                        min-width: 80px;}} 
+                        QPushButton:hover {{ 
+                        background-color: rgba(255, 255, 255, 0.5);}}
+                        QPushButton:pressed {{ 
+                        background-color: rgba(255, 255, 255, 0.7);}}
+                        QPushButton:flat {{ 
+                        border: none; /* no border for a flat push button */}} 
+                        QPushButton:default {{ 
+                        border-color: navy; /* make the default button prominent */}}""".format(font_size)
+        self.radio_button_style = """QRadioButton {{
                         color: rgba(255, 255, 255, 0.7);
-                        font-size: 17px}"""
+                        font-size: {}px}}""".format(font_size)
 
         self.group_box_style = """QGroupBox {
                                 border: 0px;}"""
 
         self.background_label = QtWidgets.QLabel(widget)
-        self.background_label.setGeometry(0, 0, 800, 600)
+        self.background_label.setGeometry(0, 0, widget_size[0], widget_size[1])
         self.background_label.setStyleSheet("border-image: url(res/bg.jpg);")
 
         self.two_player_radio_button = QtWidgets.QRadioButton(widget)
-        self.two_player_radio_button.setGeometry(100, 90, 150, 30)
+        self.two_player_radio_button.setGeometry(widget_size[0]/8, widget_size[1]/8, 150, 30)
         self.two_player_radio_button.setText("Two Player")
         self.two_player_radio_button.setStyleSheet(self.radio_button_style)
         self.two_player_radio_button.clicked.connect(self.show_two_player_setup)
 
         self.one_player_radio_button = QtWidgets.QRadioButton(widget)
-        self.one_player_radio_button.setGeometry(260, 90, 150, 30)
+        self.one_player_radio_button.setGeometry(widget_size[0]/8 + 160, widget_size[1]/8, 150, 30)
         self.one_player_radio_button.setText("One Player")
         self.one_player_radio_button.setStyleSheet(self.radio_button_style)
         self.one_player_radio_button.clicked.connect(self.show_one_player_setup)
