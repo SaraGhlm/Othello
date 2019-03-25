@@ -146,8 +146,8 @@ class SecondPage:
             If not, it resets and initializes the board
         """
         button_reply = QtWidgets.QMessageBox.question(self.widget, "Warning",
-                                                     "Are you sure you want to clear the board?",
-                                                     QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
+                                                      "Are you sure you want to clear the board?",
+                                                      QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
         if button_reply == QtWidgets.QMessageBox.Yes:
             self.clear_board()
             self.init_board()
@@ -158,10 +158,10 @@ class SecondPage:
             It shows a message box to make sure user has not clicked the button accidentally.
             If not, it goes to the setup page.
         """
-        buttonReply = QtWidgets.QMessageBox.question(self.widget, "Warning",
-                                                     "The game will end. Are you sure?",
-                                                     QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
-        if buttonReply == QtWidgets.QMessageBox.Yes:
+        button_reply = QtWidgets.QMessageBox.question(self.widget, "Warning",
+                                                      "The game will end. Are you sure?",
+                                                      QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
+        if button_reply == QtWidgets.QMessageBox.Yes:
             self.widget.back_to_setup_page()
 
     def player_clicked(self, label_name):
@@ -173,7 +173,8 @@ class SecondPage:
         pattern = re.compile(r'(.*)_(.*)')
         result = pattern.match(label_name)
         if self.current_player == self.user_color or self.player_num == 2:
-            finished = self.place_stone(self.current_player, (self.str_to_int[result.group(1)], self.str_to_int[result.group(2)]))
+            finished = self.place_stone(self.current_player,
+                                        (self.str_to_int[result.group(1)], self.str_to_int[result.group(2)]))
             if self.player_num == 1 and finished is False and self.current_player == self.computer_color:
                 time.sleep(1)
                 loc = self.computer_player.move(self.current_board)
@@ -283,8 +284,9 @@ class SecondPage:
         self.show_valid_moves()
 
         if sum(sum(self.move_validity_check)) == 0 and sum(sum(self.current_board)) > 1:
-            button_reply = QtWidgets.QMessageBox.information(self.widget, "Warning", "No possible move, changing player",
-                                                            QtWidgets.QMessageBox.Ok)
+            button_reply = QtWidgets.QMessageBox.information(self.widget, "Warning",
+                                                             "No possible move, changing player",
+                                                             QtWidgets.QMessageBox.Ok)
             if button_reply == QtWidgets.QMessageBox.Ok:
                 self.show_valid_moves()
                 if self.current_player == 'b':
@@ -323,7 +325,8 @@ class SecondPage:
         for i in range(len(rows)):
             name = self.int_to_str[rows[i]] + '_' + self.int_to_str[columns[i]]
             exec('self.' + name + '.setIcon(icon)')
-            exec('self.' + name + '.setIconSize(QtCore.QSize(self.' + name + '.width()/4, self.' + name + '.height()/4))')
+            exec(
+                'self.' + name + '.setIconSize(QtCore.QSize(self.' + name + '.width()/4, self.' + name + '.height()/4))')
 
     def hide(self):
         """
