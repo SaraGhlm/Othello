@@ -52,7 +52,7 @@ class SecondPage:
                                     border-radius: 5px;
                                     padding: 3px;}"""
         self.board_size = board_size
-        self.board_pixel_size = int(widget_size[0]/2)
+        self.board_pixel_size = int(widget_size[0] / 2)
         self.widget = widget
 
         self.opponent_player = None
@@ -117,7 +117,7 @@ class SecondPage:
 
         self.notification_label = QtWidgets.QLabel(widget)
         self.notification_label.setGeometry(QtCore.QRect(570, 350, 181, 100))
-        self.notification_label.setText("Hi!")
+        self.notification_label.setWordWrap(True)
         self.notification_label.setStyleSheet(self.notification_style)
 
         self.int_to_str = {0: 'zero', 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven',
@@ -137,16 +137,17 @@ class SecondPage:
                 name = self.int_to_str[i] + '_' + self.int_to_str[j]
                 if i == 0:
                     exec('self.alphabet_' + name + "= QtWidgets.QLabel(widget)")
-                    exec('self.alphabet_' + name + ".setGeometry(QtCore.QRect(board_start_position+width*(j)+width/2-3, "
-                                                   "board_start_position-width/2, 30, 30))")
+                    exec(
+                        'self.alphabet_' + name + ".setGeometry(QtCore.QRect(board_start_position+width*(j)+width/2-3, "
+                                                  "board_start_position-width/2, 30, 30))")
                     exec('self.alphabet_' + name + ".setText('" + alphabets[j] + "')")
                     exec('self.alphabet_' + name + ".setStyleSheet(self.label_style)")
 
                 if j == 0:
                     exec('self.number_' + name + "= QtWidgets.QLabel(widget)")
                     exec('self.number_' + name + ".setGeometry(QtCore.QRect(board_start_position-width/2, "
-                                                   "board_start_position+width*(i)+width/2-9, 30, 30))")
-                    exec('self.number_' + name + ".setText('" + str(i+1) + "')")
+                                                 "board_start_position+width*(i)+width/2-9, 30, 30))")
+                    exec('self.number_' + name + ".setText('" + str(i + 1) + "')")
                     exec('self.number_' + name + ".setStyleSheet(self.label_style)")
 
                 exec('self.' + name + "= QtWidgets.QPushButton('', widget)")
@@ -451,6 +452,7 @@ class SecondPage:
                 if j == 0:
                     exec('self.number_' + name + '.show()')
                 exec('self.' + name + '.show()')
+
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
