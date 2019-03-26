@@ -29,7 +29,5 @@ class Playground(QThread):
             self.sleep(1)
         return
 
-
-
     def set_board(self, board):
         self.board = board

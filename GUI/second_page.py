@@ -116,7 +116,7 @@ class SecondPage:
 
         self.notification_label = QtWidgets.QLabel(widget)
         self.notification_label.setGeometry(QtCore.QRect(570, 350, 181, 100))
-        self.notification_label.setText("Hi!")
+        self.notification_label.setWordWrap(True)
         self.notification_label.setStyleSheet(self.notification_style)
 
         self.int_to_str = {0: 'zero', 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven',
