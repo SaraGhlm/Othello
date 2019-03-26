@@ -16,14 +16,63 @@ class Player:
         self.computer_num = 1 if self.computer_color == 'b' else 2
         self.opponent_num = 1 if self.computer_color == 'w' else 2
         self.game = Game(self.board_size)
-        self.static_weight = np.array([[4, -3, 2, 2, 2, 2, -3, 4],
-                                       [-3, -4, -1, -1, -1, -1, -4, -3],
-                                       [2, -1, 1, 0, 0, 1, -1, 2],
-                                       [2, -1, 0, 1, 1, 0, -1, 2],
-                                       [2, -1, 0, 1, 1, 0, -1, 2],
-                                       [2, -1, 1, 0, 0, 1, -1, 2],
-                                       [-3, -4, -1, -1, -1, -1, -4, -3],
-                                       [4, -3, 2, 2, 2, 2, -3, 4]])
+        self.static_weight = self.get_static_weight()
+
+    def get_static_weight(self):
+        if self.board_size == 8:
+            weights = np.array([[4, -3, 2, 2, 2, 2, -3, 4],
+                                [-3, -4, -1, -1, -1, -1, -4, -3],
+                                [2, -1, 1, 0, 0, 1, -1, 2],
+                                [2, -1, 0, 1, 1, 0, -1, 2],
+                                [2, -1, 0, 1, 1, 0, -1, 2],
+                                [2, -1, 1, 0, 0, 1, -1, 2],
+                                [-3, -4, -1, -1, -1, -1, -4, -3],
+                                [4, -3, 2, 2, 2, 2, -3, 4]])
+            return weights
+        if self.board_size == 10:
+            weights = np.array([[4, -3, 2, 2, 2, 2, 2, 2, -3, 4],
+                                [-3, -4, -1, -1, -1, -1, -1, -1, -4, -3],
+                                [2, -1, 1, 0, 0, 0, 0, 1, -1, 2],
+                                [2, -1, 0, 1, 0, 0, 1, 0, -1, 2],
+                                [2, -1, 0, 0, 1, 1, 0, 0, -1, 2],
+                                [2, -1, 0, 0, 1, 1, 0, 0, -1, 2],
+                                [2, -1, 0, 1, 0, 0, 1, 0, -1, 2],
+                                [2, -1, 1, 0, 0, 0, 0, 1, -1, 2],
+                                [-3, -4, -1, -1, -1, -1, -1, -1, -4, -3],
+                                [4, -3, 2, 2, 2, 2, 2, 2, -3, 4]])
+            return weights
+
+        if self.board_size == 12:
+            weights = np.array([[4, -3, 2, 2, 2, 2, 2, 2, 2, 2, -3, 4],
+                                [-3, -4, -1, -1, -1, -1, -1, -1, -1, -1, -4, -3],
+                                [2, -1, 1, 0, 0, 0, 0, 0, 0, 1, -1, 2],
+                                [2, -1, 0, 1, 0, 0, 0, 0, 1, 0, -1, 2],
+                                [2, -1, 0, 0, 1, 0, 0, 1, 0, 0, -1, 2],
+                                [2, -1, 0, 0, 0, 1, 1, 0, 0, 0, -1, 2],
+                                [2, -1, 0, 0, 0, 1, 1, 0, 0, 0, -1, 2],
+                                [2, -1, 0, 0, 1, 0, 0, 1, 0, 0, -1, 2],
+                                [2, -1, 0, 1, 0, 0, 0, 0, 1, 0, -1, 2],
+                                [2, -1, 1, 0, 0, 0, 0, 0, 0, 1, -1, 2],
+                                [-3, -4, -1, -1, -1, -1, -1, -1, -1, -1, -4, -3],
+                                [4, -3, 2, 2, 2, 2, 2, 2, 2, 2, -3, 4]])
+            return weights
+
+        if self.board_size == 14:
+            weights = np.array([[4, -3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, -3, 4],
+                              [-3, -4, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -4, -3],
+                              [2, -1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 2],
+                              [2, -1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, -1, 2],
+                              [2, -1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -1, 2],
+                              [2, -1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, -1, 2],
+                              [2, -1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, -1, 2],
+                              [2, -1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, -1, 2],
+                              [2, -1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, -1, 2],
+                              [2, -1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -1, 2],
+                              [2, -1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, -1, 2],
+                              [2, -1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 2],
+                              [-3, -4, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -4, -3],
+                              [4, -3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, -3, 4]])
+            return weights
 
     def alpha_beta_search(self, board, depth):
         infinity = float('inf')  # TODO change initial values in the rest of the code
@@ -43,7 +92,8 @@ class Player:
 
         for i in range(len(sorted_rows)):
             temp_board = np.copy(board)
-            temp_board = self.game.flip_opponent_stones((sorted_rows[i], sorted_columns[i]), temp_board, self.board_size,
+            temp_board = self.game.flip_opponent_stones((sorted_rows[i], sorted_columns[i]), temp_board,
+                                                        self.board_size,
                                                         self.computer_num, self.opponent_num)
             value = self.min_value(temp_board, best_val, beta, depth - 1)
             if value > best_val:
@@ -70,7 +120,8 @@ class Player:
 
         for i in range(len(sorted_rows)):
             temp_board = np.copy(board)
-            temp_board = self.game.flip_opponent_stones((sorted_rows[i], sorted_columns[i]), temp_board, self.board_size,
+            temp_board = self.game.flip_opponent_stones((sorted_rows[i], sorted_columns[i]), temp_board,
+                                                        self.board_size,
                                                         self.computer_num, self.opponent_num)
             value = max(value, self.min_value(temp_board, alpha, beta, depth - 1))
             if value >= beta:
@@ -97,7 +148,8 @@ class Player:
 
         for i in range(len(sorted_rows)):
             temp_board = np.copy(board)
-            temp_board = self.game.flip_opponent_stones((sorted_rows[i], sorted_columns[i]), temp_board, self.board_size,
+            temp_board = self.game.flip_opponent_stones((sorted_rows[i], sorted_columns[i]), temp_board,
+                                                        self.board_size,
                                                         self.opponent_num, self.computer_num)
             value = min(value, self.max_value(temp_board, alpha, beta, depth - 1))
             if value <= alpha:
@@ -107,11 +159,19 @@ class Player:
         return value
 
     def move(self, board):
-        if self.level == "Beginner":
+        """
+            Based on the current board and player type, we return the computer player's best move.
+
+            Each player calculates a specific value for all of the possible moves, and returns the
+            location with the maximum value.
+        :param board: the current state of the board
+        :return: A tuple representing the location of computer player's move
+        """
+        if self.level == "Combination_Beginner":
             return self.alpha_beta_search(board, 1)
-        elif self.level == "Intermediate":
+        elif self.level == "Combination_Intermediate":
             return self.alpha_beta_search(board, 2)
-        elif self.level == "Hard":
+        elif self.level == "Combination_Hard":
             return self.alpha_beta_search(board, 3)
 
     # def move(self, board):
@@ -148,14 +208,6 @@ class Player:
         :param board: the current state of the board
         :return: A tuple representing the location of static player's move
         """
-        static_weight = np.array([[4, -3, 2, 2, 2, 2, -3, 4],
-                                  [-3, -4, -1, -1, -1, -1, -4, -3],
-                                  [2, -1, 1, 0, 0, 1, -1, 2],
-                                  [2, -1, 0, 1, 1, 0, -1, 2],
-                                  [2, -1, 0, 1, 1, 0, -1, 2],
-                                  [2, -1, 1, 0, 0, 1, -1, 2],
-                                  [-3, -4, -1, -1, -1, -1, -4, -3],
-                                  [4, -3, 2, 2, 2, 2, -3, 4]])
         valid_moves = self.game.find_valid_moves(self.computer_color, board, self.board_size)
         rows, columns = np.where(valid_moves == 1)
         max_value = -10000000
@@ -167,7 +219,7 @@ class Player:
                                                         self.computer_num, self.opponent_num)
             stone_rows, stone_columns = np.where(temp_board == self.computer_num)
             for j in range(len(stone_rows)):
-                move_value += static_weight[stone_rows[j]][stone_columns[j]]
+                move_value += self.static_weight[stone_rows[j]][stone_columns[j]]
             if move_value > max_value:
                 max_value = move_value
                 location = (rows[i], columns[i])
@@ -301,22 +353,15 @@ class Player:
 
     def combination(self, board):
         value = 600 * self.stability(board) + 801.724 * self.corners(board) + 78.922 * self.mobility(
-            board) + 77 * self.potential_mobility(board) + 74.396 * self.stone_parity(board) + 200 * self.stone_score_static(board)
+            board) + 77 * self.potential_mobility(board) + 74.396 * self.stone_parity(
+            board) + 200 * self.stone_score_static(board)
         return value
 
     def stone_score_static(self, board):
-        static_weight = np.array([[4, -3, 2, 2, 2, 2, -3, 4],
-                                  [-3, -4, -1, -1, -1, -1, -4, -3],
-                                  [2, -1, 1, 0, 0, 1, -1, 2],
-                                  [2, -1, 0, 1, 1, 0, -1, 2],
-                                  [2, -1, 0, 1, 1, 0, -1, 2],
-                                  [2, -1, 1, 0, 0, 1, -1, 2],
-                                  [-3, -4, -1, -1, -1, -1, -4, -3],
-                                  [4, -3, 2, 2, 2, 2, -3, 4]])
         move_value = 0
         rows, columns = np.where(board == self.computer_num)
         for j in range(len(rows)):
-            move_value += static_weight[rows[j]][columns[j]]
+            move_value += self.static_weight[rows[j]][columns[j]]
         return move_value
 
     def stone_parity(self, board):
