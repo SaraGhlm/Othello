@@ -138,13 +138,13 @@ class SecondPage:
                     exec('self.alphabet_' + name + "= QtWidgets.QLabel(widget)")
                     exec(
                         'self.alphabet_' + name + ".setGeometry(QtCore.QRect(board_start_position+width*(j)+width/2-3, "
-                                                  "board_start_position-width/2 - width/6, 30, 30))")
+                                                  "board_start_position-width/2-3, 30, 30))")
                     exec('self.alphabet_' + name + ".setText('" + alphabets[j] + "')")
                     exec('self.alphabet_' + name + ".setStyleSheet(self.label_style)")
 
                 if j == 0:
                     exec('self.number_' + name + "= QtWidgets.QLabel(widget)")
-                    exec('self.number_' + name + ".setGeometry(QtCore.QRect(board_start_position-width/2 - width/6, "
+                    exec('self.number_' + name + ".setGeometry(QtCore.QRect(board_start_position-width/2, "
                                                  "board_start_position+width*(i)+width/2-9, 30, 30))")
                     exec('self.number_' + name + ".setText('" + str(i + 1) + "')")
                     exec('self.number_' + name + ".setStyleSheet(self.label_style)")
