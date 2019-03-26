@@ -8,8 +8,8 @@ import operator
 # player will choose the one with highest score
 
 class Player:
-    def __init__(self, level, board_size, computer_color):
-        self.level = level
+    def __init__(self, name, board_size, computer_color):
+        self.name = name
         self.board_size = board_size
         self.computer_color = computer_color
         self.opponent_color = 'w' if self.computer_color == 'b' else 'b'
@@ -88,7 +88,10 @@ class Player:
         sorted_rows = [x for _, x in sorted(zip(square_value, rows), key=lambda pair: pair[0])]
         sorted_columns = [x for _, x in sorted(zip(square_value, columns), key=lambda pair: pair[0])]
 
-        best_move = (sorted_rows[0], sorted_columns[0])
+        try:
+            best_move = (sorted_rows[0], sorted_columns[0])
+        except:
+            best_move = None
 
         for i in range(len(sorted_rows)):
             temp_board = np.copy(board)
@@ -167,11 +170,27 @@ class Player:
         :param board: the current state of the board
         :return: A tuple representing the location of computer player's move
         """
-        if self.level == "Combination_Beginner":
+        if self.name == "Combination_Beginner":
             return self.alpha_beta_search(board, 1)
-        elif self.level == "Combination_Intermediate":
+        elif self.name == "Combination_Intermediate":
             return self.alpha_beta_search(board, 2)
-        elif self.level == "Combination_Hard":
+        elif self.name == "Combination_Hard":
+            return self.alpha_beta_search(board, 3)
+        elif self.name == "static":
+            return self.static_player(board)
+        elif self.name == "parity":
+            return self.parity_player(board)
+        elif self.name == "mobility":
+            return self.mobility_player(board)
+        elif self.name == "pmobility":
+            return self.potential_mobility_player(board)
+        elif self.name == "corners":
+            return self.corners_player(board)
+        elif self.name == "stability":
+            return self.stability_player(board)
+        elif self.name == "combination":
+            return self.combination_player(board)
+        elif self.name == "alpha-beta":
             return self.alpha_beta_search(board, 3)
 
     # def move(self, board):
@@ -352,9 +371,9 @@ class Player:
         return location
 
     def combination(self, board):
-        value = 600 * self.stability(board) + 801.724 * self.corners(board) + 78.922 * self.mobility(
-            board) + 77 * self.potential_mobility(board) + 74.396 * self.stone_parity(
-            board) + 200 * self.stone_score_static(board)
+        value = 60 * self.stability(board) + 80 * self.corners(board) + 10 * self.mobility(
+            board) + 10 * self.potential_mobility(board) + 10 * self.stone_parity(
+            board) + 20 * self.stone_score_static(board)
         return value
 
     def stone_score_static(self, board):

@@ -167,10 +167,30 @@ class SecondPage:
 
     def auto_play(self, loc):
         if self.playground_thread.turn:
-            self.place_stone(self.computer_player.computer_color, loc)
+            if loc is not None:
+                self.place_stone(self.computer_player.computer_color, loc)
+            else:
+                if self.current_player == 'b':
+                    self.current_player = 'w'
+                    self.turn_label.setText("White's turn ")
+                elif self.current_player == 'w':
+                    self.current_player = 'b'
+                    self.turn_label.setText("Black's turn ")
+                else:
+                    raise ValueError('invalid color')
             self.playground_thread.turn = True if self.current_player == self.computer_player.computer_color else False
         else:
-            self.place_stone(self.second_player.computer_color, loc)
+            if loc is not None:
+                self.place_stone(self.second_player.computer_color, loc)
+            else:
+                if self.current_player == 'b':
+                    self.current_player = 'w'
+                    self.turn_label.setText("White's turn ")
+                elif self.current_player == 'w':
+                    self.current_player = 'b'
+                    self.turn_label.setText("Black's turn ")
+                else:
+                    raise ValueError('invalid color')
             self.playground_thread.turn = True if self.current_player == self.computer_player.computer_color else False
 
     def init_board(self):
@@ -191,7 +211,17 @@ class SecondPage:
         if self.player_num == 1:
             if self.computer_player.computer_color == self.current_player:
                 loc = self.computer_player.move(self.current_board)
-                self.place_stone(self.computer_player.computer_color, loc)
+                if loc is not None:
+                    self.place_stone(self.computer_player.computer_color, loc)
+                else:
+                    if self.current_player == 'b':
+                        self.current_player = 'w'
+                        self.turn_label.setText("White's turn ")
+                    elif self.current_player == 'w':
+                        self.current_player = 'b'
+                        self.turn_label.setText("Black's turn ")
+                    else:
+                        raise ValueError('invalid color')
             self.show_valid_moves()
 
     def init_thread(self):
@@ -245,7 +275,17 @@ class SecondPage:
             if self.player_num == 1 and finished is False and self.current_player == self.computer_player.computer_color:
                 time.sleep(1)
                 loc = self.computer_player.move(self.current_board)
-                self.place_stone(self.computer_player.computer_color, loc)
+                if loc is not None:
+                    self.place_stone(self.computer_player.computer_color, loc)
+                else:
+                    if self.current_player == 'b':
+                        self.current_player = 'w'
+                        self.turn_label.setText("White's turn ")
+                    elif self.current_player == 'w':
+                        self.current_player = 'b'
+                        self.turn_label.setText("Black's turn ")
+                    else:
+                        raise ValueError('invalid color')
 
     def clear_board(self):
         """
@@ -338,7 +378,8 @@ class SecondPage:
         # Is the game finished after this move?
         is_finished, message = self.game.game_over(self.current_board)
         if is_finished and sum(sum(self.current_board)) > 1:
-            self.playground_thread.is_finished = True
+            if self.player_num == 0:
+                self.playground_thread.is_finished = True
             button_reply = QtWidgets.QMessageBox.information(self.widget, "Result", message, QtWidgets.QMessageBox.Ok)
             if button_reply == QtWidgets.QMessageBox.Ok:
                 if self.player_num == 0:
@@ -380,7 +421,17 @@ class SecondPage:
                     self.show_valid_moves()
                     if self.current_player == self.computer_player.computer_color and self.player_num == 1:
                         loc = self.computer_player.move(self.current_board)
-                        self.place_stone(self.computer_player.computer_color, loc)
+                        if loc is not None:
+                            self.place_stone(self.computer_player.computer_color, loc)
+                        else:
+                            if player_color == 'b':
+                                self.current_player = 'w'
+                                self.turn_label.setText("White's turn ")
+                            elif player_color == 'w':
+                                self.current_player = 'b'
+                                self.turn_label.setText("Black's turn ")
+                            else:
+                                raise ValueError('invalid color')
         self.widget.repaint()
         self.start_board()
         return False
