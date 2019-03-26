@@ -13,12 +13,12 @@ from PyQt5.QtCore import QThread, pyqtSignal
 
 class SecondPage:
 
-    def __init__(self, widget, player_num, board_size=8, user_color='b', level="Hard", mode=False, opponent_type=None,
+    def __init__(self, widget, player_num, board_size=8, user_color='b', level="Hard", opponent_type=None,
                  init=False):
         self.player_num = player_num
         self.user_color = user_color
         self.level = level
-        self.mode = mode
+        self.init = init
         self.computer_color = 'w' if user_color == 'b' else 'b'
         self.label_style = """QLabel {
                             color: rgba(0, 0, 0, 0.7);
@@ -141,27 +141,22 @@ class SecondPage:
         QtCore.QMetaObject.connectSlotsByName(widget)
         widget.show()
 
-        if init is False and mode is True:
-            self._turn = True
-            self.playground_thread = Playground(self.board_size, self.computer_player, self.opponent_player,
-                                                self.current_board, turn=True)
-            self.playground_thread.signal.connect(self.auto_play)
-            self.playground_thread.start()
+        if self.init is False and self.player_num == 0:
+            self.init_thread()
 
     def auto_play(self, loc):
-        if self._turn:
+        if self.playground_thread.turn:
             self.place_stone(self.computer_color, loc)
-            self._turn = False
             self.playground_thread.turn = True if self.current_player == self.computer_color else False
         else:
             self.place_stone(self.opponent_player.computer_color, loc)
-            self._turn = True
             self.playground_thread.turn = True if self.current_player == self.computer_color else False
 
     def init_board(self):
         """
             Initializes the board with 4 stones in the center. If the computer player is the first player, it plays.
         """
+
         center = (int(self.board_size / 2), int(self.board_size / 2))
         # current_board is a matrix of zeros. 1 is for black and 2 is for white stones
         self.current_board = np.zeros((self.board_size, self.board_size), dtype=int)
@@ -178,6 +173,11 @@ class SecondPage:
                 self.place_stone(self.computer_color, loc)
             self.show_valid_moves()
 
+    def init_thread(self):
+        self.playground_thread = Playground(self.board_size, self.computer_player, self.opponent_player,
+                                            self.current_board, turn=True)
+        self.playground_thread.signal.connect(self.auto_play)
+        self.playground_thread.start()
 
     def on_reset_click(self):
         """
@@ -191,6 +191,10 @@ class SecondPage:
         if button_reply == QtWidgets.QMessageBox.Yes:
             self.clear_board()
             self.init_board()
+            if self.player_num == 0:
+                self.playground_thread.is_finished = True
+                self.playground_thread.exit()
+                self.init_thread()
 
     def on_go_to_setup_page_button_click(self):
         """
@@ -202,6 +206,8 @@ class SecondPage:
                                                       "The game will end. Are you sure?",
                                                       QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
         if button_reply == QtWidgets.QMessageBox.Yes:
+            if self.player_num == 0:
+                self.playground_thread.is_finished = True
             self.widget.back_to_setup_page()
 
     def player_clicked(self, label_name):
@@ -304,7 +310,6 @@ class SecondPage:
             self.turn_label.setText("Black's turn ")
         else:
             raise ValueError('invalid color')
-
         self.clear_board()
         self.show_board()
         self.update_scores()
@@ -312,19 +317,23 @@ class SecondPage:
         # Is the game finished after this move?
         is_finished, message = self.game.game_over(self.current_board)
         if is_finished and sum(sum(self.current_board)) > 1:
-            button_reply = QtWidgets.QMessageBox.information(self.widget, "Result", message, QtWidgets.QMessageBox.Ok)
             self.playground_thread.is_finished = True
+            button_reply = QtWidgets.QMessageBox.information(self.widget, "Result", message, QtWidgets.QMessageBox.Ok)
             if button_reply == QtWidgets.QMessageBox.Ok:
-                self.clear_board()
-                self.init_board()
-                return True
+                if self.player_num == 0:
+                    self.widget.back_to_setup_page()
+                    return True
+                else:
+                    self.clear_board()
+                    self.init_board()
+                    return True
 
         # Does the next player has possible valid moves? If not, the other player should make a move
         self.move_validity_check = np.zeros((self.board_size, self.board_size), dtype=int)
         self.show_valid_moves()
 
         if sum(sum(self.move_validity_check)) == 0 and sum(sum(self.current_board)) > 1:
-            if self.mode is True:
+            if self.player_num == 0:
                 self.notification_label.setText("No possible move, changing player")
                 self.notification_label.show()
                 self.show_valid_moves()

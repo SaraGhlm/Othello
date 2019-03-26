@@ -24,15 +24,19 @@ class App(QtWidgets.QWidget):
         """
         self.board_size = int(self.setup_page.board_size_combo_box.currentText())
         self.user_color = 'b' if self.setup_page.colors_combo_box.currentText() == 'Black' else 'w'
-        player_num = 1 if self.setup_page.one_player_radio_button.isChecked() else 2
+        if self.setup_page.one_player_radio_button.isChecked():
+            player_num = 1
+        elif self.setup_page.two_player_radio_button.isChecked():
+            player_num = 2
+        else:
+            player_num = 0
         self.computer_level = self.setup_page.level_combo_box.currentText()
-        self.mode = self.setup_page.zero_player_radio_button.isChecked()
         self.opponent = None
-        if self.mode is True:
+        if player_num == 0:
             self.opponent = self.setup_page.opponent_player_combo_box.currentText()
         self.setup_page.hide()
         self.game_page.__init__(self, player_num, board_size=self.board_size,
-                                user_color=self.user_color, level=self.computer_level, mode=self.mode,
+                                user_color=self.user_color, level=self.computer_level,
                                 opponent_type=self.opponent, init=False)
         self.game_page.show()
 

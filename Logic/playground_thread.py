@@ -19,9 +19,7 @@ class Playground(QThread):
 
     def run(self):
         self.turn = True
-        while True:
-            if self.is_finished:
-                break
+        while not self.is_finished:
             if self.turn:
                 loc = self.player.move(self.board)
                 self.signal.emit(loc)
@@ -29,6 +27,9 @@ class Playground(QThread):
                 loc = self.opponent.move(self.board)
                 self.signal.emit(loc)
             self.sleep(1)
+        return
+
+
 
     def set_board(self, board):
         self.board = board
