@@ -190,34 +190,6 @@ class Player:
             return self.stability_player(board)
         elif self.name == "combination":
             return self.combination_player(board)
-        elif self.name == "alpha-beta":
-            return self.alpha_beta_search(board, 3)
-
-    # def move(self, board):
-    #     """
-    #         Based on the current board and player type, we return the computer player's best move.
-    #
-    #         Each player calculates a specific value for all of the possible moves, and returns the
-    #         location with the maximum value.
-    #     :param board: the current state of the board
-    #     :return: A tuple representing the location of computer player's move
-    #     """
-    #     if self.type == "static":
-    #         return self.static_player(board)
-    #     elif self.type == "parity":
-    #         return self.parity_player(board)
-    #     elif self.type == "mobility":
-    #         return self.mobility_player(board)
-    #     elif self.type == "pmobility":
-    #         return self.potential_mobility_player(board)
-    #     elif self.type == "corners":
-    #         return self.corners_player(board)
-    #     elif self.type == "stability":
-    #         return self.stability_player(board)
-    #     elif self.type == "combination":
-    #         return self.combination_player(board)
-    #     elif self.type == "alpha-beta":
-    #         return self.alpha_beta_search(board, 3)
 
     def static_player(self, board):
         """
