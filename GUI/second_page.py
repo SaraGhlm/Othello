@@ -3,47 +3,63 @@ from PyQt5.QtGui import QIcon, QPixmap
 from Logic.game import Game
 import numpy as np
 from Logic.player import Player
+from Logic.random_player import RandomPlayer
+from Logic.playground_thread import Playground
 import re
 import sys
 import time
+from PyQt5.QtCore import QThread, pyqtSignal
 
 
 class SecondPage:
 
-    def __init__(self, widget, widget_size, player_num, board_size=8, user_color='b', level="Beginner"):
+    def __init__(self, widget, widget_size, player_num, board_size=8, user_color='b', level="Hard", opponent_type=None,
+                 init=False):
         self.player_num = player_num
         self.user_color = user_color
         self.level = level
-        font_size = 20
+        self.init = init
         self.computer_color = 'w' if user_color == 'b' else 'b'
         self.label_style = """QLabel {{
                                 color: rgba(0, 0, 0, 0.7);
                                 font-size: {}px;}}""".format(font_size)
-        self.button_style = """QPushButton {{ 
+        self.button_style = """QPushButton {{
                                 font-size: {}px;
                                 color: rgba(1, 1, 1, 0.7);
-                                border: 2px solid #8f8f91; 
-                                border-radius: 6px; 
-                                background-color: rgba(255, 255, 255, 0.3); 
-                                min-width: 80px;}} 
-                                QPushButton:hover {{ 
+                                border: 2px solid #8f8f91;
+                                border-radius: 6px;
+                                background-color: rgba(255, 255, 255, 0.3);
+                                min-width: 80px;}}
+                                QPushButton:hover {{
                                 background-color: rgba(255, 255, 255, 0.5);}}
-                                QPushButton:pressed {{ 
+                                QPushButton:pressed {{
                                 background-color: rgba(255, 255, 255, 0.7);}}
-                                QPushButton:flat {{ 
-                                border: none; /* no border for a flat push button */}} 
-                                QPushButton:default {{ 
+                                QPushButton:flat {{
+                                border: none; /* no border for a flat push button */}}
+                                QPushButton:default {{
                                 border-color: navy; /* make the default button prominent */}}""".format(font_size)
 
-        self.board_style = """QPushButton { 
-                                background-color: rgba(255, 255, 255, 0);} 
+        self.board_style = """QPushButton {
+                                background-color: rgba(255, 255, 255, 0);}
                                 QPushButton:disabled {
                                 background-color: rgba(255, 255, 255, 0);}
                                 """
 
+        self.notification_style = """QLabel {
+                                    background: rgba(200, 0, 0, 0.7);
+                                    font-size: 20px;
+                                    color: rgba(255, 255, 255, 1);
+                                    border-radius: 5px;
+                                    padding: 3px;}"""
         self.board_size = board_size
         self.board_pixel_size = int(widget_size[0]/2)
         self.widget = widget
+
+        self.opponent_player = None
+        if opponent_type is not None:
+            # self.opponent_player = RandomPlayer(board_size, 'w')
+            self.opponent_player = Player(self.level, self.board_size, 'w')
+            self.computer_color = 'b'
 
         self.computer_player = Player(self.level, self.board_size, self.computer_color)
         self.game = Game(self.board_size)
@@ -99,6 +115,11 @@ class SecondPage:
         self.go_to_setup_page_button.clicked.connect(self.on_go_to_setup_page_button_click)
         self.go_to_setup_page_button.setStyleSheet(self.button_style)
 
+        self.notification_label = QtWidgets.QLabel(widget)
+        self.notification_label.setGeometry(QtCore.QRect(570, 350, 181, 100))
+        self.notification_label.setText("Hi!")
+        self.notification_label.setStyleSheet(self.notification_style)
+
         self.int_to_str = {0: 'zero', 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven',
                            8: 'eight', 9: 'nine', 10: 'ten', 11: 'eleven', 12: 'twelve', 13: 'thirteen'}
         self.str_to_int = {'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5, 'six': 6, 'seven': 7,
@@ -141,10 +162,22 @@ class SecondPage:
         QtCore.QMetaObject.connectSlotsByName(widget)
         widget.show()
 
+        if self.init is False and self.player_num == 0:
+            self.init_thread()
+
+    def auto_play(self, loc):
+        if self.playground_thread.turn:
+            self.place_stone(self.computer_color, loc)
+            self.playground_thread.turn = True if self.current_player == self.computer_color else False
+        else:
+            self.place_stone(self.opponent_player.computer_color, loc)
+            self.playground_thread.turn = True if self.current_player == self.computer_color else False
+
     def init_board(self):
         """
             Initializes the board with 4 stones in the center. If the computer player is the first player, it plays.
         """
+
         center = (int(self.board_size / 2), int(self.board_size / 2))
         # current_board is a matrix of zeros. 1 is for black and 2 is for white stones
         self.current_board = np.zeros((self.board_size, self.board_size), dtype=int)
@@ -161,6 +194,12 @@ class SecondPage:
                 self.place_stone(self.computer_color, loc)
             self.show_valid_moves()
 
+    def init_thread(self):
+        self.playground_thread = Playground(self.board_size, self.computer_player, self.opponent_player,
+                                            self.current_board, turn=True)
+        self.playground_thread.signal.connect(self.auto_play)
+        self.playground_thread.start()
+
     def on_reset_click(self):
         """
             This function in called when reset button is clicked.
@@ -173,6 +212,10 @@ class SecondPage:
         if button_reply == QtWidgets.QMessageBox.Yes:
             self.clear_board()
             self.init_board()
+            if self.player_num == 0:
+                self.playground_thread.is_finished = True
+                self.playground_thread.exit()
+                self.init_thread()
 
     def on_go_to_setup_page_button_click(self):
         """
@@ -184,6 +227,8 @@ class SecondPage:
                                                       "The game will end. Are you sure?",
                                                       QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
         if button_reply == QtWidgets.QMessageBox.Yes:
+            if self.player_num == 0:
+                self.playground_thread.is_finished = True
             self.widget.back_to_setup_page()
 
     def player_clicked(self, label_name):
@@ -200,7 +245,6 @@ class SecondPage:
             if self.player_num == 1 and finished is False and self.current_player == self.computer_color:
                 time.sleep(1)
                 loc = self.computer_player.move(self.current_board)
-                print(loc)
                 self.place_stone(self.computer_color, loc)
 
     def clear_board(self):
@@ -271,7 +315,7 @@ class SecondPage:
         :param player_color: A letter representing the player ( 'b' for black player, 'w' for white player)
         :param loc: Tuple of location the stone should be places
         """
-
+        self.notification_label.hide()
         self.stop_board()
         if player_color == 'b':
             self.current_board[loc[0]][loc[1]] = 1
@@ -287,7 +331,6 @@ class SecondPage:
             self.turn_label.setText("Black's turn ")
         else:
             raise ValueError('invalid color')
-
         self.clear_board()
         self.show_board()
         self.update_scores()
@@ -295,21 +338,25 @@ class SecondPage:
         # Is the game finished after this move?
         is_finished, message = self.game.game_over(self.current_board)
         if is_finished and sum(sum(self.current_board)) > 1:
+            self.playground_thread.is_finished = True
             button_reply = QtWidgets.QMessageBox.information(self.widget, "Result", message, QtWidgets.QMessageBox.Ok)
             if button_reply == QtWidgets.QMessageBox.Ok:
-                self.clear_board()
-                self.init_board()
-                return True
+                if self.player_num == 0:
+                    self.widget.back_to_setup_page()
+                    return True
+                else:
+                    self.clear_board()
+                    self.init_board()
+                    return True
 
         # Does the next player has possible valid moves? If not, the other player should make a move
         self.move_validity_check = np.zeros((self.board_size, self.board_size), dtype=int)
         self.show_valid_moves()
 
         if sum(sum(self.move_validity_check)) == 0 and sum(sum(self.current_board)) > 1:
-            button_reply = QtWidgets.QMessageBox.information(self.widget, "Warning",
-                                                             "No possible move, changing player",
-                                                             QtWidgets.QMessageBox.Ok)
-            if button_reply == QtWidgets.QMessageBox.Ok:
+            if self.player_num == 0:
+                self.notification_label.setText("No possible move, changing player")
+                self.notification_label.show()
                 self.show_valid_moves()
                 if self.current_player == 'b':
                     self.current_player = 'w'
@@ -318,10 +365,22 @@ class SecondPage:
                     self.current_player = 'b'
                     self.turn_label.setText("Black's turn ")
                 self.show_valid_moves()
-                if self.current_player == self.computer_color and self.player_num == 1:
-                    # time.sleep(1)
-                    loc = self.computer_player.move(self.current_board)
-                    self.place_stone(self.computer_color, loc)
+            else:
+                button_reply = QtWidgets.QMessageBox.information(self.widget, "Warning",
+                                                                 "No possible move, changing player",
+                                                                 QtWidgets.QMessageBox.Ok)
+                if button_reply == QtWidgets.QMessageBox.Ok:
+                    self.show_valid_moves()
+                    if self.current_player == 'b':
+                        self.current_player = 'w'
+                        self.turn_label.setText("White's turn ")
+                    elif self.current_player == 'w':
+                        self.current_player = 'b'
+                        self.turn_label.setText("Black's turn ")
+                    self.show_valid_moves()
+                    if self.current_player == self.computer_color and self.player_num == 1:
+                        loc = self.computer_player.move(self.current_board)
+                        self.place_stone(self.computer_color, loc)
         self.widget.repaint()
         self.start_board()
         return False
@@ -360,6 +419,7 @@ class SecondPage:
         self.white_score_label.hide()
         self.black_score_label.hide()
         self.turn_label.hide()
+        self.notification_label.hide()
         self.reset_button.hide()
         self.go_to_setup_page_button.hide()
         for i in range(self.board_size):
@@ -391,7 +451,6 @@ class SecondPage:
                 if j == 0:
                     exec('self.number_' + name + '.show()')
                 exec('self.' + name + '.show()')
-
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)

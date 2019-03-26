@@ -19,7 +19,7 @@ class App(QtWidgets.QWidget):
         self.setFixedSize(self.widget_size[0], self.widget_size[1])
         self.center()
         self.setup_page = FirstPage.FirstPage(self, self.widget_size)
-        self.game_page = SecondPage.SecondPage(self, self.widget_size, 1)
+        self.game_page = SecondPage.SecondPage(self, self.widget_size, 1, init=True)
         self.game_page.hide()
 
     def start_game(self):
@@ -28,11 +28,20 @@ class App(QtWidgets.QWidget):
         """
         self.board_size = int(self.setup_page.board_size_combo_box.currentText())
         self.user_color = 'b' if self.setup_page.colors_combo_box.currentText() == 'Black' else 'w'
-        player_num = 1 if self.setup_page.one_player_radio_button.isChecked() else 2
+        if self.setup_page.one_player_radio_button.isChecked():
+            player_num = 1
+        elif self.setup_page.two_player_radio_button.isChecked():
+            player_num = 2
+        else:
+            player_num = 0
         self.computer_level = self.setup_page.level_combo_box.currentText()
+        self.opponent = None
+        if player_num == 0:
+            self.opponent = self.setup_page.opponent_player_combo_box.currentText()
         self.setup_page.hide()
-        self.game_page.__init__(self, self.widget_size, player_num,  board_size=self.board_size,
-                                user_color=self.user_color, level=self.computer_level)
+        self.game_page.__init__(self, self.widget_size, player_num, board_size=self.board_size,
+                                user_color=self.user_color, level=self.computer_level,
+                                opponent_type=self.opponent, init=False)
         self.game_page.show()
 
     def back_to_setup_page(self):
