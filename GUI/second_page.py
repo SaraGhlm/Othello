@@ -18,7 +18,7 @@ class SecondPage:
         self.player_num = player_num
         self.user_color = user_color
         self.init = init
-        font_size = 20
+        font_size = 30
         self.label_style = """QLabel {{
                                 color: rgba(0, 0, 0, 0.7);
                                 font-size: {}px;}}""".format(font_size)
@@ -138,7 +138,7 @@ class SecondPage:
                     exec('self.alphabet_' + name + "= QtWidgets.QLabel(widget)")
                     exec(
                         'self.alphabet_' + name + ".setGeometry(QtCore.QRect(board_start_position+width*(j)+width/2-3, "
-                                                  "board_start_position-width/2-3, 30, 30))")
+                                                  "board_start_position-width/2-9, 40, 40))")
                     exec('self.alphabet_' + name + ".setText('" + alphabets[j] + "')")
                     exec('self.alphabet_' + name + ".setStyleSheet(self.label_style)")
 
