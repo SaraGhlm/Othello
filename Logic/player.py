@@ -17,6 +17,35 @@ class Player:
         self.opponent_num = 1 if self.computer_color == 'w' else 2
         self.game = Game(self.board_size)
         self.static_weight = self.get_static_weight()
+        self.heuristic_weights = [60, 80, 10, 10, 10, 20]
+
+    def move(self, board):
+        """
+            Based on the current board and player type, we return the computer player's best move.
+
+            Each player calculates a specific value for all of the possible moves, and returns the
+            location with the maximum value.
+        :param board: the current state of the board
+        :return: A tuple representing the location of computer player's move
+        """
+        if self.name == "Combination_Beginner":
+            return self.alpha_beta_search(board, 1)
+        elif self.name == "Combination_Intermediate":
+            return self.alpha_beta_search(board, 2)
+        elif self.name == "Combination_Hard":
+            return self.alpha_beta_search(board, 3)
+        elif self.name == "static":
+            return self.static_player(board)
+        elif self.name == "parity":
+            return self.parity_player(board)
+        elif self.name == "mobility":
+            return self.mobility_player(board)
+        elif self.name == "pmobility":
+            return self.potential_mobility_player(board)
+        elif self.name == "corners":
+            return self.corners_player(board)
+        elif self.name == "stability":
+            return self.stability_player(board)
 
     def get_static_weight(self):
         if self.board_size == 8:
@@ -59,19 +88,19 @@ class Player:
 
         if self.board_size == 14:
             weights = np.array([[4, -3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, -3, 4],
-                              [-3, -4, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -4, -3],
-                              [2, -1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 2],
-                              [2, -1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, -1, 2],
-                              [2, -1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -1, 2],
-                              [2, -1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, -1, 2],
-                              [2, -1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, -1, 2],
-                              [2, -1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, -1, 2],
-                              [2, -1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, -1, 2],
-                              [2, -1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -1, 2],
-                              [2, -1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, -1, 2],
-                              [2, -1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 2],
-                              [-3, -4, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -4, -3],
-                              [4, -3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, -3, 4]])
+                                [-3, -4, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -4, -3],
+                                [2, -1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 2],
+                                [2, -1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, -1, 2],
+                                [2, -1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -1, 2],
+                                [2, -1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, -1, 2],
+                                [2, -1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, -1, 2],
+                                [2, -1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, -1, 2],
+                                [2, -1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, -1, 2],
+                                [2, -1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -1, 2],
+                                [2, -1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, -1, 2],
+                                [2, -1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 2],
+                                [-3, -4, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -4, -3],
+                                [4, -3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, -3, 4]])
             return weights
 
     def alpha_beta_search(self, board, depth):
@@ -135,7 +164,7 @@ class Player:
     def min_value(self, board, alpha, beta, depth):
         game_is_over, _ = self.game.game_over(board)
         if game_is_over or depth == 0:
-            return self.combination(board)
+            return self.combination(board, )
         infinity = float('inf')
         value = infinity
 
@@ -161,64 +190,6 @@ class Player:
 
         return value
 
-    def move(self, board):
-        """
-            Based on the current board and player type, we return the computer player's best move.
-
-            Each player calculates a specific value for all of the possible moves, and returns the
-            location with the maximum value.
-        :param board: the current state of the board
-        :return: A tuple representing the location of computer player's move
-        """
-        if self.name == "Combination_Beginner":
-            return self.alpha_beta_search(board, 1)
-        elif self.name == "Combination_Intermediate":
-            return self.alpha_beta_search(board, 2)
-        elif self.name == "Combination_Hard":
-            return self.alpha_beta_search(board, 3)
-        elif self.name == "static":
-            return self.static_player(board)
-        elif self.name == "parity":
-            return self.parity_player(board)
-        elif self.name == "mobility":
-            return self.mobility_player(board)
-        elif self.name == "pmobility":
-            return self.potential_mobility_player(board)
-        elif self.name == "corners":
-            return self.corners_player(board)
-        elif self.name == "stability":
-            return self.stability_player(board)
-        elif self.name == "combination":
-            return self.combination_player(board)
-        elif self.name == "alpha-beta":
-            return self.alpha_beta_search(board, 3)
-
-    # def move(self, board):
-    #     """
-    #         Based on the current board and player type, we return the computer player's best move.
-    #
-    #         Each player calculates a specific value for all of the possible moves, and returns the
-    #         location with the maximum value.
-    #     :param board: the current state of the board
-    #     :return: A tuple representing the location of computer player's move
-    #     """
-    #     if self.type == "static":
-    #         return self.static_player(board)
-    #     elif self.type == "parity":
-    #         return self.parity_player(board)
-    #     elif self.type == "mobility":
-    #         return self.mobility_player(board)
-    #     elif self.type == "pmobility":
-    #         return self.potential_mobility_player(board)
-    #     elif self.type == "corners":
-    #         return self.corners_player(board)
-    #     elif self.type == "stability":
-    #         return self.stability_player(board)
-    #     elif self.type == "combination":
-    #         return self.combination_player(board)
-    #     elif self.type == "alpha-beta":
-    #         return self.alpha_beta_search(board, 3)
-
     def static_player(self, board):
         """
             Static player uses a static matrix which gives specific weight to each location of the board.
@@ -242,30 +213,6 @@ class Player:
             if move_value > max_value:
                 max_value = move_value
                 location = (rows[i], columns[i])
-        return location
-
-    def combination_player(self, board):
-        valid_moves = self.game.find_valid_moves(self.computer_color, board, self.board_size)
-        rows, columns = np.where(valid_moves == 1)
-
-        temp_board = np.copy(board)
-        temp_board = self.game.flip_opponent_stones((rows[0], columns[0]), temp_board, self.board_size,
-                                                    self.computer_num, self.opponent_num)
-        value = 600 * self.stability(temp_board) + 801.724 * self.corners(temp_board) + 78.922 * self.mobility(
-            temp_board) + 77 * self.potential_mobility(temp_board) + 74.396 * self.stone_parity(temp_board)
-
-        max_score = value
-        location = (rows[0], columns[0])
-        for i in range(1, len(rows)):
-            temp_board = np.copy(board)
-            temp_board = self.game.flip_opponent_stones((rows[i], columns[i]), temp_board, self.board_size,
-                                                        self.computer_num, self.opponent_num)
-            value = 600 * self.stability(temp_board) + 801.724 * self.corners(temp_board) + 78.922 * self.mobility(
-                temp_board) + 77 * self.potential_mobility(temp_board) + 74.396 * self.stone_parity(temp_board)
-            if value > max_score:
-                max_score = value
-                location = (rows[i], columns[i])
-
         return location
 
     def stability_player(self, board):
@@ -371,9 +318,10 @@ class Player:
         return location
 
     def combination(self, board):
-        value = 60 * self.stability(board) + 80 * self.corners(board) + 10 * self.mobility(
-            board) + 10 * self.potential_mobility(board) + 10 * self.stone_parity(
-            board) + 20 * self.stone_score_static(board)
+        value = self.heuristic_weights[0] * self.stability(board) + self.heuristic_weights[1] * self.corners(board) + \
+                self.heuristic_weights[2] * self.mobility(board) + self.heuristic_weights[3] * self.potential_mobility(
+                board) + self.heuristic_weights[4] * self.stone_parity(board) + self.heuristic_weights[5] * \
+                self.stone_score_static(board)
         return value
 
     def stone_score_static(self, board):
