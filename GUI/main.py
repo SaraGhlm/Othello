@@ -11,7 +11,7 @@ class App(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         resolution = QtWidgets.QDesktopWidget().screenGeometry()
-        scale = 4
+        scale = 2
         self.widget_size = (int(resolution.width()/scale), int((resolution.width()/scale)*0.7))
         self.title = 'Othello'
         self.setWindowTitle(self.title)

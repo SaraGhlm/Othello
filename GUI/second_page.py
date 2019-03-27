@@ -18,7 +18,7 @@ class SecondPage:
         self.player_num = player_num
         self.user_color = user_color
         self.init = init
-        font_size = 30
+        font_size = 40
         self.label_style = """QLabel {{
                                 color: rgba(0, 0, 0, 0.7);
                                 font-size: {}px;}}""".format(font_size)
@@ -87,7 +87,7 @@ class SecondPage:
         y = widget_size[1] / 7
         offset = 40
         self.white_score_label = QtWidgets.QLabel(widget)
-        self.white_score_label.setGeometry(QtCore.QRect(x, y, 181, 21))
+        self.white_score_label.setGeometry(QtCore.QRect(x, y, 200, 21))
         self.white_score_label.setText("White's Score: ")
         self.white_score_label.setObjectName("white_Score")
         self.white_score_label.setStyleSheet(self.label_style)
@@ -138,7 +138,7 @@ class SecondPage:
                     exec('self.alphabet_' + name + "= QtWidgets.QLabel(widget)")
                     exec(
                         'self.alphabet_' + name + ".setGeometry(QtCore.QRect(board_start_position+width*(j)+width/2-3, "
-                                                  "board_start_position-width/2-9, 40, 40))")
+                                                  "board_start_position-width/2-9, 50, 50))")
                     exec('self.alphabet_' + name + ".setText('" + alphabets[j] + "')")
                     exec('self.alphabet_' + name + ".setStyleSheet(self.label_style)")
 
