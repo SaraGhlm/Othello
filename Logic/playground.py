@@ -5,7 +5,7 @@ import csv
 
 
 if __name__ == '__main__':
-    players = ['Combination_Beginner']
+    players = ['Combination_Easy']
     possible_weights = [20, 60, 80]
     all_possible_weights = []
     first_player_list = []

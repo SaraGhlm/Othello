@@ -105,8 +105,8 @@ class FirstPage:
         self.level_combo_box.setGeometry(widget_size[0] / 8 + widget_size[0]/4, widget_size[0] / 5 + 160 * 2, 250, 60)
         self.level_combo_box.setAttribute(Qt.WA_MacShowFocusRect, 0)
         self.level_combo_box.setStyleSheet(self.combo_box_style)
-        self.level_combo_box.addItem("Beginner")
-        self.level_combo_box.addItem("Intermediate")
+        self.level_combo_box.addItem("Easy")
+        self.level_combo_box.addItem("Normal")
         self.level_combo_box.addItem("Hard")
 
         self.start_button = QtWidgets.QPushButton(widget)
@@ -125,8 +125,8 @@ class FirstPage:
         self.first_player_combo_box.setGeometry(widget_size[0]/8 + widget_size[0]/4, widget_size[0]/5 + 160, 500, 60)
         self.first_player_combo_box.setAttribute(Qt.WA_MacShowFocusRect, False)
         self.first_player_combo_box.setStyleSheet(self.combo_box_style)
-        self.first_player_combo_box.addItem("Combination_Beginner")
-        self.first_player_combo_box.addItem("Combination_Intermediate")
+        self.first_player_combo_box.addItem("Combination_Easy")
+        self.first_player_combo_box.addItem("Combination_Normal")
         self.first_player_combo_box.addItem("Combination_Hard")
 
         self.second_player_label = QtWidgets.QLabel(widget)
@@ -138,8 +138,8 @@ class FirstPage:
         self.second_player_combo_box.setGeometry(widget_size[0]/8 + widget_size[0]/4, widget_size[0]/5 + 160*2, 500, 60)
         self.second_player_combo_box.setAttribute(Qt.WA_MacShowFocusRect, False)
         self.second_player_combo_box.setStyleSheet(self.combo_box_style)
-        self.second_player_combo_box.addItem("Combination_Beginner")
-        self.second_player_combo_box.addItem("Combination_Intermediate")
+        self.second_player_combo_box.addItem("Combination_Easy")
+        self.second_player_combo_box.addItem("Combination_Normal")
         self.second_player_combo_box.addItem("Combination_Hard")
 
         self.hide_setup()

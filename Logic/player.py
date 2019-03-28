@@ -27,9 +27,9 @@ class Player:
         :param board: the current state of the board
         :return: A tuple representing the location of computer player's move
         """
-        if self.name == "Combination_Beginner":
+        if self.name == "Combination_Easy":
             return self.alpha_beta_search(board, 1)
-        elif self.name == "Combination_Intermediate":
+        elif self.name == "Combination_Normal":
             return self.alpha_beta_search(board, 2)
         elif self.name == "Combination_Hard":
             return self.alpha_beta_search(board, 3)
