@@ -1,6 +1,5 @@
 import numpy as np
 from Logic.game import Game
-import operator
 
 
 # need to get move_validity_check rows and columns from second-page so only checks places where it has a valid move

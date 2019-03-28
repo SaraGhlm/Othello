@@ -40,7 +40,6 @@ class App(QtWidgets.QWidget):
             self.first = self.setup_page.first_player_combo_box.currentText()
             self.second = self.setup_page.second_player_combo_box.currentText()
         self.setup_page.hide()
-        print('before game')
         self.game_page.__init__(self, self.widget_size, player_num, board_size=self.board_size,
                                 user_color=self.user_color, first_player_name=self.first,
                                 second_player_name=self.second, init=False)

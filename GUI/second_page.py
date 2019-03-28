@@ -3,12 +3,10 @@ from PyQt5.QtGui import QIcon, QPixmap
 from Logic.game import Game
 import numpy as np
 from Logic.player import Player
-from Logic.random_player import RandomPlayer
 from Logic.playground_thread import Playground
 import re
 import sys
 import time
-from PyQt5.QtCore import QThread, pyqtSignal
 
 
 class SecondPage:
