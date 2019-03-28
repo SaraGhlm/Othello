@@ -5,7 +5,7 @@ from PyQt5 import QtWidgets
 class FirstPage:
 
     def __init__(self, widget, widget_size):
-        font_size = 20
+        font_size = 40
         self.combo_box_style = """QComboBox {{ 
                             border: 0px solid black;
                             background-color: rgba(255, 255, 255, 0.7);
@@ -52,30 +52,30 @@ class FirstPage:
         self.background_label.setStyleSheet("border-image: url(res/bg.jpg);")
 
         self.two_player_radio_button = QtWidgets.QRadioButton(widget)
-        self.two_player_radio_button.setGeometry(widget_size[0]/8, widget_size[1]/8, 150, 30)
+        self.two_player_radio_button.setGeometry(widget_size[0]/8, widget_size[1]/8, 400, 100)
         self.two_player_radio_button.setText("Two Player")
         self.two_player_radio_button.setStyleSheet(self.radio_button_style)
         self.two_player_radio_button.clicked.connect(self.show_two_player_setup)
 
         self.one_player_radio_button = QtWidgets.QRadioButton(widget)
-        self.one_player_radio_button.setGeometry(widget_size[0]/8 + 160, widget_size[1]/8, 150, 30)
+        self.one_player_radio_button.setGeometry(widget_size[0]/8 + widget_size[0]/4, widget_size[1]/8, 400, 100)
         self.one_player_radio_button.setText("One Player")
         self.one_player_radio_button.setStyleSheet(self.radio_button_style)
         self.one_player_radio_button.clicked.connect(self.show_one_player_setup)
 
         self.zero_player_radio_button = QtWidgets.QRadioButton(widget)
-        self.zero_player_radio_button.setGeometry(widget_size[0]/8 + 160*2, widget_size[1]/8, 150, 30)
+        self.zero_player_radio_button.setGeometry(widget_size[0]/8 + (widget_size[0]/4)*2, widget_size[1]/8, 400, 100)
         self.zero_player_radio_button.setText("Zero Player")
         self.zero_player_radio_button.setStyleSheet(self.radio_button_style)
         self.zero_player_radio_button.clicked.connect(self.show_zero_player_setup)
 
         self.board_size_label = QtWidgets.QLabel(widget)
         self.board_size_label.setText("Board size")
-        self.board_size_label.setGeometry(widget_size[0]/8, widget_size[0]/5, 200, 30)
+        self.board_size_label.setGeometry(widget_size[0]/8, widget_size[0]/5, 200, 60)
         self.board_size_label.setStyleSheet(self.label_style)
 
         self.board_size_combo_box = QtWidgets.QComboBox(widget)
-        self.board_size_combo_box.setGeometry(widget_size[0]/8 + 230, widget_size[0]/5, 150, 30)
+        self.board_size_combo_box.setGeometry(widget_size[0]/8 + widget_size[0]/4, widget_size[0]/5, 220, 60)
         self.board_size_combo_box.setAttribute(Qt.WA_MacShowFocusRect, 0)
         self.board_size_combo_box.setStyleSheet(self.combo_box_style)
         self.board_size_combo_box.setCurrentIndex(0)
@@ -86,11 +86,11 @@ class FirstPage:
 
         self.color_label = QtWidgets.QLabel(widget)
         self.color_label.setText("Choose your color")
-        self.color_label.setGeometry(widget_size[0]/8, widget_size[0]/5 + 80*2, 200, 30)
+        self.color_label.setGeometry(widget_size[0]/8, widget_size[0]/5 + 160*2, 400, 60)
         self.color_label.setStyleSheet(self.label_style)
 
         self.colors_combo_box = QtWidgets.QComboBox(widget)
-        self.colors_combo_box.setGeometry(widget_size[0]/8 + 230, widget_size[0]/5 + 80*2, 150, 30)
+        self.colors_combo_box.setGeometry(widget_size[0]/8 + widget_size[0]/4, widget_size[0]/5 + 160*2, 250, 60)
         self.colors_combo_box.setAttribute(Qt.WA_MacShowFocusRect, 0)
         self.colors_combo_box.setStyleSheet(self.combo_box_style)
         self.colors_combo_box.addItem("Black")
@@ -98,11 +98,11 @@ class FirstPage:
 
         self.level_label = QtWidgets.QLabel(widget)
         self.level_label.setText("Choose level")
-        self.level_label.setGeometry(widget_size[0]/8, widget_size[0]/5 + 80*2, 200, 30)
+        self.level_label.setGeometry(widget_size[0] / 8, widget_size[0] / 5 + 160 * 2, 220, 50)
         self.level_label.setStyleSheet(self.label_style)
 
         self.level_combo_box = QtWidgets.QComboBox(widget)
-        self.level_combo_box.setGeometry(widget_size[0]/8 + 230, widget_size[0]/5 + 80*2, 150, 30)
+        self.level_combo_box.setGeometry(widget_size[0] / 8 + widget_size[0]/4, widget_size[0] / 5 + 160 * 2, 250, 60)
         self.level_combo_box.setAttribute(Qt.WA_MacShowFocusRect, 0)
         self.level_combo_box.setStyleSheet(self.combo_box_style)
         self.level_combo_box.addItem("Beginner")
@@ -111,18 +111,18 @@ class FirstPage:
 
         self.start_button = QtWidgets.QPushButton(widget)
         self.start_button.setText("Start")
-        self.start_button.setGeometry(widget_size[0]/8 + 110, widget_size[0]/5 + 80*3, 170, 50)
+        self.start_button.setGeometry(widget_size[0]/8 + widget_size[0]/8, widget_size[0]/5 + 180*3, 300, 70)
         self.start_button.setStyleSheet(self.button_style)
         self.start_button.clicked.connect(widget.start_game)
 
         # Zero player options
         self.first_player_label = QtWidgets.QLabel(widget)
         self.first_player_label.setText("First Player")
-        self.first_player_label.setGeometry(widget_size[0]/8, widget_size[0]/5 + 80, 200, 30)
+        self.first_player_label.setGeometry(widget_size[0]/8, widget_size[0]/5 + 160, 400, 50)
         self.first_player_label.setStyleSheet(self.label_style)
 
         self.first_player_combo_box = QtWidgets.QComboBox(widget)
-        self.first_player_combo_box.setGeometry(widget_size[0]/8 + 230, widget_size[0]/5 + 80, 250, 30)
+        self.first_player_combo_box.setGeometry(widget_size[0]/8 + widget_size[0]/4, widget_size[0]/5 + 160, 500, 60)
         self.first_player_combo_box.setAttribute(Qt.WA_MacShowFocusRect, False)
         self.first_player_combo_box.setStyleSheet(self.combo_box_style)
         self.first_player_combo_box.addItem("Combination_Beginner")
@@ -131,11 +131,11 @@ class FirstPage:
 
         self.second_player_label = QtWidgets.QLabel(widget)
         self.second_player_label.setText("Second Player")
-        self.second_player_label.setGeometry(widget_size[0]/8, widget_size[0]/5 + 80*2, 200, 30)
+        self.second_player_label.setGeometry(widget_size[0]/8, widget_size[0]/5 + 160*2, 400, 50)
         self.second_player_label.setStyleSheet(self.label_style)
 
         self.second_player_combo_box = QtWidgets.QComboBox(widget)
-        self.second_player_combo_box.setGeometry(widget_size[0]/8 + 230, widget_size[0]/5 + 80*2, 250, 30)
+        self.second_player_combo_box.setGeometry(widget_size[0]/8 + widget_size[0]/4, widget_size[0]/5 + 160*2, 500, 60)
         self.second_player_combo_box.setAttribute(Qt.WA_MacShowFocusRect, False)
         self.second_player_combo_box.setStyleSheet(self.combo_box_style)
         self.second_player_combo_box.addItem("Combination_Beginner")

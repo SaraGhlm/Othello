@@ -23,7 +23,7 @@ class Game:
             if black_score > white_score:
                 message = 'Black won!'
             elif black_score < white_score:
-                message = 'white won!'
+                message = 'White won!'
             else:
                 message = 'Tie!'
             return True, message

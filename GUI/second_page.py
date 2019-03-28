@@ -85,32 +85,32 @@ class SecondPage:
 
         x = widget_size[0] / 1.5
         y = widget_size[1] / 7
-        offset = 40
+        offset = font_size + 50
         self.white_score_label = QtWidgets.QLabel(widget)
-        self.white_score_label.setGeometry(QtCore.QRect(x, y, 200, 21))
+        self.white_score_label.setGeometry(QtCore.QRect(x, y, 400, 100))
         self.white_score_label.setText("White's Score: ")
         self.white_score_label.setObjectName("white_Score")
         self.white_score_label.setStyleSheet(self.label_style)
 
         self.black_score_label = QtWidgets.QLabel(widget)
-        self.black_score_label.setGeometry(QtCore.QRect(x, y + offset, 181, 29))
+        self.black_score_label.setGeometry(QtCore.QRect(x, y + offset, 400, 100))
         self.black_score_label.setText("Black's Score: ")
         self.black_score_label.setObjectName("black_Score")
         self.black_score_label.setStyleSheet(self.label_style)
 
         self.turn_label = QtWidgets.QLabel(widget)
-        self.turn_label.setGeometry(QtCore.QRect(x, y + offset * 2, 181, 29))
+        self.turn_label.setGeometry(QtCore.QRect(x, y + offset * 2, 400, 100))
         self.turn_label.setText("Black's turn ")
         self.turn_label.setObjectName("turn_label")
         self.turn_label.setStyleSheet(self.label_style)
 
         self.reset_button = QtWidgets.QPushButton('Reset Game', widget)
-        self.reset_button.setGeometry(x, y + offset * 3.5, 210, 50)
+        self.reset_button.setGeometry(x, y + offset * 3.5, 400, 100)
         self.reset_button.clicked.connect(self.on_reset_click)
         self.reset_button.setStyleSheet(self.button_style)
 
         self.go_to_setup_page_button = QtWidgets.QPushButton('Back to Setup Page', widget)
-        self.go_to_setup_page_button.setGeometry(x, y + offset * 5, 210, 50)
+        self.go_to_setup_page_button.setGeometry(x, y + offset * 5, 400, 100)
         self.go_to_setup_page_button.clicked.connect(self.on_go_to_setup_page_button_click)
         self.go_to_setup_page_button.setStyleSheet(self.button_style)
 
@@ -235,9 +235,11 @@ class SecondPage:
             This function in called when reset button is clicked.
             It shows a message box to make sure user has not clicked the button accidentally.
             If not, it resets and initializes the board
+
+
         """
         button_reply = QtWidgets.QMessageBox.question(self.widget, "Warning",
-                                                      "Are you sure you want to clear the board?",
+                                                      "<font size = 5> Are you sure you want to clear the board? </font> ",
                                                       QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
         if button_reply == QtWidgets.QMessageBox.Yes:
             self.clear_board()
@@ -254,7 +256,7 @@ class SecondPage:
             If not, it goes to the setup page.
         """
         button_reply = QtWidgets.QMessageBox.question(self.widget, "Warning",
-                                                      "The game will end. Are you sure?",
+                                                      "<font size = 5> The game will end. Are you sure? </font>",
                                                       QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.Cancel)
         if button_reply == QtWidgets.QMessageBox.Yes:
             if self.player_num == 0:
@@ -377,10 +379,11 @@ class SecondPage:
 
         # Is the game finished after this move?
         is_finished, message = self.game.game_over(self.current_board)
+        show_message = '<font size = 5>' + message + '</font>'
         if is_finished and sum(sum(self.current_board)) > 1:
             if self.player_num == 0:
                 self.playground_thread.is_finished = True
-            button_reply = QtWidgets.QMessageBox.information(self.widget, "Result", message, QtWidgets.QMessageBox.Ok)
+            button_reply = QtWidgets.QMessageBox.information(self.widget, "Result", show_message, QtWidgets.QMessageBox.Ok)
             if button_reply == QtWidgets.QMessageBox.Ok:
                 if self.player_num == 0:
                     self.widget.back_to_setup_page()
@@ -408,7 +411,7 @@ class SecondPage:
                 self.show_valid_moves()
             else:
                 button_reply = QtWidgets.QMessageBox.information(self.widget, "Warning",
-                                                                 "No possible move, changing player",
+                                                                 "<font size = 5>No possible move, changing player </font>",
                                                                  QtWidgets.QMessageBox.Ok)
                 if button_reply == QtWidgets.QMessageBox.Ok:
                     self.show_valid_moves()
