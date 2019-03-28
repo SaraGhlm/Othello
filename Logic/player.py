@@ -17,7 +17,7 @@ class Player:
         self.opponent_num = 1 if self.computer_color == 'w' else 2
         self.game = Game(self.board_size)
         self.static_weight = self.get_static_weight()
-        self.heuristic_weights = [60, 80, 10, 10, 10, 20]
+        self.heuristic_weights = [8, 8, 1, 1, 1, 2]
 
     def move(self, board):
         """

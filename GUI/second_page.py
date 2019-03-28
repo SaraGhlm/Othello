@@ -115,7 +115,7 @@ class SecondPage:
         self.go_to_setup_page_button.setStyleSheet(self.button_style)
 
         self.notification_label = QtWidgets.QLabel(widget)
-        self.notification_label.setGeometry(QtCore.QRect(570, 350, 181, 100))
+        self.notification_label.setGeometry(QtCore.QRect(x, y + offset * 7, 400, 200))
         self.notification_label.setWordWrap(True)
         self.notification_label.setStyleSheet(self.notification_style)
 
