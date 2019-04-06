@@ -23,7 +23,7 @@ In the zero player mode you can select the difficulty level of each computer pla
 
 ## Installation
 
-To run this code you need to have python3 installed on your computer. You can just use the following command after cloning the repository to install the requirements. 
+To run this code you need to have python3 installed on your computer. After installing python3, you can just use the following command after cloning the repository to install the requirements. 
 
 ``` bash
 
@@ -36,3 +36,7 @@ After that you just need to run main.py file using the following command.
 
 python3 main.py
 ```
+## References
+The Alpha-Beta search overall structure is based on the code in [tonypoer.io website](https://tonypoer.io/2016/10/28/implementing-minimax-and-alpha-beta-pruning-using-python/) with major modifications.
+
+Sannidhanam, Vaishnavi, and Muthukaruppan Annamalai. "An Analysis of Heuristics in Othello." (2004).
