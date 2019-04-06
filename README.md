@@ -12,7 +12,7 @@ This project is an Othello player.
 
 ## The program
 
-This program has 3 playing mode:
+This program has 3 playing modes:
 * Two player: Two human playing against each other.
 * One player: A human playing against computer. 
 * Zero player: Two computer players playing against each other.
