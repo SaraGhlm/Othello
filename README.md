@@ -3,11 +3,11 @@
 This project is an Othello player. 
  
 <p align="center">
-  <img src="Presentations/Capture.PNG" width="70%"/>
+  <img src="Documentation/Capture.PNG" width="70%"/>
 </p>
 
 <p align="center">
-  <img src="Presentations/Capture1.PNG" width="70%"/>
+  <img src="Documentation/Capture1.PNG" width="70%"/>
 </p>
 
 ## The program
@@ -20,7 +20,7 @@ This program has 3 playing modes:
 In each mode you can select the board size you want. (8x8, 10x10, 12x12, 14x14)
 In one player mode, you can also select the difficulty level of computer player (easy, normal, hard) and your color (white or black).
 In the zero player mode you can select the difficulty level of each computer player.
-More details about this program is provided in the [report file](./Documentation/FinalReport.pdf).
+More details about this program is provided in the [report file](Documentation/FinalReport.pdf).
 
 ## Installation
 
