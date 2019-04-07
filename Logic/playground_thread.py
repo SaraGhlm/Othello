@@ -1,5 +1,6 @@
 from PyQt5.QtCore import QThread, pyqtSignal
 from Logic.game import Game
+import time
 
 
 class Playground(QThread):

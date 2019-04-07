@@ -459,10 +459,12 @@ class Player:
                                                                      0] == 2 else common_potential_corner
         common_potential_corner = common_potential_corner + 1 if valid_moves[self.board_size - 1][
                                                                      self.board_size - 1] == 2 else common_potential_corner
+        computer_potential_corner -= common_potential_corner
+        opponent_potential_corner -= common_potential_corner
 
-        numerator = computer_corners + computer_potential_corner - 2 * common_potential_corner - opponent_corners - computer_potential_corner
-        denominator = computer_corners + computer_potential_corner + 2 * common_potential_corner + opponent_corners \
-                      + computer_potential_corner
+        numerator = computer_corners + computer_potential_corner - common_potential_corner - opponent_corners - opponent_potential_corner
+        denominator = computer_corners + computer_potential_corner + common_potential_corner + opponent_corners \
+                      + opponent_potential_corner
         if denominator == 0:
             return 0
         return 100 * numerator / denominator

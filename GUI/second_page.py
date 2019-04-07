@@ -17,6 +17,8 @@ class SecondPage:
         self.user_color = user_color
         self.init = init
         font_size = 40
+        self.sum_time = 0
+        self.num_move = 0
         self.label_style = """QLabel {{
                                 color: rgba(0, 0, 0, 0.7);
                                 font-size: {}px;}}""".format(font_size)
@@ -135,15 +137,15 @@ class SecondPage:
                 if i == 0:
                     exec('self.alphabet_' + name + "= QtWidgets.QLabel(widget)")
                     exec(
-                        'self.alphabet_' + name + ".setGeometry(QtCore.QRect(board_start_position+width*(j)+width/2-3, "
-                                                  "board_start_position-width/2-9, 50, 50))")
+                        'self.alphabet_' + name + ".setGeometry(QtCore.QRect(board_start_position+width*(j)+width/2-7, "
+                                                  "board_start_position-width/2-13, 50, 50))")
                     exec('self.alphabet_' + name + ".setText('" + alphabets[j] + "')")
                     exec('self.alphabet_' + name + ".setStyleSheet(self.label_style)")
 
                 if j == 0:
                     exec('self.number_' + name + "= QtWidgets.QLabel(widget)")
-                    exec('self.number_' + name + ".setGeometry(QtCore.QRect(board_start_position-width/2, "
-                                                 "board_start_position+width*(i)+width/2-9, 30, 30))")
+                    exec('self.number_' + name + ".setGeometry(QtCore.QRect(board_start_position-width/2-13, "
+                                                 "board_start_position+width*(i)+width/2-width/3, 50, 50))")
                     exec('self.number_' + name + ".setText('" + str(i + 1) + "')")
                     exec('self.number_' + name + ".setStyleSheet(self.label_style)")
 
@@ -206,9 +208,14 @@ class SecondPage:
         self.place_stone('w', (center[0], center[1]))
         self.place_stone('b', (center[0], center[1] - 1))
         self.place_stone('w', (center[0] - 1, center[1] - 1))
+        self.sum_time = 0
+        self.num_move = 0
         if self.player_num == 1:
             if self.computer_player.computer_color == self.current_player:
+                start = time.time()
                 loc = self.computer_player.move(self.current_board)
+                self.sum_time += time.time()-start
+                self.num_move += 1
                 if loc is not None:
                     self.place_stone(self.computer_player.computer_color, loc)
                 else:
@@ -273,8 +280,11 @@ class SecondPage:
             finished = self.place_stone(self.current_player,
                                         (self.str_to_int[result.group(1)], self.str_to_int[result.group(2)]))
             if self.player_num == 1 and finished is False and self.current_player == self.computer_player.computer_color:
-                time.sleep(1)
+                # time.sleep(1)
+                start = time.time()
                 loc = self.computer_player.move(self.current_board)
+                self.sum_time += time.time() - start
+                self.num_move += 1
                 if loc is not None:
                     self.place_stone(self.computer_player.computer_color, loc)
                 else:
@@ -382,6 +392,7 @@ class SecondPage:
             if self.player_num == 0:
                 self.playground_thread.is_finished = True
             button_reply = QtWidgets.QMessageBox.information(self.widget, "Result", show_message, QtWidgets.QMessageBox.Ok)
+            print('avergae time player took!: ', self.sum_time/self.num_move)
             if button_reply == QtWidgets.QMessageBox.Ok:
                 if self.player_num == 0:
                     self.widget.back_to_setup_page()
@@ -421,7 +432,10 @@ class SecondPage:
                         self.turn_label.setText("Black's turn ")
                     self.show_valid_moves()
                     if self.current_player == self.computer_player.computer_color and self.player_num == 1:
+                        start = time.time()
                         loc = self.computer_player.move(self.current_board)
+                        self.sum_time += time.time() - start
+                        self.num_move += 1
                         if loc is not None:
                             self.place_stone(self.computer_player.computer_color, loc)
                         else:
